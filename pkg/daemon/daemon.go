@@ -29,6 +29,7 @@ import (
 	"github.com/8bitlabs/mawdbot/pkg/config"
 	"github.com/8bitlabs/mawdbot/pkg/solana"
 	"github.com/8bitlabs/mawdbot/pkg/tamagochi"
+	mawdx402 "github.com/8bitlabs/mawdbot/pkg/x402"
 )
 
 // Daemon is the core long-running process.
@@ -39,6 +40,7 @@ type Daemon struct {
 	pet     *tamagochi.TamaGOchi
 	wallet  *solana.Wallet
 	rpc     *solana.SolanaRPC
+	x402    *mawdx402.Service
 	ctx     context.Context
 	cancel  context.CancelFunc
 }
@@ -111,21 +113,34 @@ func (d *Daemon) Run() error {
 		}
 	}
 
-	// ── 5. Start Channels ────────────────────────────────────────
+	// ── 5. x402 Payment Protocol ─────────────────────────────────
+	x402Cfg := mawdx402.ConfigFromEnv()
+	x402Svc, err := mawdx402.NewService(wallet, x402Cfg)
+	if err != nil {
+		log.Printf("[DAEMON] ⚠️ x402 init failed (non-fatal): %v", err)
+	} else {
+		d.x402 = x402Svc
+		log.Printf("[DAEMON] 💰 x402 payment gateway active")
+		log.Printf("[DAEMON]    Facilitator: %s", x402Svc.FacilitatorURL())
+		log.Printf("[DAEMON]    Signer: %s", x402Svc.SignerAddress())
+		log.Printf("[DAEMON]    Chains: %d configured", len(x402Svc.Requirements()))
+	}
+
+	// ── 6. Start Channels ────────────────────────────────────────
 	if err := d.chanMgr.StartAll(d.ctx); err != nil {
 		log.Printf("[DAEMON] ⚠️ Channel start error: %v", err)
 	}
 
-	// ── 6. Outbound Message Dispatcher ───────────────────────────
+	// ── 7. Outbound Message Dispatcher ───────────────────────────
 	go d.dispatchOutbound()
 
-	// ── 7. Inbound Message Handler ───────────────────────────────
+	// ── 8. Inbound Message Handler ───────────────────────────────
 	go d.handleInbound()
 
-	// ── 8. Heartbeat (TamaGOchi + Health) ────────────────────────
+	// ── 9. Heartbeat (TamaGOchi + Health) ────────────────────────
 	go d.heartbeat()
 
-	// ── 9. Wait for Shutdown ─────────────────────────────────────
+	// ── 10. Wait for Shutdown ────────────────────────────────────
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 
@@ -153,6 +168,11 @@ func (d *Daemon) shutdown() error {
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	d.chanMgr.StopAll(shutdownCtx)
+
+	// Stop x402 paywall
+	if d.x402 != nil {
+		d.x402.Stop(shutdownCtx)
+	}
 
 	// Close message bus
 	d.bus.Close()
@@ -223,12 +243,16 @@ func (d *Daemon) processCommand(msg bus.InboundMessage) string {
 	case content == "/pet":
 		return d.pet.StatusString()
 
+	case content == "/x402":
+		return d.x402Response()
+
 	case content == "/help":
 		return "🦞 **MawdBot Commands**\n\n" +
 			"/start — Welcome\n" +
 			"/status — Agent status\n" +
 			"/wallet — Wallet info\n" +
 			"/pet — TamaGOchi status\n" +
+			"/x402 — Payment gateway status\n" +
 			"/trending — Trending tokens\n" +
 			"/trades — Recent trades\n" +
 			"/research <mint> — Research token\n" +
@@ -265,7 +289,19 @@ func (d *Daemon) statusResponse() string {
 	status += fmt.Sprintf("\n📡 Channels: %v\n", channelNames)
 	status += fmt.Sprintf("⏱️ Uptime: %dh\n", petState.Uptime)
 
+	if d.x402 != nil {
+		status += fmt.Sprintf("\n💰 x402: %s (%d chains)\n",
+			d.x402.FacilitatorURL(), len(d.x402.Requirements()))
+	}
+
 	return status
+}
+
+func (d *Daemon) x402Response() string {
+	if d.x402 == nil {
+		return "💰 x402 payment gateway not initialized"
+	}
+	return fmt.Sprintf("💰 **x402 Payment Gateway**\n\n%s", d.x402.Status())
 }
 
 func (d *Daemon) walletResponse() string {

@@ -13,13 +13,14 @@
 
 ### Nano Solana Agent · Autonomous Trading Intelligence · TamaGOchi
 
-**8.3MB Binary · <10MB RAM · 1s Boot · Go Runtime**
+**9.5MB Binary · <10MB RAM · 1s Boot · Go Runtime**
 
 **$MAWD :: Droids Lead The Way**
 
 <p>
   <img src="https://img.shields.io/badge/Go-1.25+-00ADD8?style=flat&logo=go&logoColor=white" alt="Go">
-  <img src="https://img.shields.io/badge/Binary-8.3MB-14F195?style=flat" alt="Size">
+  <img src="https://img.shields.io/badge/Binary-9.5MB-14F195?style=flat" alt="Size">
+  <img src="https://img.shields.io/badge/x402-Payment%20Protocol-FF6B35?style=flat" alt="x402">
   <img src="https://img.shields.io/badge/Solana-Mainnet-9945FF?style=flat&logo=solana&logoColor=white" alt="Solana">
   <img src="https://img.shields.io/badge/Arch-x86__64%20ARM64%20RISC--V-blue?style=flat" alt="Arch">
   <img src="https://img.shields.io/badge/Hardware-Modulino%C2%AE%20I2C-FF4060?style=flat" alt="Hardware">
@@ -32,7 +33,7 @@
 
 ## Overview
 
-MawdBot Go is an **ultra-lightweight autonomous Solana trading agent** built in pure Go. It deploys as a single 8.3MB binary on edge hardware like the **NVIDIA Orin Nano** or any Linux/macOS machine, running a full OODA trading loop with real-time market data, on-chain execution, and a virtual **TamaGOchi** pet whose mood and evolution are driven by live trading performance.
+MawdBot Go is an **ultra-lightweight autonomous Solana trading agent** built in pure Go. It deploys as a single 9.5MB binary on edge hardware like the **NVIDIA Orin Nano** or any Linux/macOS machine, running a full OODA trading loop with real-time market data, on-chain execution, **x402 payment protocol** for paywalled APIs, and a virtual **TamaGOchi** pet whose mood and evolution are driven by live trading performance.
 
 ```
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
@@ -62,6 +63,7 @@ MawdBot Go is an **ultra-lightweight autonomous Solana trading agent** built in 
 | 🔑 **Agentic Wallet** | Auto-generates & persists Solana keypair on first boot |
 | 🌐 **Native RPC** | Direct Solana integration via `solana-go` + Helius endpoints |
 | 📱 **Telegram Bot** | Zero-dep bot channel with markdown→HTML, commands, allowlist |
+| 💰 **x402 Protocol** | Multi-chain USDC payment gateway (Solana, Base, Polygon, Avalanche) |
 | 🎛️ **Hardware I2C** | Arduino Modulino® sensors: LEDs, buzzer, buttons, knob, IMU, thermo |
 | 🐳 **Docker** | Multi-stage Alpine image ~15MB total |
 | ⚡ **Cross-Compile** | x86_64, ARM64 (Orin/RPi), RISC-V targets |
@@ -162,6 +164,9 @@ mawdbot-go/
 │   │   └── telegram/          #    Telegram bot (zero-dep HTTP)
 │   │       ├── telegram.go    #    Long polling, commands, markdown
 │   │       └── api.go         #    Raw Telegram Bot API client
+│   │
+│   ├── x402/                  # 💰 x402 payment protocol
+│   │   └── x402.go            #    SVM signer, USDC middleware, paywall server
 │   │
 │   ├── bus/                   # 🔀 Message bus (inbound/outbound)
 │   ├── config/                # ⚙️ Configuration + env overrides
@@ -264,6 +269,7 @@ Set `TELEGRAM_BOT_TOKEN` in `.env` and the daemon auto-starts the bot:
 | `/status` | Agent status, wallet balance, TamaGOchi |
 | `/wallet` | Wallet address & Solscan link |
 | `/pet` | Full TamaGOchi status |
+| `/x402` | x402 payment gateway status |
 | `/trending` | Trending tokens on Solana |
 | `/ooda` | Trigger OODA cycle |
 | `/research <mint>` | Deep research a token |
@@ -336,6 +342,8 @@ Key environment variables:
 | `BIRDEYE_API_KEY` | Optional | Market data & analytics |
 | `JUPITER_API_KEY` | Optional | DEX swap execution |
 | `SOLANA_PRIVATE_KEY` | Optional | Use existing wallet (base58) |
+| `X402_FACILITATOR_URL` | Optional | x402 facilitator (default: facilitator.x402.rs) |
+| `X402_CHAINS` | Optional | Chains to accept payments (default: solana) |
 | `OPENROUTER_API_KEY` | Optional | LLM agent responses |
 
 See [.env.example](.env.example) for the full list.
@@ -479,27 +487,64 @@ mawdbot version                Version + build info
 
 ---
 
+## 💰 x402 Payment Protocol
+
+MawdBot integrates the [x402 payment standard](https://x402.org) for crypto-gated HTTP APIs:
+
+```
+┌──────────┐     ┌──────────────┐     ┌──────────────┐
+│  Client  │────▶│ X-PAYMENT    │────▶│   MawdBot    │
+│          │     │  Header      │     │   Paywall    │
+└──────────┘     └──────────────┘     └──────┬───────┘
+                                              │
+                 ┌──────────────┐     ┌───────▼──────┐
+                 │  Facilitator │◀────│  Verify +    │
+                 │  x402.rs     │     │  Settle      │
+                 └──────────────┘     └──────────────┘
+```
+
+**Features:**
+- **Solana USDC** payments via agent wallet (auto-configured SVM signer)
+- **Multi-chain** support: Solana, Base, Polygon, Avalanche (mainnet + testnet)
+- **HTTP middleware** for paywalling MawdBot API endpoints
+- **Payment client** for consuming x402-gated APIs
+- **Facilitator proxy** connects to `facilitator.x402.rs`
+
+```bash
+# Enable the x402 paywall server
+X402_PAYWALL_ENABLED=true ./build/mawdbot daemon
+
+# Endpoints:
+# GET /health          — free
+# GET /x402/info       — free
+# GET /api/signals     — 0.001 USDC per call
+# GET /api/research    — 0.001 USDC per call
+# GET /api/agent       — 0.001 USDC per call
+```
+
+---
+
 ## 🧠 Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    mawdbot daemon                            │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
-│  │ Telegram │  │  OODA    │  │ TamaGOchi│  │ Hardware │   │
-│  │ Channel  │  │  Agent   │  │  Pet     │  │ Adapter  │   │
+│  │ Telegram │  │  OODA    │  │ TamaGOchi│  │  x402    │   │
+│  │ Channel  │  │  Agent   │  │  Pet     │  │  Paywall │   │
 │  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘   │
 │       │              │              │              │         │
 │  ┌────▼──────────────▼──────────────▼──────────────▼─────┐  │
-│  │                  Message Bus                           │  │
+│  │              Message Bus + Hardware Adapter            │  │
 │  └────────────────────────┬───────────────────────────────┘  │
 │                           │                                   │
 │  ┌────────────────────────▼───────────────────────────────┐  │
-│  │                  pkg/solana                             │  │
-│  │  wallet.go · rpc.go · programs.go · tx.go              │  │
+│  │                  pkg/solana + pkg/x402                  │  │
+│  │  wallet · rpc · programs · tx · signer · middleware     │  │
 │  └────────────────────────┬───────────────────────────────┘  │
 │                           │                                   │
 │  ┌────────────────────────▼───────────────────────────────┐  │
-│  │         Solana Mainnet (via Helius RPC)                 │  │
+│  │     Solana + EVM Chains (via Helius + Facilitator)      │  │
 │  └────────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```

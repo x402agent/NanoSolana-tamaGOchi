@@ -69,7 +69,10 @@ func NewTelegramChannel(cfg *config.Config, msgBus *bus.MessageBus) (*TelegramCh
 	}
 	allowFrom = normalizeAllowList(allowFrom)
 
-	proxyAddr := strings.TrimSpace(os.Getenv("TELEGRAM_PROXY"))
+	proxyAddr := strings.TrimSpace(cfg.Channels.Telegram.Proxy)
+	if proxyAddr == "" {
+		proxyAddr = strings.TrimSpace(os.Getenv("TELEGRAM_PROXY"))
+	}
 
 	transport := &http.Transport{}
 	if proxyAddr != "" {
@@ -87,7 +90,10 @@ func NewTelegramChannel(cfg *config.Config, msgBus *bus.MessageBus) (*TelegramCh
 		httpClient.Transport = transport
 	}
 
-	apiBase := os.Getenv("TELEGRAM_API_BASE")
+	apiBase := cfg.Channels.Telegram.BaseURL
+	if apiBase == "" {
+		apiBase = os.Getenv("TELEGRAM_API_BASE")
+	}
 	apiBase = normalizeTelegramAPIBase(apiBase)
 
 	base := channels.NewBaseChannel("telegram", msgBus, allowFrom)
@@ -396,7 +402,6 @@ func builtinBotCommands() []BotCommand {
 		registered = append(registered, BotCommand{Command: name, Description: description})
 	}
 
-	add("start", "Start MawdBot")
 	for _, def := range defs {
 		add(def.Name, def.Description)
 	}

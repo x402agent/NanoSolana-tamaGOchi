@@ -43,3 +43,4 @@ docker-compose.override.yml
 solana-go-main/
 mawdbot-go/
 picoclaw/
+x402-go-main/

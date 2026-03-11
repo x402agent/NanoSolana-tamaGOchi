@@ -131,6 +131,15 @@ func (w *Wallet) IsReadOnly() bool {
 	return w == nil || w.inner == nil
 }
 
+// PrivateKeyBase58 returns the private key as a base58-encoded string.
+// Returns empty string if no private key is loaded (read-only wallet).
+func (w *Wallet) PrivateKeyBase58() string {
+	if w == nil || w.inner == nil {
+		return ""
+	}
+	return w.inner.PrivateKey.String()
+}
+
 // ── Public-Key Helpers ──────────────────────────────────────────────
 // Re-exports from solana-go for convenience, so callers don't need
 // to import solana-go directly.

@@ -4,6 +4,7 @@ package telegram
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -47,16 +48,20 @@ type Chat struct {
 // ── API Methods ──────────────────────────────────────────────────────
 
 func (c *TelegramChannel) apiURL(method string) string {
-	return telegramAPIBase + c.token + "/" + method
+	return c.apiBase + c.token + "/" + method
 }
 
-func (c *TelegramChannel) apiCall(ctx interface{}, method string, payload interface{}) (json.RawMessage, error) {
+func (c *TelegramChannel) apiCall(ctx context.Context, method string, payload interface{}) (json.RawMessage, error) {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
 	body, err := json.Marshal(payload)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", c.apiURL(method), bytes.NewReader(body))
+	req, err := http.NewRequestWithContext(ctx, "POST", c.apiURL(method), bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +91,7 @@ func (c *TelegramChannel) apiCall(ctx interface{}, method string, payload interf
 }
 
 // getMe returns the bot's identity.
-func (c *TelegramChannel) getMe(ctx interface{}) (*BotUser, error) {
+func (c *TelegramChannel) getMe(ctx context.Context) (*BotUser, error) {
 	result, err := c.apiCall(ctx, "getMe", nil)
 	if err != nil {
 		return nil, err
@@ -99,7 +104,7 @@ func (c *TelegramChannel) getMe(ctx interface{}) (*BotUser, error) {
 }
 
 // getUpdates fetches updates via long polling.
-func (c *TelegramChannel) getUpdates(ctx interface{}, offset int64, timeout int) ([]Update, error) {
+func (c *TelegramChannel) getUpdates(ctx context.Context, offset int64, timeout int) ([]Update, error) {
 	params := map[string]interface{}{
 		"offset":  offset,
 		"timeout": timeout,
@@ -116,7 +121,7 @@ func (c *TelegramChannel) getUpdates(ctx interface{}, offset int64, timeout int)
 }
 
 // sendMessage sends a text message to a chat.
-func (c *TelegramChannel) sendMessage(ctx interface{}, chatID int64, text, parseMode string) error {
+func (c *TelegramChannel) sendMessage(ctx context.Context, chatID int64, text, parseMode string) error {
 	params := map[string]interface{}{
 		"chat_id": chatID,
 		"text":    text,
@@ -129,7 +134,7 @@ func (c *TelegramChannel) sendMessage(ctx interface{}, chatID int64, text, parse
 }
 
 // sendChatAction sends a "typing" or other action indicator.
-func (c *TelegramChannel) sendChatAction(ctx interface{}, chatID int64, action string) error {
+func (c *TelegramChannel) sendChatAction(ctx context.Context, chatID int64, action string) error {
 	params := map[string]interface{}{
 		"chat_id": chatID,
 		"action":  action,
@@ -139,7 +144,7 @@ func (c *TelegramChannel) sendChatAction(ctx interface{}, chatID int64, action s
 }
 
 // setMyCommands registers bot commands for the menu.
-func (c *TelegramChannel) setMyCommands(ctx interface{}, commands []BotCommand) error {
+func (c *TelegramChannel) setMyCommands(ctx context.Context, commands []BotCommand) error {
 	params := map[string]interface{}{
 		"commands": commands,
 	}
