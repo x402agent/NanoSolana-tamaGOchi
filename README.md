@@ -13,13 +13,13 @@
 
 ### Nano Solana Agent · Autonomous Trading Intelligence · TamaGOchi
 
-**9.5MB Binary · <10MB RAM · 1s Boot · Go Runtime**
+**9.6MB Binary · <10MB RAM · 1s Boot · Go Runtime**
 
 **$MAWD :: Droids Lead The Way**
 
 <p>
   <img src="https://img.shields.io/badge/Go-1.25+-00ADD8?style=flat&logo=go&logoColor=white" alt="Go">
-  <img src="https://img.shields.io/badge/Binary-9.5MB-14F195?style=flat" alt="Size">
+  <img src="https://img.shields.io/badge/Binary-9.6MB-14F195?style=flat" alt="Size">
   <img src="https://img.shields.io/badge/x402-Payment%20Protocol-FF6B35?style=flat" alt="x402">
   <img src="https://img.shields.io/badge/Solana-Mainnet-9945FF?style=flat&logo=solana&logoColor=white" alt="Solana">
   <img src="https://img.shields.io/badge/Arch-x86__64%20ARM64%20RISC--V-blue?style=flat" alt="Arch">
@@ -33,7 +33,7 @@
 
 ## Overview
 
-MawdBot Go is an **ultra-lightweight autonomous Solana trading agent** built in pure Go. It deploys as a single 9.5MB binary on edge hardware like the **NVIDIA Orin Nano** or any Linux/macOS machine, running a full OODA trading loop with real-time market data, on-chain execution, **x402 payment protocol** for paywalled APIs, and a virtual **TamaGOchi** pet whose mood and evolution are driven by live trading performance.
+MawdBot Go is an **ultra-lightweight autonomous Solana trading agent** built in pure Go. It deploys as a single 9.6MB binary on edge hardware like the **NVIDIA Orin Nano** or any Linux/macOS machine, running a full OODA trading loop with real-time market data, on-chain execution, **x402 payment protocol** for paywalled APIs, and a virtual **TamaGOchi** pet whose mood and evolution are driven by live trading performance.
 
 ```
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
@@ -80,7 +80,7 @@ MawdBot Go is an **ultra-lightweight autonomous Solana trading agent** built in 
 ### 1. Clone & Build
 
 ```bash
-git clone https://github.com/8bitlabs/mawdbot-go.git
+git clone https://github.com/x402agent/mawdbot-go.git
 cd mawdbot-go
 cp .env.example .env   # Edit with your API keys
 make build
@@ -89,7 +89,7 @@ make build
 ### 2. Run the Daemon
 
 ```bash
-# Full autonomous agent (wallet + RPC + TamaGOchi + Telegram)
+# Full autonomous agent (wallet + RPC + TamaGOchi + Telegram + x402)
 ./build/mawdbot daemon
 
 # Or start the OODA trading loop directly
@@ -97,6 +97,9 @@ make build
 
 # Check your pet's status
 ./build/mawdbot pet
+
+# x402 paywall mode
+X402_PAYWALL_ENABLED=true ./build/mawdbot daemon
 ```
 
 ### 3. Docker
@@ -130,14 +133,14 @@ mawdbot-go/
 ├── SOUL.md                    # Agent personality & trading philosophy
 │
 ├── cmd/
-│   ├── mawdbot/               # Alternative entry point
-│   │   ├── main.go
-│   │   └── hardware.go
+│   ├── mawdbot/               # Primary CLI entry point (make build)
+│   │   ├── main.go            #    All commands: daemon, ooda, pet, solana, etc.
+│   │   └── hardware.go        #    Hardware CLI subcommands
 │   └── mawdbot-tui/           # TUI launcher
 │
 ├── pkg/                       # Core packages
 │   ├── daemon/                # 🌐 Nano Solana daemon (orchestrator)
-│   │   └── daemon.go          #    Wallet + RPC + TamaGOchi + Telegram
+│   │   └── daemon.go          #    Wallet + RPC + TamaGOchi + Telegram + x402
 │   │
 │   ├── agent/                 # 🧠 OODA agent core
 │   │   ├── ooda.go            #    Trading loop logic
@@ -343,7 +346,14 @@ Key environment variables:
 | `JUPITER_API_KEY` | Optional | DEX swap execution |
 | `SOLANA_PRIVATE_KEY` | Optional | Use existing wallet (base58) |
 | `X402_FACILITATOR_URL` | Optional | x402 facilitator (default: facilitator.x402.rs) |
+| `X402_RECIPIENT_ADDRESS` | Optional | Payment recipient (default: agent wallet) |
+| `X402_PAYMENT_AMOUNT` | Optional | USDC per API call (default: 0.001) |
+| `X402_NETWORK` | Optional | Network: solana, solana-devnet |
 | `X402_CHAINS` | Optional | Chains to accept payments (default: solana) |
+| `X402_PAYWALL_ENABLED` | Optional | Start local paywall server |
+| `X402_PAYWALL_PORT` | Optional | Paywall server port (default: 18402) |
+| `X402_PROXY_ENABLED` | Optional | Enable facilitator proxy |
+| `X402_PROXY_PORT` | Optional | Proxy port (default: 18403) |
 | `OPENROUTER_API_KEY` | Optional | LLM agent responses |
 
 See [.env.example](.env.example) for the full list.
@@ -466,23 +476,34 @@ See [schema.sql](schema.sql) for the complete schema.
 ## 📚 CLI Reference
 
 ```
-mawdbot                        Show help
-mawdbot daemon                 Start full autonomous daemon
-mawdbot ooda                   Start OODA trading loop
-mawdbot ooda --interval 30     Custom cycle interval
-mawdbot ooda --sim             Simulated mode (no real trades)
-mawdbot ooda --hw-bus 1        With Modulino® hardware
-mawdbot agent                  Interactive chat mode
-mawdbot agent -m "message"     Single message
-mawdbot pet                    Show TamaGOchi status
-mawdbot solana wallet          Show wallet info
-mawdbot solana trending        Trending tokens
-mawdbot solana research SOL    Research a token
-mawdbot hardware scan          Scan I2C bus
-mawdbot hardware demo          Hardware demo animation
-mawdbot status                 System status
-mawdbot onboard                Initialize config & workspace
-mawdbot version                Version + build info
+mawdbot                         Show help
+mawdbot daemon                  Start full autonomous daemon (wallet+RPC+TamaGOchi+Telegram+x402)
+mawdbot ooda                    Start OODA trading loop
+mawdbot ooda --interval 30      Custom cycle interval (seconds)
+mawdbot ooda --sim              Simulated mode (no real trades)
+mawdbot ooda --hw-bus 1         With Modulino® hardware on I2C bus 1
+mawdbot ooda --no-hw            Disable hardware integration
+mawdbot agent                   Interactive chat REPL
+mawdbot agent -m "message"      Single message mode
+mawdbot pet                     Show TamaGOchi status
+mawdbot gateway                 Start multi-channel gateway (Telegram, Discord)
+mawdbot solana wallet           Show wallet info + balance
+mawdbot solana trending         Trending tokens (Birdeye)
+mawdbot solana search <keyword> Search tokens by name/symbol
+mawdbot solana research <mint>  Deep research a token
+mawdbot solana das get-asset    Helius DAS: getAsset
+mawdbot solana das owner-assets Helius DAS: getAssetsByOwner
+mawdbot solana das search       Helius DAS: searchAssets
+mawdbot solana spl token-balance   SPL token account balance
+mawdbot solana spl token-accounts  SPL token accounts by owner
+mawdbot solana spl token-supply    SPL token supply
+mawdbot solana spl token-largest   SPL largest token holders
+mawdbot solana spl rpc <method>    Generic Helius RPC passthrough
+mawdbot hardware scan           Scan I2C bus for Modulino® sensors
+mawdbot hardware demo           Hardware demo animation
+mawdbot status                  System status + config overview
+mawdbot onboard                 Initialize config & workspace
+mawdbot version                 Version + build info
 ```
 
 ---
@@ -509,6 +530,8 @@ MawdBot integrates the [x402 payment standard](https://x402.org) for crypto-gate
 - **HTTP middleware** for paywalling MawdBot API endpoints
 - **Payment client** for consuming x402-gated APIs
 - **Facilitator proxy** connects to `facilitator.x402.rs`
+- **Config-driven** — all x402 settings in `config.json` + env var overrides
+- **Coinbase CDP** wallet support (optional managed keys)
 
 ```bash
 # Enable the x402 paywall server
@@ -529,6 +552,15 @@ X402_PAYWALL_ENABLED=true ./build/mawdbot daemon
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    mawdbot daemon                            │
+│                                                               │
+│  1. Agentic Wallet  ─  auto-gen/load Solana keypair          │
+│  2. Solana RPC      ─  Helius mainnet connection             │
+│  3. TamaGOchi       ─  virtual pet engine                    │
+│  4. Telegram        ─  bot channel (if configured)           │
+│  5. x402 Gateway    ─  SVM signer + paywall server           │
+│  6. Channels        ─  multi-channel message routing         │
+│  7. Heartbeat       ─  periodic health + balance checks      │
+│                                                               │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
 │  │ Telegram │  │  OODA    │  │ TamaGOchi│  │  x402    │   │
 │  │ Channel  │  │  Agent   │  │  Pet     │  │  Paywall │   │
@@ -570,7 +602,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 <div align="center">
 
-**Built by [8BIT Labs](https://github.com/8bitlabs) · Factory Division**
+**Built by [8BIT Labs](https://github.com/x402agent) · Factory Division**
 
 🦞 *Show me the on-chain data.* 🦞
 
