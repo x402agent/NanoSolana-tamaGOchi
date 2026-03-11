@@ -1,0 +1,45 @@
+# ── Build artifacts ───────────────────────────────────────────────────
+build/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# ── Go ────────────────────────────────────────────────────────────────
+*.test
+*.out
+vendor/
+
+# ── Environment / Secrets ─────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── OS files ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# ── IDE ───────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.code-workspace
+
+# ── Node (scripts/web) ───────────────────────────────────────────────
+node_modules/
+scripts/node_modules/
+web/frontend/node_modules/
+
+# ── Docker ────────────────────────────────────────────────────────────
+docker-compose.override.yml
+
+# ── MawdBot runtime data ─────────────────────────────────────────────
+# (these live in ~/.mawdbot/, not in the repo)
+
+# ── Source deps (bundled for reference, not shipped) ──────────────────
+solana-go-main/
+mawdbot-go/
+picoclaw/
