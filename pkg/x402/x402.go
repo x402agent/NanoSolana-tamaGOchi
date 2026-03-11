@@ -18,10 +18,15 @@ package x402
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -39,6 +44,9 @@ const (
 	// DefaultFacilitatorURL is the public x402 facilitator endpoint.
 	DefaultFacilitatorURL = "https://facilitator.x402.rs"
 
+	// DefaultFacilitatorProxyPort is the local facilitator proxy port.
+	DefaultFacilitatorProxyPort = 18403
+
 	// DefaultPaywallPort is the port for the local x402 paywall server.
 	DefaultPaywallPort = 18402
 
@@ -55,17 +63,30 @@ type Service struct {
 	svmSigner        *svm.Signer
 	paymentClient    *x402http.Client
 	facilitatorURL   string
+	upstreamURL      string
+	authorization    string
 	recipientAddress string
 	network          string
+	proxyServer      *http.Server
 	paywallServer    *http.Server
 	requirements     []x402.PaymentRequirement
-	running          bool
+	proxyRunning     bool
+	paywallRunning   bool
 }
 
 // Config holds x402 configuration.
 type Config struct {
 	// FacilitatorURL is the facilitator endpoint (default: facilitator.x402.rs)
 	FacilitatorURL string
+
+	// FacilitatorAuthorization is an optional Authorization header sent to upstream facilitator
+	FacilitatorAuthorization string
+
+	// ProxyEnabled starts a local facilitator proxy exposing /supported,/verify,/settle
+	ProxyEnabled bool
+
+	// ProxyPort is the bind port for local facilitator proxy (default: 18403)
+	ProxyPort int
 
 	// RecipientAddress is the wallet that receives payments (default: agent wallet)
 	RecipientAddress string
@@ -90,6 +111,8 @@ type Config struct {
 func DefaultConfig() Config {
 	return Config{
 		FacilitatorURL: DefaultFacilitatorURL,
+		ProxyEnabled:   true,
+		ProxyPort:      DefaultFacilitatorProxyPort,
 		PaymentAmount:  DefaultPaymentAmount,
 		Network:        "solana",
 		PaywallPort:    DefaultPaywallPort,
@@ -105,6 +128,17 @@ func ConfigFromEnv() Config {
 	if url := os.Getenv("X402_FACILITATOR_URL"); url != "" {
 		cfg.FacilitatorURL = url
 	}
+	if auth := os.Getenv("X402_FACILITATOR_AUTHORIZATION"); auth != "" {
+		cfg.FacilitatorAuthorization = auth
+	}
+	if v := os.Getenv("X402_PROXY_ENABLED"); v != "" {
+		cfg.ProxyEnabled = parseBool(v, cfg.ProxyEnabled)
+	}
+	if v := os.Getenv("X402_PROXY_PORT"); v != "" {
+		if port, err := strconv.Atoi(v); err == nil && port > 0 {
+			cfg.ProxyPort = port
+		}
+	}
 	if addr := os.Getenv("X402_RECIPIENT_ADDRESS"); addr != "" {
 		cfg.RecipientAddress = addr
 	}
@@ -117,14 +151,30 @@ func ConfigFromEnv() Config {
 	if os.Getenv("X402_PAYWALL_ENABLED") == "true" || os.Getenv("X402_PAYWALL_ENABLED") == "1" {
 		cfg.PaywallEnabled = true
 	}
+	if v := os.Getenv("X402_PAYWALL_PORT"); v != "" {
+		if port, err := strconv.Atoi(v); err == nil && port > 0 {
+			cfg.PaywallPort = port
+		}
+	}
 
 	// Multi-chain support from env
 	chains := os.Getenv("X402_CHAINS")
 	if chains != "" {
-		cfg.Chains = parseChains(chains)
+		cfg.Chains = ParseChains(chains)
 	}
 
 	return cfg
+}
+
+func parseBool(in string, def bool) bool {
+	switch strings.ToLower(strings.TrimSpace(in)) {
+	case "1", "true", "yes", "on":
+		return true
+	case "0", "false", "no", "off":
+		return false
+	default:
+		return def
+	}
 }
 
 // ── New ──────────────────────────────────────────────────────────────
@@ -133,6 +183,22 @@ func ConfigFromEnv() Config {
 func NewService(wallet *mawdsolana.Wallet, cfg Config) (*Service, error) {
 	if wallet == nil || wallet.IsReadOnly() {
 		return nil, fmt.Errorf("x402: wallet required (cannot be read-only)")
+	}
+
+	if strings.TrimSpace(cfg.FacilitatorURL) == "" {
+		cfg.FacilitatorURL = DefaultFacilitatorURL
+	}
+	if strings.TrimSpace(cfg.PaymentAmount) == "" {
+		cfg.PaymentAmount = DefaultPaymentAmount
+	}
+	if cfg.ProxyPort <= 0 {
+		cfg.ProxyPort = DefaultFacilitatorProxyPort
+	}
+	if cfg.PaywallPort <= 0 {
+		cfg.PaywallPort = DefaultPaywallPort
+	}
+	if len(cfg.Chains) == 0 {
+		cfg.Chains = []x402.ChainConfig{x402.SolanaMainnet}
 	}
 
 	recipientAddr := cfg.RecipientAddress
@@ -206,9 +272,17 @@ func NewService(wallet *mawdsolana.Wallet, cfg Config) (*Service, error) {
 		svmSigner:        svmSigner,
 		paymentClient:    paymentClient,
 		facilitatorURL:   cfg.FacilitatorURL,
+		upstreamURL:      cfg.FacilitatorURL,
+		authorization:    cfg.FacilitatorAuthorization,
 		recipientAddress: recipientAddr,
 		network:          cfg.Network,
 		requirements:     requirements,
+	}
+
+	if cfg.ProxyEnabled {
+		if svc.startFacilitatorProxy(cfg.ProxyPort) {
+			svc.facilitatorURL = fmt.Sprintf("http://127.0.0.1:%d", cfg.ProxyPort)
+		}
 	}
 
 	// Optionally start the local paywall server
@@ -239,8 +313,9 @@ func (s *Service) Requirements() []x402.PaymentRequirement {
 // Middleware returns x402 middleware for protecting HTTP endpoints.
 func (s *Service) Middleware() func(http.Handler) http.Handler {
 	config := &x402http.Config{
-		FacilitatorURL:      s.facilitatorURL,
-		PaymentRequirements: s.requirements,
+		FacilitatorURL:           s.facilitatorURL,
+		FacilitatorAuthorization: s.authorization,
+		PaymentRequirements:      s.requirements,
 	}
 	return x402http.NewX402Middleware(config)
 }
@@ -275,18 +350,100 @@ func (s *Service) Status() string {
 
 	return fmt.Sprintf("x402 Payment Gateway\n"+
 		"  Facilitator: %s\n"+
+		"  Upstream: %s\n"+
 		"  Recipient: %s\n"+
 		"  Signer: %s\n"+
 		"  Chains: %s\n"+
 		"  Requirements: %d\n"+
+		"  FacilitatorProxy: %v\n"+
 		"  Paywall: %v",
 		s.facilitatorURL,
+		s.upstreamURL,
 		s.recipientAddress,
 		s.SignerAddress(),
 		strings.Join(chains, ", "),
 		len(s.requirements),
-		s.running,
+		s.proxyRunning,
+		s.paywallRunning,
 	)
+}
+
+func (s *Service) startFacilitatorProxy(port int) bool {
+	target, err := url.Parse(s.upstreamURL)
+	if err != nil {
+		log.Printf("[X402] ⚠️ Invalid facilitator upstream URL %q: %v", s.upstreamURL, err)
+		return false
+	}
+
+	proxy := httputil.NewSingleHostReverseProxy(target)
+	originalDirector := proxy.Director
+	proxy.Director = func(req *http.Request) {
+		originalDirector(req)
+		if s.authorization != "" && req.Header.Get("Authorization") == "" {
+			req.Header.Set("Authorization", s.authorization)
+		}
+		req.Header.Set("X-MawdBot-Facilitator-Proxy", "1")
+	}
+	proxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, proxyErr error) {
+		log.Printf("[X402] ⚠️ Facilitator proxy upstream error: %v", proxyErr)
+		http.Error(w, "facilitator upstream unavailable", http.StatusBadGateway)
+	}
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		allowed := map[string]string{
+			"/supported": http.MethodGet,
+			"/verify":    http.MethodPost,
+			"/settle":    http.MethodPost,
+		}
+
+		expectedMethod, ok := allowed[r.URL.Path]
+		if !ok {
+			http.NotFound(w, r)
+			return
+		}
+		if r.Method != expectedMethod {
+			w.Header().Set("Allow", expectedMethod)
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		proxy.ServeHTTP(w, r)
+	})
+
+	bindAddr := fmt.Sprintf("127.0.0.1:%d", port)
+	listener, err := net.Listen("tcp", bindAddr)
+	if err != nil {
+		log.Printf("[X402] ⚠️ Facilitator proxy bind error on %s: %v", bindAddr, err)
+		return false
+	}
+
+	s.proxyServer = &http.Server{
+		Addr:         bindAddr,
+		Handler:      mux,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 30 * time.Second,
+		IdleTimeout:  120 * time.Second,
+	}
+
+	go func() {
+		s.mu.Lock()
+		s.proxyRunning = true
+		s.mu.Unlock()
+
+		log.Printf("[X402] 🧭 Facilitator proxy listening on http://%s", bindAddr)
+		log.Printf("[X402]    Upstream facilitator: %s", s.upstreamURL)
+
+		if err := s.proxyServer.Serve(listener); err != nil && err != http.ErrServerClosed {
+			log.Printf("[X402] ⚠️ Facilitator proxy error: %v", err)
+		}
+
+		s.mu.Lock()
+		s.proxyRunning = false
+		s.mu.Unlock()
+	}()
+
+	return true
 }
 
 // ── Paywall Server ───────────────────────────────────────────────────
@@ -340,7 +497,7 @@ func (s *Service) startPaywallServer(port int) {
 
 	go func() {
 		s.mu.Lock()
-		s.running = true
+		s.paywallRunning = true
 		s.mu.Unlock()
 
 		log.Printf("[X402] 💰 Paywall server starting on :%d", port)
@@ -353,23 +510,37 @@ func (s *Service) startPaywallServer(port int) {
 		}
 
 		s.mu.Lock()
-		s.running = false
+		s.paywallRunning = false
 		s.mu.Unlock()
 	}()
 }
 
 // Stop gracefully stops the paywall server.
 func (s *Service) Stop(ctx context.Context) error {
+	var errs []error
+
+	if s.proxyServer != nil {
+		log.Println("[X402] Stopping facilitator proxy...")
+		if err := s.proxyServer.Shutdown(ctx); err != nil {
+			err = fmt.Errorf("shutdown facilitator proxy: %w", err)
+			errs = append(errs, err)
+		}
+	}
+
 	if s.paywallServer != nil {
 		log.Println("[X402] Stopping paywall server...")
-		return s.paywallServer.Shutdown(ctx)
+		if err := s.paywallServer.Shutdown(ctx); err != nil {
+			err = fmt.Errorf("shutdown paywall server: %w", err)
+			errs = append(errs, err)
+		}
 	}
-	return nil
+
+	return errors.Join(errs...)
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
-func parseChains(csv string) []x402.ChainConfig {
+func ParseChains(csv string) []x402.ChainConfig {
 	parts := strings.Split(csv, ",")
 	var chains []x402.ChainConfig
 

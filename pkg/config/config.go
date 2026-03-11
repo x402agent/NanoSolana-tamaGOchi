@@ -25,6 +25,7 @@ type Config struct {
 	Solana   SolanaConfig   `json:"solana"`
 	OODA     OODAConfig     `json:"ooda"`
 	Supabase SupabaseConfig `json:"supabase"`
+	X402     X402Config     `json:"x402"`
 	Strategy StrategyConfig `json:"strategy"`
 }
 
@@ -190,6 +191,22 @@ type SupabaseConfig struct {
 	ServiceKey string `json:"service_key"`
 }
 
+// ── MawdBot: x402 Payments ──────────────────────────────────────────
+
+type X402Config struct {
+	Enabled                  bool   `json:"enabled"`
+	FacilitatorURL           string `json:"facilitator_url"`
+	FacilitatorAuthorization string `json:"facilitator_authorization"`
+	ProxyEnabled             bool   `json:"proxy_enabled"`
+	ProxyPort                int    `json:"proxy_port"`
+	RecipientAddress         string `json:"recipient_address"`
+	PaymentAmount            string `json:"payment_amount"`
+	Network                  string `json:"network"`
+	Chains                   string `json:"chains"`
+	PaywallEnabled           bool   `json:"paywall_enabled"`
+	PaywallPort              int    `json:"paywall_port"`
+}
+
 // ── MawdBot: Strategy ────────────────────────────────────────────────
 
 type StrategyConfig struct {
@@ -258,6 +275,17 @@ func DefaultConfig() *Config {
 			LearnIntervalMin: 30,
 			AutoOptimize:     true,
 		},
+		X402: X402Config{
+			Enabled:        true,
+			FacilitatorURL: "https://facilitator.x402.rs",
+			ProxyEnabled:   true,
+			ProxyPort:      18403,
+			PaymentAmount:  "0.001",
+			Network:        "solana",
+			Chains:         "solana",
+			PaywallEnabled: false,
+			PaywallPort:    18402,
+		},
 		Strategy: StrategyConfig{
 			RSIOverbought:   70,
 			RSIOversold:     30,
@@ -299,8 +327,10 @@ func Load() (*Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			// Return defaults if no config file
-			return DefaultConfig(), nil
+			// Return defaults if no config file (with env overrides)
+			cfg := DefaultConfig()
+			applyEnvOverrides(cfg)
+			return cfg, nil
 		}
 		return nil, fmt.Errorf("read config: %w", err)
 	}
@@ -446,6 +476,55 @@ func applyEnvOverrides(cfg *Config) {
 	}
 	if v := os.Getenv("OPENROUTER_API_KEY"); v != "" {
 		cfg.Providers.OpenRouter.APIKey = v
+	}
+
+	if v := os.Getenv("X402_ENABLED"); v != "" {
+		cfg.X402.Enabled = parseBoolWithDefault(v, cfg.X402.Enabled)
+	}
+	if v := os.Getenv("X402_FACILITATOR_URL"); v != "" {
+		cfg.X402.FacilitatorURL = v
+	}
+	if v := os.Getenv("X402_FACILITATOR_AUTHORIZATION"); v != "" {
+		cfg.X402.FacilitatorAuthorization = v
+	}
+	if v := os.Getenv("X402_PROXY_ENABLED"); v != "" {
+		cfg.X402.ProxyEnabled = parseBoolWithDefault(v, cfg.X402.ProxyEnabled)
+	}
+	if v := os.Getenv("X402_PROXY_PORT"); v != "" {
+		if port, err := strconv.Atoi(v); err == nil && port > 0 {
+			cfg.X402.ProxyPort = port
+		}
+	}
+	if v := os.Getenv("X402_RECIPIENT_ADDRESS"); v != "" {
+		cfg.X402.RecipientAddress = v
+	}
+	if v := os.Getenv("X402_PAYMENT_AMOUNT"); v != "" {
+		cfg.X402.PaymentAmount = v
+	}
+	if v := os.Getenv("X402_NETWORK"); v != "" {
+		cfg.X402.Network = v
+	}
+	if v := os.Getenv("X402_CHAINS"); v != "" {
+		cfg.X402.Chains = v
+	}
+	if v := os.Getenv("X402_PAYWALL_ENABLED"); v != "" {
+		cfg.X402.PaywallEnabled = parseBoolWithDefault(v, cfg.X402.PaywallEnabled)
+	}
+	if v := os.Getenv("X402_PAYWALL_PORT"); v != "" {
+		if port, err := strconv.Atoi(v); err == nil && port > 0 {
+			cfg.X402.PaywallPort = port
+		}
+	}
+}
+
+func parseBoolWithDefault(in string, def bool) bool {
+	switch strings.ToLower(strings.TrimSpace(in)) {
+	case "1", "true", "yes", "on":
+		return true
+	case "0", "false", "no", "off":
+		return false
+	default:
+		return def
 	}
 }
 

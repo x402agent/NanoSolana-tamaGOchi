@@ -20,8 +20,10 @@ import (
 
 	"github.com/8bitlabs/mawdbot/pkg/agent"
 	"github.com/8bitlabs/mawdbot/pkg/config"
+	"github.com/8bitlabs/mawdbot/pkg/daemon"
 	"github.com/8bitlabs/mawdbot/pkg/hardware"
 	"github.com/8bitlabs/mawdbot/pkg/solana"
+	"github.com/8bitlabs/mawdbot/pkg/tamagochi"
 )
 
 const (
@@ -92,7 +94,9 @@ Features:
 
 	cmd.AddCommand(
 		NewAgentCommand(),
+		NewDaemonCommand(),
 		NewGatewayCommand(),
+		NewPetCommand(),
 		NewOnboardCommand(),
 		NewStatusCommand(),
 		NewOODACommand(),
@@ -1082,6 +1086,54 @@ func sanitizeJSONInput(raw string) string {
 		}
 	}
 	return strings.TrimSpace(s)
+}
+
+// ── Daemon Command ───────────────────────────────────────────────────
+
+func NewDaemonCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "daemon",
+		Short: "Start the nano Solana daemon (OODA + TamaGOchi + Telegram + x402)",
+		Long: `Launch the full MawdBot daemon — a long-running process that:
+  • Generates/loads the agentic Solana wallet
+  • Connects to Helius RPC (or fallback)
+  • Starts the TamaGOchi pet engine (wallet-driven evolution)
+  • Starts the Telegram bot (if configured)
+  • Initializes x402 payment gateway
+  • Runs the heartbeat loop
+  • Waits for SIGINT/SIGTERM to shutdown`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cfg, err := config.Load()
+			if err != nil {
+				return fmt.Errorf("config error: %w", err)
+			}
+
+			d, err := daemon.New(cfg)
+			if err != nil {
+				return fmt.Errorf("daemon init: %w", err)
+			}
+
+			return d.Run()
+		},
+	}
+	return cmd
+}
+
+// ── Pet Command (TamaGOchi) ──────────────────────────────────────────
+
+func NewPetCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pet",
+		Short: "Show TamaGOchi pet status",
+		Long:  "Display the Nano Solana TamaGOchi — your agent's virtual pet whose evolution is driven by on-chain performance.",
+		Run: func(cmd *cobra.Command, args []string) {
+			pet := tamagochi.New("MawdBot")
+			fmt.Println()
+			fmt.Println(pet.StatusString())
+			fmt.Println()
+		},
+	}
+	return cmd
 }
 
 // ── Version Command ──────────────────────────────────────────────────

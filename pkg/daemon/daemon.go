@@ -114,16 +114,32 @@ func (d *Daemon) Run() error {
 	}
 
 	// ── 5. x402 Payment Protocol ─────────────────────────────────
-	x402Cfg := mawdx402.ConfigFromEnv()
-	x402Svc, err := mawdx402.NewService(wallet, x402Cfg)
-	if err != nil {
-		log.Printf("[DAEMON] ⚠️ x402 init failed (non-fatal): %v", err)
+	if d.cfg.X402.Enabled {
+		x402Cfg := mawdx402.Config{
+			FacilitatorURL:           d.cfg.X402.FacilitatorURL,
+			FacilitatorAuthorization: d.cfg.X402.FacilitatorAuthorization,
+			ProxyEnabled:             d.cfg.X402.ProxyEnabled,
+			ProxyPort:                d.cfg.X402.ProxyPort,
+			RecipientAddress:         d.cfg.X402.RecipientAddress,
+			PaymentAmount:            d.cfg.X402.PaymentAmount,
+			Network:                  d.cfg.X402.Network,
+			PaywallEnabled:           d.cfg.X402.PaywallEnabled,
+			PaywallPort:              d.cfg.X402.PaywallPort,
+			Chains:                   mawdx402.ParseChains(d.cfg.X402.Chains),
+		}
+
+		x402Svc, err := mawdx402.NewService(wallet, x402Cfg)
+		if err != nil {
+			log.Printf("[DAEMON] ⚠️ x402 init failed (non-fatal): %v", err)
+		} else {
+			d.x402 = x402Svc
+			log.Printf("[DAEMON] 💰 x402 payment gateway active")
+			log.Printf("[DAEMON]    Facilitator: %s", x402Svc.FacilitatorURL())
+			log.Printf("[DAEMON]    Signer: %s", x402Svc.SignerAddress())
+			log.Printf("[DAEMON]    Chains: %d configured", len(x402Svc.Requirements()))
+		}
 	} else {
-		d.x402 = x402Svc
-		log.Printf("[DAEMON] 💰 x402 payment gateway active")
-		log.Printf("[DAEMON]    Facilitator: %s", x402Svc.FacilitatorURL())
-		log.Printf("[DAEMON]    Signer: %s", x402Svc.SignerAddress())
-		log.Printf("[DAEMON]    Chains: %d configured", len(x402Svc.Requirements()))
+		log.Printf("[DAEMON] 💰 x402 disabled")
 	}
 
 	// ── 6. Start Channels ────────────────────────────────────────
@@ -225,13 +241,13 @@ func (d *Daemon) processCommand(msg bus.InboundMessage) string {
 
 	switch {
 	case content == "/start":
-		return fmt.Sprintf("🦞 **MawdBot Nano Solana Agent**\n\n"+
-			"I'm your autonomous trading lobster!\n\n"+
-			"Commands:\n"+
-			"/status — Agent & TamaGOchi status\n"+
-			"/wallet — Wallet address & balance\n"+
-			"/pet — TamaGOchi status\n"+
-			"/trending — Trending tokens\n"+
+		return fmt.Sprintf("🦞 **MawdBot Nano Solana Agent**\n\n" +
+			"I'm your autonomous trading lobster!\n\n" +
+			"Commands:\n" +
+			"/status — Agent & TamaGOchi status\n" +
+			"/wallet — Wallet address & balance\n" +
+			"/pet — TamaGOchi status\n" +
+			"/trending — Trending tokens\n" +
 			"/help — All commands")
 
 	case content == "/status":
