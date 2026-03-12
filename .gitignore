@@ -15,6 +15,7 @@ vendor/
 .env
 .env.*
 !.env.example
+!**/.env.*.example
 
 # ── OS files ──────────────────────────────────────────────────────────
 .DS_Store
@@ -43,3 +44,4 @@ docker-compose.override.yml
 solana-go-main/
 mawdbot-go/
 picoclaw/
+x402-go-main/

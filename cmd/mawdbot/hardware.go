@@ -81,7 +81,7 @@ func NewHardwareScanCommand() *cobra.Command {
 			}
 
 			fmt.Printf("Found %s%d devices%s:\n\n", colorGreen, len(addrs), colorReset)
-			fmt.Printf("  %-8s %-12s %-14s %-20s %s\n", "Addr", "Modulino", "Sensor", "MawdBot Use", "Status")
+			fmt.Printf("  %-8s %-12s %-14s %-20s %s\n", "Addr", "Modulino", "Sensor", "GoBot Use", "Status")
 			fmt.Printf("  %s\n", "─────────────────────────────────────────────────────────────────")
 
 			recognized := 0
@@ -143,7 +143,7 @@ func NewHardwareTestCommand() *cobra.Command {
 		Use:   "test",
 		Short: "Run hardware self-test (LEDs, buzzer, sensors)",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			fmt.Printf("%s🧪 MawdBot Hardware Self-Test%s\n\n", colorGreen, colorReset)
+			fmt.Printf("%s🧪 NanoSolana Hardware Self-Test%s\n\n", colorGreen, colorReset)
 
 			hub, err := hardware.NewHardwareHub(busNum)
 			if err != nil {
@@ -381,11 +381,11 @@ func NewHardwareDemoCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "demo",
-		Short: "Play MawdBot trading event animations",
+		Short: "Play NanoSolana TamaGOchi trading event animations",
 		Long: `Plays the full set of hardware animations:
   signal → trade open → win → loss → learning → error`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			fmt.Printf("%s🎬 MawdBot Hardware Demo%s\n\n", colorGreen, colorReset)
+			fmt.Printf("%s🎬 NanoSolana TamaGOchi Hardware Demo%s\n\n", colorGreen, colorReset)
 
 			hub, err := hardware.NewHardwareHub(busNum)
 			if err != nil {

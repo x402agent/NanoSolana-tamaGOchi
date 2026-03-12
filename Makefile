@@ -3,6 +3,8 @@
 #
 # Usage:
 #   make build          Build for current platform
+#   make slim           Build extra-slim daemon binary profile
+#   make size-report    Compare standard vs slim binary sizes
 #   make orin           Cross-compile for NVIDIA Orin Nano (linux/arm64)
 #   make tui            Build TUI launcher
 #   make all            Build all targets
@@ -27,17 +29,25 @@ LDFLAGS   := -s -w \
   -X $(PKG_VER).BuildTime=$(BUILDTIME) \
   -X $(PKG_VER).GoVersion=$(GOVERSION)
 
+SLIM_LDFLAGS := -s -w -buildid= \
+  -X $(PKG_VER).Version=$(VERSION) \
+  -X $(PKG_VER).GitCommit=$(COMMIT) \
+  -X $(PKG_VER).BuildTime=$(BUILDTIME) \
+  -X $(PKG_VER).GoVersion=$(GOVERSION)
+
 # Shared build settings
 GO        := go
 GOBUILD   := $(GO) build -trimpath -ldflags "$(LDFLAGS)"
+GOBUILD_SLIM := $(GO) build -trimpath -tags "netgo osusergo" -ldflags "$(SLIM_LDFLAGS)"
 GOTEST    := $(GO) test -v -race
 
 # Output directories
 BUILD_DIR := ./build
 BIN_CLI   := $(BUILD_DIR)/mawdbot
 BIN_TUI   := $(BUILD_DIR)/mawdbot-tui
+BIN_SLIM  := $(BUILD_DIR)/mawdbot-slim
 
-.PHONY: all build orin tui docker clean install test lint deps scan-i2c
+.PHONY: all build slim size-report orin tui docker clean install test lint deps scan-i2c
 
 # ── Default ───────────────────────────────────────────────────────────
 
@@ -51,6 +61,26 @@ build:
 	$(GOBUILD) -o $(BIN_CLI) ./cmd/mawdbot
 	@echo "✓ $(BIN_CLI) built ($(shell file $(BIN_CLI) | cut -d: -f2))"
 	@ls -lh $(BIN_CLI)
+
+slim:
+	@echo "🪶 Building slim MawdBot CLI profile..."
+	@mkdir -p $(BUILD_DIR)
+	CGO_ENABLED=0 $(GOBUILD_SLIM) -o $(BIN_SLIM) ./cmd/mawdbot
+	@echo "✓ $(BIN_SLIM) built"
+	@ls -lh $(BIN_SLIM)
+	@echo "ℹ️ Optional extra compression: upx --best --lzma $(BIN_SLIM)"
+
+size-report: build slim
+	@echo "📏 Binary size report"
+	@ls -lh $(BIN_CLI) $(BIN_SLIM)
+	@echo ""
+	@echo "Raw byte counts:"
+	@wc -c $(BIN_CLI) $(BIN_SLIM)
+	@std=$$(wc -c < $(BIN_CLI)); \
+		slim=$$(wc -c < $(BIN_SLIM)); \
+		delta=$$((std-slim)); \
+		pct=$$(awk "BEGIN { if ($$std == 0) print 0; else printf \"%.2f\", ($$delta*100)/$$std }"); \
+		echo "Reduction: $$delta bytes ($$pct%)"
 
 tui:
 	@echo "🦞 Building MawdBot TUI Launcher..."
@@ -178,6 +208,8 @@ help:
 	@echo "MawdBot Go — Makefile targets:"
 	@echo ""
 	@echo "  build       Build for current platform"
+	@echo "  slim        Build slim profile (CGO off, netgo/osusergo tags)"
+	@echo "  size-report Build standard + slim and print size deltas"
 	@echo "  tui         Build TUI launcher"
 	@echo "  all         Build CLI + TUI"
 	@echo "  orin        Cross-compile for NVIDIA Orin Nano (linux/arm64)"

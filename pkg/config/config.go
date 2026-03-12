@@ -25,7 +25,12 @@ type Config struct {
 	Solana   SolanaConfig   `json:"solana"`
 	OODA     OODAConfig     `json:"ooda"`
 	Supabase SupabaseConfig `json:"supabase"`
+	X402     X402Config     `json:"x402"`
 	Strategy StrategyConfig `json:"strategy"`
+
+	// Node + Gateway
+	Node         NodeClientConfig   `json:"node"`
+	GatewaySpawn GatewaySpawnConfig `json:"gateway_spawn"`
 }
 
 // ── Agent Defaults ───────────────────────────────────────────────────
@@ -146,6 +151,30 @@ type GatewayConfig struct {
 	Port int    `json:"port"`
 }
 
+// ── Node Client ─────────────────────────────────────────────────────
+
+type NodeClientConfig struct {
+	Enabled      bool   `json:"enabled"`
+	BridgeAddr   string `json:"bridge_addr"`
+	DisplayName  string `json:"display_name"`
+	DeviceFamily string `json:"device_family"`
+	ModelID      string `json:"model_id"`
+	SessionKey   string `json:"session_key"`
+	TTSEngine    string `json:"tts_engine"`
+	MDNSEnabled  bool   `json:"mdns_enabled"`
+	MDNSService  string `json:"mdns_service"`
+}
+
+// ── Gateway Spawn ───────────────────────────────────────────────────
+
+type GatewaySpawnConfig struct {
+	AutoSpawn    bool   `json:"auto_spawn"`
+	Port         int    `json:"port"`
+	TMUXSession  string `json:"tmux_session"`
+	UseTailscale bool   `json:"use_tailscale"`
+	Force        bool   `json:"force"`
+}
+
 // ── MawdBot: Solana Stack ────────────────────────────────────────────
 
 type SolanaConfig struct {
@@ -190,6 +219,22 @@ type SupabaseConfig struct {
 	ServiceKey string `json:"service_key"`
 }
 
+// ── MawdBot: x402 Payments ──────────────────────────────────────────
+
+type X402Config struct {
+	Enabled                  bool   `json:"enabled"`
+	FacilitatorURL           string `json:"facilitator_url"`
+	FacilitatorAuthorization string `json:"facilitator_authorization"`
+	ProxyEnabled             bool   `json:"proxy_enabled"`
+	ProxyPort                int    `json:"proxy_port"`
+	RecipientAddress         string `json:"recipient_address"`
+	PaymentAmount            string `json:"payment_amount"`
+	Network                  string `json:"network"`
+	Chains                   string `json:"chains"`
+	PaywallEnabled           bool   `json:"paywall_enabled"`
+	PaywallPort              int    `json:"paywall_port"`
+}
+
 // ── MawdBot: Strategy ────────────────────────────────────────────────
 
 type StrategyConfig struct {
@@ -209,7 +254,7 @@ func DefaultConfig() *Config {
 	return &Config{
 		Agents: AgentsConfig{
 			Defaults: AgentDefaults{
-				Workspace:           "~/.mawdbot/workspace",
+				Workspace:           "~/.nanosolana/workspace",
 				RestrictToWorkspace: true,
 				ModelName:           "gpt4",
 				MaxTokens:           8192,
@@ -237,6 +282,21 @@ func DefaultConfig() *Config {
 		},
 		Heartbeat: HeartbeatConfig{Enabled: true, Interval: 30},
 		Gateway:   GatewayConfig{Host: "127.0.0.1", Port: 18790},
+		Node: NodeClientConfig{
+			Enabled:     false,
+			BridgeAddr:  "127.0.0.1:18790",
+			SessionKey:  "main",
+			TTSEngine:   "none",
+			MDNSEnabled: true,
+			MDNSService: "_nanoclaw-node._tcp",
+		},
+		GatewaySpawn: GatewaySpawnConfig{
+			AutoSpawn:    false,
+			Port:         18790,
+			TMUXSession:  "nano-gw",
+			UseTailscale: true,
+			Force:        false,
+		},
 		Solana: SolanaConfig{
 			HeliusNetwork:        "mainnet",
 			HeliusTimeoutSeconds: 20,
@@ -258,6 +318,17 @@ func DefaultConfig() *Config {
 			LearnIntervalMin: 30,
 			AutoOptimize:     true,
 		},
+		X402: X402Config{
+			Enabled:        true,
+			FacilitatorURL: "https://facilitator.x402.rs",
+			ProxyEnabled:   true,
+			ProxyPort:      18403,
+			PaymentAmount:  "0.001",
+			Network:        "solana",
+			Chains:         "solana",
+			PaywallEnabled: false,
+			PaywallPort:    18402,
+		},
 		Strategy: StrategyConfig{
 			RSIOverbought:   70,
 			RSIOversold:     30,
@@ -274,14 +345,20 @@ func DefaultConfig() *Config {
 // ── Path Helpers ─────────────────────────────────────────────────────
 
 func DefaultHome() string {
+	if h := os.Getenv("NANOSOLANA_HOME"); h != "" {
+		return h
+	}
 	if h := os.Getenv("MAWDBOT_HOME"); h != "" {
 		return h
 	}
 	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".mawdbot")
+	return filepath.Join(home, ".nanosolana")
 }
 
 func DefaultConfigPath() string {
+	if p := os.Getenv("NANOSOLANA_CONFIG"); p != "" {
+		return p
+	}
 	if p := os.Getenv("MAWDBOT_CONFIG"); p != "" {
 		return p
 	}
@@ -299,8 +376,10 @@ func Load() (*Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			// Return defaults if no config file
-			return DefaultConfig(), nil
+			// Return defaults if no config file (with env overrides)
+			cfg := DefaultConfig()
+			applyEnvOverrides(cfg)
+			return cfg, nil
 		}
 		return nil, fmt.Errorf("read config: %w", err)
 	}
@@ -418,6 +497,15 @@ func applyEnvOverrides(cfg *Config) {
 	if v := os.Getenv("ASTER_API_KEY"); v != "" {
 		cfg.Solana.AsterAPIKey = v
 	}
+	if v := os.Getenv("ASTER_API_SECRET"); v != "" {
+		cfg.Solana.AsterAPISecret = v
+	}
+	if v := os.Getenv("SOLANA_WALLET_PUBKEY"); v != "" {
+		cfg.Solana.WalletPubkey = v
+	}
+	if v := os.Getenv("ANTHROPIC_API_KEY"); v != "" {
+		cfg.Providers.Anthropic.APIKey = v
+	}
 	if v := os.Getenv("TELEGRAM_BOT_TOKEN"); v != "" {
 		cfg.Channels.Telegram.Token = v
 	}
@@ -446,6 +534,99 @@ func applyEnvOverrides(cfg *Config) {
 	}
 	if v := os.Getenv("OPENROUTER_API_KEY"); v != "" {
 		cfg.Providers.OpenRouter.APIKey = v
+	}
+	if v := strings.TrimSpace(os.Getenv("OPENROUTER_MODEL")); v != "" {
+		cfg.Agents.Defaults.ModelName = v
+		if len(cfg.ModelList) > 0 {
+			cfg.ModelList[0].Model = v
+			if cfg.ModelList[0].ModelName == "" {
+				cfg.ModelList[0].ModelName = v
+			}
+		} else {
+			cfg.ModelList = []ModelEntry{{
+				ModelName: v,
+				Model:     v,
+			}}
+		}
+	}
+
+	if v := os.Getenv("X402_ENABLED"); v != "" {
+		cfg.X402.Enabled = parseBoolWithDefault(v, cfg.X402.Enabled)
+	}
+	if v := os.Getenv("X402_FACILITATOR_URL"); v != "" {
+		cfg.X402.FacilitatorURL = v
+	}
+	if v := os.Getenv("X402_FACILITATOR_AUTHORIZATION"); v != "" {
+		cfg.X402.FacilitatorAuthorization = v
+	}
+	if v := os.Getenv("X402_PROXY_ENABLED"); v != "" {
+		cfg.X402.ProxyEnabled = parseBoolWithDefault(v, cfg.X402.ProxyEnabled)
+	}
+	if v := os.Getenv("X402_PROXY_PORT"); v != "" {
+		if port, err := strconv.Atoi(v); err == nil && port > 0 {
+			cfg.X402.ProxyPort = port
+		}
+	}
+	if v := os.Getenv("X402_RECIPIENT_ADDRESS"); v != "" {
+		cfg.X402.RecipientAddress = v
+	}
+	if v := os.Getenv("X402_PAYMENT_AMOUNT"); v != "" {
+		cfg.X402.PaymentAmount = v
+	}
+	if v := os.Getenv("X402_NETWORK"); v != "" {
+		cfg.X402.Network = v
+	}
+	if v := os.Getenv("X402_CHAINS"); v != "" {
+		cfg.X402.Chains = v
+	}
+	if v := os.Getenv("X402_PAYWALL_ENABLED"); v != "" {
+		cfg.X402.PaywallEnabled = parseBoolWithDefault(v, cfg.X402.PaywallEnabled)
+	}
+	if v := os.Getenv("X402_PAYWALL_PORT"); v != "" {
+		if port, err := strconv.Atoi(v); err == nil && port > 0 {
+			cfg.X402.PaywallPort = port
+		}
+	}
+
+	// ── Node overrides ──────────────────────────────────────────────
+	if v := os.Getenv("NODE_BRIDGE_ADDR"); v != "" {
+		cfg.Node.BridgeAddr = v
+	}
+	if v := os.Getenv("NODE_DISPLAY_NAME"); v != "" {
+		cfg.Node.DisplayName = v
+	}
+	if v := os.Getenv("NODE_DEVICE_FAMILY"); v != "" {
+		cfg.Node.DeviceFamily = v
+	}
+	if v := os.Getenv("NODE_SESSION_KEY"); v != "" {
+		cfg.Node.SessionKey = v
+	}
+	if v := os.Getenv("NODE_TTS_ENGINE"); v != "" {
+		cfg.Node.TTSEngine = v
+	}
+
+	// ── Gateway spawn overrides ────────────────────────────────────
+	if v := os.Getenv("GATEWAY_AUTO_SPAWN"); v != "" {
+		cfg.GatewaySpawn.AutoSpawn = parseBoolWithDefault(v, cfg.GatewaySpawn.AutoSpawn)
+	}
+	if v := os.Getenv("GATEWAY_SPAWN_PORT"); v != "" {
+		if port, err := strconv.Atoi(v); err == nil && port > 0 {
+			cfg.GatewaySpawn.Port = port
+		}
+	}
+	if v := os.Getenv("GATEWAY_USE_TAILSCALE"); v != "" {
+		cfg.GatewaySpawn.UseTailscale = parseBoolWithDefault(v, cfg.GatewaySpawn.UseTailscale)
+	}
+}
+
+func parseBoolWithDefault(in string, def bool) bool {
+	switch strings.ToLower(strings.TrimSpace(in)) {
+	case "1", "true", "yes", "on":
+		return true
+	case "0", "false", "no", "off":
+		return false
+	default:
+		return def
 	}
 }
 

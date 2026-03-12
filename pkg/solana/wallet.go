@@ -1,10 +1,10 @@
-// Package solana — MawdBot wallet management.
+// Package solana — NanoSolana wallet management.
 // Wraps gagliardetto/solana-go keypair and wallet primitives
 // for signing transactions, managing keys, and deriving PDAs.
 //
 // On first heartbeat, EnsureAgentWallet auto-generates a Solana keypair
 // and persists it in standard Solana keygen JSON format at
-// ~/.mawdbot/wallet/agent-wallet.json.
+// ~/.nanosolana/wallet/agent-wallet.json.
 package solana
 
 import (
@@ -23,7 +23,7 @@ var (
 	agentWallet     *Wallet
 )
 
-// ── MawdBot Wallet wrapper ──────────────────────────────────────────
+// ── NanoSolana Wallet wrapper ─────────────────────────────────────────
 // Adapts gagliardetto/solana-go wallet types for the trading agent.
 
 // Wallet holds the private key and provides signing operations.
@@ -131,6 +131,24 @@ func (w *Wallet) IsReadOnly() bool {
 	return w == nil || w.inner == nil
 }
 
+// PrivateKeyBase58 returns the private key as a base58-encoded string.
+// Returns empty string if no private key is loaded (read-only wallet).
+func (w *Wallet) PrivateKeyBase58() string {
+	if w == nil || w.inner == nil {
+		return ""
+	}
+	return w.inner.PrivateKey.String()
+}
+
+// GetPrivateKey returns the raw solana-go PrivateKey for signing.
+// Returns a zero-value key if the wallet is read-only.
+func (w *Wallet) GetPrivateKey() solanago.PrivateKey {
+	if w == nil || w.inner == nil {
+		return solanago.PrivateKey{}
+	}
+	return w.inner.PrivateKey
+}
+
 // ── Public-Key Helpers ──────────────────────────────────────────────
 // Re-exports from solana-go for convenience, so callers don't need
 // to import solana-go directly.
@@ -194,7 +212,7 @@ func EnsureAgentWallet(walletKeyPath string) (*Wallet, error) {
 
 		// 2. Check if we already generated one previously
 		home, _ := os.UserHomeDir()
-		agentPath := filepath.Join(home, ".mawdbot", defaultWalletDir, defaultWalletFile)
+		agentPath := filepath.Join(home, ".nanosolana", defaultWalletDir, defaultWalletFile)
 		if _, err := os.Stat(agentPath); err == nil {
 			w, err = WalletFromKeygenFile(agentPath)
 			if err != nil {

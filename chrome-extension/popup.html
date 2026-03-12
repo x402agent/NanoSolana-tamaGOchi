@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=420,initial-scale=1">
+<title>NanoBot</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="ext-container">
+    <!-- Header -->
+    <div class="ext-header">
+      <div class="header-left">
+        <div class="status-dot" id="statusDot"></div>
+        <span class="brand">NanoBot</span>
+      </div>
+      <div class="header-right">
+        <span class="status-text" id="statusText">connecting...</span>
+        <button class="header-btn" id="settingsBtn" title="Settings">⚙️</button>
+        <button class="header-btn" id="popoutBtn" title="Open Full UI">↗</button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" data-tab="wallet" id="tabWallet">💰 Wallet</div>
+      <div class="tab" data-tab="chat" id="tabChat">💬 Chat</div>
+      <div class="tab" data-tab="tools" id="tabTools">🔧 Tools</div>
+    </div>
+
+    <!-- Wallet Tab -->
+    <div class="tab-content active" id="tab-wallet">
+      <div class="wallet-section">
+        <div class="wallet-card">
+          <div class="wallet-row">
+            <div>
+              <div class="wallet-balance-label">SOL BALANCE</div>
+              <div class="wallet-balance" id="walletBalance">—</div>
+              <div class="wallet-usd" id="walletUSD"></div>
+            </div>
+            <div class="wallet-network" id="walletNetwork">—</div>
+          </div>
+          <div class="wallet-stats" id="walletStats" style="display:none">
+            <div class="wallet-stat">
+              <div class="wallet-stat-value" id="statSolPrice">—</div>
+              <div class="wallet-stat-label">SOL/USD</div>
+            </div>
+            <div class="wallet-stat">
+              <div class="wallet-stat-value" id="statTotalValue">—</div>
+              <div class="wallet-stat-label">Total USD</div>
+            </div>
+            <div class="wallet-stat">
+              <div class="wallet-stat-value" id="statAssets">—</div>
+              <div class="wallet-stat-label">Assets</div>
+            </div>
+          </div>
+          <div class="wallet-addr" id="walletAddr">
+            <span id="walletAddrText">Loading...</span>
+            <span class="copy-icon">📋</span>
+          </div>
+          <div class="wallet-actions">
+            <button class="wallet-action-btn primary" id="sendToggle">↗ Send SOL</button>
+            <button class="wallet-action-btn" id="refreshBtn">🔄 Refresh</button>
+            <button class="wallet-action-btn" id="explorerBtn">🔍 Explorer</button>
+          </div>
+          <div class="send-form" id="sendForm">
+            <input type="text" id="sendTo" placeholder="Destination address (base58)">
+            <input type="text" id="sendAmount" placeholder="Amount (SOL)">
+            <button id="sendBtn">Send SOL</button>
+          </div>
+        </div>
+
+        <div class="section-label">
+          <span>🪙 Token Portfolio</span>
+          <button class="refresh-btn" id="tokenRefresh">↻</button>
+        </div>
+        <div id="tokenList">
+          <div class="empty-state">Loading tokens...</div>
+        </div>
+
+        <div class="section-label">
+          <span>📜 Recent Transactions</span>
+          <button class="refresh-btn" id="historyRefresh">↻</button>
+        </div>
+        <div id="txHistory">
+          <div class="empty-state">Loading history...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Tab -->
+    <div class="tab-content" id="tab-chat">
+      <div class="chat-section">
+        <div class="chat-messages" id="chatMessages">
+          <div class="msg bot">
+            <div class="sender">NanoBot</div>
+            Hey! 🤖 I'm NanoBot, your Solana trading companion. Ask me anything!
+          </div>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="chat-input-wrap">
+          <input class="chat-input" id="chatInput" placeholder="Talk to NanoBot..." autocomplete="off">
+          <button class="send-btn" id="chatSendBtn">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tools Tab -->
+    <div class="tab-content" id="tab-tools">
+      <div class="tools-section">
+        <button class="tool-btn" data-cmd="solana trending">
+          <span class="tool-icon">📈</span>
+          <div><div class="tool-label">Trending Tokens</div><div class="tool-desc">Top movers on Solana</div></div>
+        </button>
+        <button class="tool-btn" data-cmd="status">
+          <span class="tool-icon">📊</span>
+          <div><div class="tool-label">System Status</div><div class="tool-desc">Daemon, wallet, workspace</div></div>
+        </button>
+        <button class="tool-btn" data-cmd="solana register">
+          <span class="tool-icon">🆔</span>
+          <div><div class="tool-label">Register On-Chain</div><div class="tool-desc">Mint agent identity NFT</div></div>
+        </button>
+        <button class="tool-btn" data-cmd="pet">
+          <span class="tool-icon">🐹</span>
+          <div><div class="tool-label">TamaGOchi Pet</div><div class="tool-desc">Check your virtual pet</div></div>
+        </button>
+        <div class="tool-output" id="toolOutput"></div>
+      </div>
+    </div>
+
+    <!-- Settings Panel (hidden by default) -->
+    <div class="settings-panel" id="settingsPanel">
+      <div class="settings-header">
+        <span>⚙️ Settings</span>
+        <button class="header-btn" id="settingsClose">✕</button>
+      </div>
+      <div class="settings-body">
+        <label class="setting-label">NanoBot Server URL</label>
+        <input type="text" class="setting-input" id="settingUrl" placeholder="http://127.0.0.1:7777">
+        <label class="setting-label">Network</label>
+        <select class="setting-input" id="settingNetwork">
+          <option value="mainnet">Mainnet</option>
+          <option value="devnet">Devnet</option>
+        </select>
+        <button class="save-btn" id="saveSettings">Save Settings</button>
+        <div class="setting-note">NanoBot server must be running locally. Start with: <code>nanosolana nanobot</code></div>
+      </div>
+    </div>
+
+    <!-- Offline Overlay -->
+    <div class="offline-overlay" id="offlineOverlay">
+      <div class="offline-content">
+        <div class="offline-icon">🤖</div>
+        <div class="offline-title">NanoBot Offline</div>
+        <div class="offline-desc">Start the NanoBot server to connect:</div>
+        <code class="offline-cmd">nanosolana nanobot</code>
+        <button class="retry-btn" id="retryBtn">🔄 Retry Connection</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

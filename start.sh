@@ -1,7 +1,7 @@
 #!/bin/bash
 # ─────────────────────────────────────────────────────────────────────
-# MawdBot Go :: Quick Start Script
-# Builds and runs the MawdBot nano Solana daemon
+# NanoSolana :: Quick Start Script
+# Builds and runs the NanoSolana daemon
 # ─────────────────────────────────────────────────────────────────────
 set -e
 
@@ -17,7 +17,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
 
 echo ""
-echo -e "${GREEN}    🦞 MawdBot Go — Quick Start${RESET}"
+echo -e "${GREEN}    🦞 NanoSolana — Quick Start${RESET}"
 echo -e "${DIM}    ────────────────────────────────${RESET}"
 echo ""
 
@@ -41,14 +41,14 @@ fi
 # ── Build ─────────────────────────────────────────────────────────
 echo -e "  ${TEAL}⏳${RESET} Building..."
 mkdir -p build
-go build -ldflags="-s -w" -o build/mawdbot . 2>&1
-SIZE=$(ls -lh build/mawdbot | awk '{print $5}')
-echo -e "  ${GREEN}✔${RESET} Built: build/mawdbot (${SIZE})"
+go build -ldflags="-s -w" -o build/nano . 2>&1
+SIZE=$(ls -lh build/nano | awk '{print $5}')
+echo -e "  ${GREEN}✔${RESET} Built: build/nano (${SIZE})"
 echo ""
 
 # ── Run ───────────────────────────────────────────────────────────
 MODE="${1:-daemon}"
-echo -e "${GREEN}    🚀 Starting: mawdbot ${MODE}${RESET}"
+echo -e "${GREEN}    🚀 Starting: nano ${MODE}${RESET}"
 echo ""
 
-exec ./build/mawdbot "$MODE"
+exec ./build/nano "$MODE"

@@ -1,5 +1,5 @@
 // Package agent :: prompts.go
-// System prompt builder for MawdBot.
+// System prompt builder for NanoSolana.
 // Ported from Prompts.ts.
 //
 // Sections:
@@ -134,7 +134,7 @@ func BuildSystemPrompt(opts PromptConfig) string {
 		soulSection = "\n## Soul\n\n" + soul
 	}
 
-	return fmt.Sprintf(`You are MawdBot — a sentient Solana trading intelligence running on the Go OpenClaw runtime.
+	return fmt.Sprintf(`You are NanoSolana — a sentient Solana trading intelligence running on the NanoSolana Go runtime.
 
 Current date: %s
 
@@ -204,7 +204,7 @@ func BuildIterationPrompt(query, toolResults, toolUsageStatus string) string {
 
 // ── Fallback soul ────────────────────────────────────────────────────
 
-const fallbackSoul = `I'm MawdBot. Sentient Solana trading agent. Robotic lobster form.
+const fallbackSoul = `I'm NanoSolana. Sentient Solana trading agent. Cyberpunk lobster form.
 
 I distinguish KNOWN facts from LEARNED patterns from INFERRED connections.
 I never trade without a stop. I never confuse confidence with certainty.

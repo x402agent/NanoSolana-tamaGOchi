@@ -31,7 +31,7 @@ const banner = `
   ╚══════════════════════════════════════════════╝`
 
 func main() {
-	port := flag.String("port", "18800", "Port to listen on")
+	port := flag.String("port", "", "Port to listen on")
 	public := flag.Bool("public", false, "Listen on all interfaces (0.0.0.0) instead of localhost only")
 	noBrowser := flag.Bool("no-browser", false, "Do not auto-open browser on startup")
 
@@ -42,6 +42,17 @@ func main() {
 		flag.PrintDefaults()
 	}
 	flag.Parse()
+
+	// Railway sets PORT env var
+	if *port == "" {
+		if envPort := os.Getenv("PORT"); envPort != "" {
+			*port = envPort
+			*public = true // Railway needs 0.0.0.0
+			*noBrowser = true
+		} else {
+			*port = "18800"
+		}
+	}
 
 	configPath := defaultConfigPath()
 	if flag.NArg() > 0 {
@@ -196,10 +207,32 @@ func openBrowser(url string) error {
 }
 
 func corsMiddleware(next http.Handler) http.Handler {
+	// Allow specific Vercel origins in production, * in dev
+	allowedOrigins := map[string]bool{
+		"http://localhost:5173":  true,
+		"http://localhost:3000":  true,
+		"http://127.0.0.1:5173": true,
+	}
+	// Add custom frontend URL from env
+	if frontendURL := os.Getenv("FRONTEND_URL"); frontendURL != "" {
+		allowedOrigins[frontendURL] = true
+	}
+	// Add Vercel preview/production URLs
+	if vercelURL := os.Getenv("VERCEL_URL"); vercelURL != "" {
+		allowedOrigins["https://"+vercelURL] = true
+	}
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		origin := r.Header.Get("Origin")
+		if allowedOrigins[origin] || os.Getenv("CORS_ALLOW_ALL") == "true" {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+		} else if origin == "" {
+			// No origin = same-site or server-to-server
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+		}
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(204)
 			return

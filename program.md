@@ -1,4 +1,4 @@
-# MawdBot Research Program v1.0
+# NanoSolana Research Program v1.0
 
 ## Mission
 Autonomously discover the optimal Solana trading strategy through systematic experimentation.
