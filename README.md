@@ -87,8 +87,12 @@ nanosolana run       # Start the OODA trading loop
 ### Fun stuff:
 
 ```bash
-nanosolana dvd       # Floating DVD screensaver in your terminal
-nanosolana lobster   # Animated Unicode lobster mascot
+nanosolana scan        # Instant blockchain data scan (SOL, tokens, NFTs, tx history)
+nanosolana dvd         # Floating DVD screensaver in your terminal
+nanosolana lobster     # Animated Unicode lobster mascot
+nanosolana nanobot     # Launch interactive web UI companion
+nanosolana register    # Mint on-chain identity NFT (devnet)
+nanosolana registry    # View your on-chain agent identity
 ```
 
 ---
@@ -136,6 +140,9 @@ nano-core/src/
 ├── memory/      → ClawVault 3-tier epistemological memory engine
 ├── network/     → Tailscale + tmux mesh networking
 ├── nft/         → Metaplex gasless devnet birth certificate NFT
+├── onchain/     → Helius blockchain reader (DAS, Enhanced Tx, wallet scan)
+├── registry/    → On-chain agent identity (Metaplex NFT registration)
+├── nanobot/     → Interactive local web UI companion
 ├── pet/         → TamaGOchi virtual pet engine (mood × risk)
 ├── strategy/    → RSI + EMA + ATR auto-optimizer
 ├── telegram/    → Persistent conversation store (200 msg/chat)
@@ -261,10 +268,14 @@ Connect your agent to any communication surface:
 
 | Command | Description |
 |---------|-------------|
-| `nanosolana go` | **One-shot: init + birth + wallet + trade** |
+| `nanosolana go` | **One-shot: init + birth + scan + register + trade** |
 | `nanosolana init` | Configure + encrypt API keys |
-| `nanosolana birth` | Create wallet + mint Birth Certificate NFT |
+| `nanosolana birth` | Create wallet + mint Birth Certificate NFT + blockchain scan |
 | `nanosolana run` | Start OODA trading loop |
+| `nanosolana scan [address]` | **Blockchain data scan — SOL, tokens, NFTs, tx history** |
+| `nanosolana register` | **Mint on-chain agent identity NFT (devnet)** |
+| `nanosolana registry` | **Show on-chain agent identity** |
+| `nanosolana nanobot` | **Launch interactive NanoBot web UI** |
 | `nanosolana dvd` | Floating DVD screensaver 🦞 |
 | `nanosolana lobster` | Animated Unicode lobster mascot |
 | `nanosolana status` | Agent + wallet + pet status |

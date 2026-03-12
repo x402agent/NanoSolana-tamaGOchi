@@ -26,6 +26,9 @@ import { TamaGOchi, STAGE_EMOJI, MOOD_EMOJI } from "../pet/tamagochi.js";
 import { TailscaleDiscovery, TmuxManager, NanoNetworkClient } from "../network/mesh.js";
 import { getNanoKnowledgeSnapshot, getNanoKnowledgeSummary, searchNanoKnowledge } from "../docs/integration.js";
 import { playStartupAnimation, lobsterWalk, animateLobster, printLobster, startDvdScreensaver, createSpinner, runWithSpinner } from "./animations.js";
+import { HeliusClient, printWalletSnapshot } from "../onchain/helius-client.js";
+import { AgentRegistry, registerOnHeartbeat } from "../registry/agent-registry.js";
+import { NanoBotServer } from "../nanobot/server.js";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
@@ -176,7 +179,20 @@ program
       console.log(chalk.white("  SOL Balance:   ") + chalk.yellow(`${info.balance} SOL`));
       console.log(chalk.white("  Birth Time:    ") + chalk.gray(new Date(info.birthTimestamp).toISOString()));
       console.log(chalk.white("  TamaGOchi:     ") + chalk.cyan(`${STAGE_EMOJI[pet.getState().stage]} ${petName} ${MOOD_EMOJI[pet.getState().mood]}`));
-      console.log();
+
+      // Blockchain scan at birth (if Helius configured)
+      const birthConfig = loadConfig();
+      if (birthConfig.helius?.rpcUrl && birthConfig.helius?.apiKey) {
+        try {
+          console.log(chalk.cyan("\n  ⛓️  Scanning blockchain..."));
+          const helius = new HeliusClient({ rpcUrl: birthConfig.helius.rpcUrl, apiKey: birthConfig.helius.apiKey, wssUrl: birthConfig.helius.wssUrl });
+          const snap = await helius.snapshotWallet(info.publicKey);
+          printWalletSnapshot(snap, chalk);
+        } catch (err) {
+          console.log(chalk.gray(`  ⚠️  Blockchain scan skipped: ${(err as Error).message}`));
+        }
+      }
+
       console.log(chalk.gray("  Wallet saved to ~/.nanosolana/vault.enc (encrypted)"));
       console.log(chalk.gray("  Pet state saved to ~/.nanosolana/tamagochi.json\n"));
       console.log(chalk.white("  Run ") + chalk.cyan("nanosolana run") + chalk.white(" to start the agent.\n"));
@@ -795,6 +811,28 @@ program
         });
       });
 
+      // Phase 5.5: Blockchain Scan (if Helius configured)
+      if (config.helius?.rpcUrl && config.helius?.apiKey) {
+        try {
+          const helius = new HeliusClient({ rpcUrl: config.helius.rpcUrl, apiKey: config.helius.apiKey, wssUrl: config.helius.wssUrl });
+          const snap = await helius.snapshotWallet(walletInfo.publicKey);
+          printWalletSnapshot(snap, chalk);
+        } catch (err) {
+          console.log(chalk.gray(`  ⚠️  Blockchain scan skipped: ${(err as Error).message}`));
+        }
+      }
+
+      // Phase 5.6: Auto-register on-chain (devnet NFT)
+      try {
+        const skills = ["ooda-trading", "solana-rpc", "jupiter-swaps", "helius-das"];
+        const regResult = await registerOnHeartbeat(wallet.getKeypair(), "0.1.0", skills, (msg) => console.log(msg));
+        if (regResult) {
+          console.log(chalk.green(`  ✓ On-chain identity: ${regResult.mintAddress.slice(0, 8)}...`));
+        }
+      } catch (err) {
+        console.log(chalk.gray(`  ⚠️  Auto-registration skipped: ${(err as Error).message}`));
+      }
+
       // Phase 6: Gateway
       const { MemoryEngine } = await import("../memory/engine.js");
       const legacyMemory = new MemoryEngine(config.memory.temporalDecayHours);
@@ -892,6 +930,147 @@ program
     } else {
       await animateLobster(5000);
     }
+  });
+
+// ── nanosolana scan (blockchain data reader) ────────────────────
+
+program
+  .command("scan")
+  .description("Scan the Solana blockchain — show wallet, tokens, NFTs, and recent transactions")
+  .argument("[address]", "Wallet address to scan (default: agent wallet)")
+  .action(async (address?: string) => {
+    try {
+      const config = loadConfig();
+      if (!config.helius?.rpcUrl || !config.helius?.apiKey) {
+        console.log(chalk.red("\n  ❌ Helius RPC URL and API key required."));
+        console.log(chalk.gray("  Run: nanosolana init\n"));
+        process.exit(1);
+      }
+
+      const pubkey = address ?? (() => {
+        try {
+          const wallet = new NanoWallet("NanoSolana");
+          // Try loading existing wallet pubkey from file
+          const pubPath = join(homedir(), ".nanosolana", "wallet.pub");
+          if (existsSync(pubPath)) return readFileSync(pubPath, "utf-8").trim();
+          return "";
+        } catch { return ""; }
+      })();
+
+      if (!pubkey) {
+        console.log(chalk.red("\n  ❌ No wallet found. Run: nanosolana birth\n"));
+        process.exit(1);
+      }
+
+      console.log(chalk.cyan(`\n  🔍 Scanning ${pubkey.slice(0, 8)}...${pubkey.slice(-8)}\n`));
+
+      const helius = new HeliusClient({
+        rpcUrl: config.helius.rpcUrl,
+        apiKey: config.helius.apiKey,
+        wssUrl: config.helius.wssUrl,
+      });
+
+      const snap = await helius.snapshotWallet(pubkey);
+      printWalletSnapshot(snap, chalk);
+    } catch (err) {
+      console.error(chalk.red(`  ❌ Scan failed: ${(err as Error).message}\n`));
+    }
+  });
+
+// ── nanosolana register (on-chain NFT identity) ─────────────────
+
+program
+  .command("register")
+  .description("Register this agent on-chain with a devnet Metaplex NFT")
+  .action(async () => {
+    try {
+      const config = loadConfig();
+      const wallet = new NanoWallet("NanoSolana");
+      await wallet.birth();
+
+      const registry = new AgentRegistry();
+
+      // Check if already registered
+      if (registry.isRegistered()) {
+        const reg = registry.loadRegistration();
+        if (reg) {
+          console.log(chalk.green("\n  ✅ Already registered on-chain!\n"));
+          console.log(chalk.white("  Agent:   ") + chalk.cyan(reg.result.agentPubkey));
+          console.log(chalk.white("  Mint:    ") + chalk.cyan(reg.result.mintAddress));
+          console.log(chalk.white("  Tx:      ") + chalk.gray(reg.result.txSignature.slice(0, 20) + "..."));
+          console.log(chalk.white("  Network: ") + chalk.gray(reg.result.network));
+          console.log(chalk.white("  Saved:   ") + chalk.gray(reg.savedAt));
+          console.log();
+          console.log(chalk.gray(`  Explorer: https://explorer.solana.com/address/${reg.result.mintAddress}?cluster=devnet\n`));
+          return;
+        }
+      }
+
+      console.log(chalk.cyan("\n  ⛓️  Registering agent on-chain (devnet)...\n"));
+      const skills = ["ooda-trading", "solana-rpc", "jupiter-swaps", "helius-das", "clawvault-memory"];
+      const result = await registry.registerAgent(
+        wallet.getKeypair(),
+        "0.1.0",
+        skills,
+        (msg) => console.log(msg),
+      );
+
+      console.log(chalk.green("\n  ✅ Agent registered on-chain!\n"));
+      console.log(chalk.white("  Mint:         ") + chalk.cyan(result.mintAddress));
+      console.log(chalk.white("  Tx:           ") + chalk.gray(result.txSignature.slice(0, 20) + "..."));
+      console.log(chalk.white("  Token Acct:   ") + chalk.gray(result.tokenAccount));
+      console.log(chalk.white("  Network:      ") + chalk.gray(result.network));
+      console.log(chalk.white("  Saved:        ") + chalk.gray("~/.nanosolana/registry/registration.json"));
+      console.log();
+      console.log(chalk.hex("#FFAA00")(`  Explorer: https://explorer.solana.com/tx/${result.txSignature}?cluster=devnet\n`));
+    } catch (err) {
+      console.error(chalk.red(`  ❌ Registration failed: ${(err as Error).message}\n`));
+    }
+  });
+
+// ── nanosolana registry (show registration status) ──────────────
+
+program
+  .command("registry")
+  .description("Show on-chain agent registration status")
+  .action(() => {
+    const registry = new AgentRegistry();
+    const reg = registry.loadRegistration();
+
+    if (!reg) {
+      console.log(chalk.hex("#FFAA00")("\n  ⚠️  No registration found. Run: nanosolana register\n"));
+      return;
+    }
+
+    console.log(chalk.hex("#14F195")("\n  ⛓️  Agent On-Chain Identity\n"));
+    console.log(chalk.white("  Agent:      ") + chalk.cyan(reg.result.agentPubkey));
+    console.log(chalk.white("  Mint:       ") + chalk.cyan(reg.result.mintAddress));
+    console.log(chalk.white("  Tx:         ") + chalk.gray(reg.result.txSignature.slice(0, 20) + "..."));
+    console.log(chalk.white("  Network:    ") + chalk.gray(reg.result.network));
+    console.log(chalk.white("  Token Acct: ") + chalk.gray(reg.result.tokenAccount));
+    console.log(chalk.white("  Registered: ") + chalk.gray(reg.savedAt));
+    console.log(chalk.white("  Name:       ") + chalk.gray(reg.metadata.name));
+    console.log(chalk.white("  Skills:     ") + chalk.gray(reg.metadata.skills.join(", ")));
+    console.log(chalk.white("  Fingerprint:") + chalk.gray(reg.metadata.fingerprint.slice(0, 16) + "..."));
+    console.log();
+    console.log(chalk.gray(`  Explorer: https://explorer.solana.com/address/${reg.result.mintAddress}?cluster=devnet\n`));
+  });
+
+// ── nanosolana nanobot (interactive UI) ──────────────────────────
+
+program
+  .command("nanobot")
+  .description("Launch the interactive NanoBot web UI (localhost companion)")
+  .option("-p, --port <port>", "Port number", "7777")
+  .action(async (opts) => {
+    const port = parseInt(opts.port, 10) || 7777;
+    console.log(chalk.hex("#14F195")(`\n  🤖 Starting NanoBot on http://127.0.0.1:${port}\n`));
+
+    const server = new NanoBotServer({ port });
+    await server.start();
+
+    // Keep alive
+    await new Promise(() => {});
   });
 
 // ── Parse & Run ────────────────────────────────────────────────
