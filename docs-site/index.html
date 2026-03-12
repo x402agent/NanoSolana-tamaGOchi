@@ -563,6 +563,42 @@
     </div>
   </footer>
 
+  <!-- Music Player -->
+  <div class="music-player" id="musicPlayer">
+    <audio id="audioPlayer" preload="metadata" loop>
+      <source src="https://pub-9530d10930474af1865d0724e40aab55.r2.dev/nanosolana.mp3" type="audio/mpeg">
+    </audio>
+    <div class="player-inner">
+      <button class="player-btn player-play" id="playerPlay" aria-label="Play">
+        <svg class="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <svg class="icon-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+      </button>
+      <div class="player-info">
+        <span class="player-title">🐹 NanoSolana</span>
+        <span class="player-track">TamaGObot Theme</span>
+      </div>
+      <div class="player-waveform" id="playerWaveform">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="player-progress-wrap">
+        <span class="player-time" id="playerTime">0:00</span>
+        <div class="player-progress" id="playerProgress">
+          <div class="player-progress-bar" id="playerProgressBar"></div>
+        </div>
+        <span class="player-duration" id="playerDuration">0:00</span>
+      </div>
+      <div class="player-volume-wrap">
+        <button class="player-btn player-vol-btn" id="playerVolBtn" aria-label="Volume">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+        </button>
+        <input type="range" class="player-volume" id="playerVolume" min="0" max="100" value="60" aria-label="Volume">
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="/main.js"></script>
 </body>
 </html>

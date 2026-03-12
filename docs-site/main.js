@@ -219,6 +219,112 @@ function initMoodCycle() {
   }, 3000);
 }
 
+// ── Music Player ──────────────────────────────────────────────────
+
+function initMusicPlayer() {
+  const audio = document.getElementById('audioPlayer');
+  const playBtn = document.getElementById('playerPlay');
+  const iconPlay = playBtn?.querySelector('.icon-play');
+  const iconPause = playBtn?.querySelector('.icon-pause');
+  const waveform = document.getElementById('playerWaveform');
+  const progress = document.getElementById('playerProgress');
+  const progressBar = document.getElementById('playerProgressBar');
+  const timeEl = document.getElementById('playerTime');
+  const durationEl = document.getElementById('playerDuration');
+  const volumeSlider = document.getElementById('playerVolume');
+  const volBtn = document.getElementById('playerVolBtn');
+
+  if (!audio || !playBtn) return;
+
+  let isMuted = false;
+  let lastVolume = 0.6;
+
+  // Set initial volume
+  audio.volume = 0.6;
+
+  function formatTime(sec) {
+    if (isNaN(sec) || !isFinite(sec)) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
+
+  function updatePlayState(playing) {
+    if (playing) {
+      iconPlay.style.display = 'none';
+      iconPause.style.display = 'block';
+      waveform?.classList.add('playing');
+    } else {
+      iconPlay.style.display = 'block';
+      iconPause.style.display = 'none';
+      waveform?.classList.remove('playing');
+    }
+  }
+
+  // Play / Pause
+  playBtn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play().catch(() => {});
+    } else {
+      audio.pause();
+    }
+  });
+
+  audio.addEventListener('play', () => updatePlayState(true));
+  audio.addEventListener('pause', () => updatePlayState(false));
+
+  // Time update
+  audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    const pct = (audio.currentTime / audio.duration) * 100;
+    progressBar.style.width = pct + '%';
+    timeEl.textContent = formatTime(audio.currentTime);
+  });
+
+  // Duration loaded
+  audio.addEventListener('loadedmetadata', () => {
+    durationEl.textContent = formatTime(audio.duration);
+  });
+
+  // Also try on durationchange (some browsers)
+  audio.addEventListener('durationchange', () => {
+    if (audio.duration && isFinite(audio.duration)) {
+      durationEl.textContent = formatTime(audio.duration);
+    }
+  });
+
+  // Seek
+  progress?.addEventListener('click', (e) => {
+    const rect = progress.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    if (audio.duration) {
+      audio.currentTime = pct * audio.duration;
+    }
+  });
+
+  // Volume slider
+  volumeSlider?.addEventListener('input', (e) => {
+    const vol = e.target.value / 100;
+    audio.volume = vol;
+    lastVolume = vol;
+    isMuted = vol === 0;
+  });
+
+  // Mute toggle
+  volBtn?.addEventListener('click', () => {
+    if (isMuted) {
+      audio.volume = lastVolume || 0.6;
+      volumeSlider.value = audio.volume * 100;
+      isMuted = false;
+    } else {
+      lastVolume = audio.volume;
+      audio.volume = 0;
+      volumeSlider.value = 0;
+      isMuted = true;
+    }
+  });
+}
+
 // ── Init ──────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -230,4 +336,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initPetInteractions();
   initSensorEffects();
   initMoodCycle();
+  initMusicPlayer();
 });

@@ -1168,3 +1168,254 @@ a:hover { color: var(--teal); }
 @media (max-width: 480px) {
   .hero-badge { font-size: 0.7rem; }
 }
+
+/* ── Music Player ─────────────────────────────────────────────────── */
+
+body { padding-bottom: 72px; }
+
+.music-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: rgba(2, 2, 8, 0.88);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-top: 1px solid rgba(153, 69, 255, 0.2);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.5), 0 -1px 0 rgba(20, 241, 149, 0.06);
+}
+
+.player-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Play button */
+.player-btn {
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.player-play {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), #00B86B);
+  color: #000;
+  flex-shrink: 0;
+  box-shadow: 0 0 16px rgba(20, 241, 149, 0.3);
+}
+
+.player-play:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 24px rgba(20, 241, 149, 0.5);
+}
+
+.player-play:active {
+  transform: scale(0.96);
+}
+
+/* Track info */
+.player-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 110px;
+  flex-shrink: 0;
+}
+
+.player-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.player-track {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+}
+
+/* Waveform visualizer */
+.player-waveform {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.player-waveform span {
+  display: block;
+  width: 3px;
+  height: 4px;
+  background: var(--purple);
+  border-radius: 2px;
+  transition: height 0.15s ease;
+  opacity: 0.3;
+}
+
+.player-waveform.playing span {
+  opacity: 1;
+  animation: waveform 0.8s ease-in-out infinite alternate;
+}
+
+.player-waveform.playing span:nth-child(1)  { animation-delay: 0.00s; }
+.player-waveform.playing span:nth-child(2)  { animation-delay: 0.05s; }
+.player-waveform.playing span:nth-child(3)  { animation-delay: 0.10s; }
+.player-waveform.playing span:nth-child(4)  { animation-delay: 0.15s; }
+.player-waveform.playing span:nth-child(5)  { animation-delay: 0.20s; }
+.player-waveform.playing span:nth-child(6)  { animation-delay: 0.25s; }
+.player-waveform.playing span:nth-child(7)  { animation-delay: 0.30s; }
+.player-waveform.playing span:nth-child(8)  { animation-delay: 0.35s; }
+.player-waveform.playing span:nth-child(9)  { animation-delay: 0.40s; }
+.player-waveform.playing span:nth-child(10) { animation-delay: 0.45s; }
+.player-waveform.playing span:nth-child(11) { animation-delay: 0.50s; }
+.player-waveform.playing span:nth-child(12) { animation-delay: 0.55s; }
+.player-waveform.playing span:nth-child(13) { animation-delay: 0.60s; }
+.player-waveform.playing span:nth-child(14) { animation-delay: 0.65s; }
+.player-waveform.playing span:nth-child(15) { animation-delay: 0.70s; }
+.player-waveform.playing span:nth-child(16) { animation-delay: 0.75s; }
+.player-waveform.playing span:nth-child(17) { animation-delay: 0.80s; }
+.player-waveform.playing span:nth-child(18) { animation-delay: 0.85s; }
+.player-waveform.playing span:nth-child(19) { animation-delay: 0.90s; }
+.player-waveform.playing span:nth-child(20) { animation-delay: 0.95s; }
+
+@keyframes waveform {
+  0%   { height: 4px;  background: var(--purple); }
+  25%  { height: 18px; background: var(--green); }
+  50%  { height: 10px; background: var(--teal); }
+  75%  { height: 24px; background: var(--purple); }
+  100% { height: 6px;  background: var(--green); }
+}
+
+/* Progress bar */
+.player-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.player-time, .player-duration {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  min-width: 34px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.player-progress {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: height 0.15s ease;
+}
+
+.player-progress:hover {
+  height: 6px;
+}
+
+.player-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--green), var(--purple));
+  border-radius: 4px;
+  position: relative;
+  transition: none;
+}
+
+.player-progress-bar::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  background: var(--green);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  box-shadow: 0 0 8px rgba(20, 241, 149, 0.5);
+}
+
+.player-progress:hover .player-progress-bar::after {
+  opacity: 1;
+}
+
+/* Volume */
+.player-volume-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.player-vol-btn {
+  color: var(--text-dim);
+  padding: 4px;
+}
+
+.player-vol-btn:hover { color: var(--green); }
+
+.player-volume {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 70px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+.player-volume::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--green);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(20, 241, 149, 0.4);
+}
+
+.player-volume::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: var(--green);
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(20, 241, 149, 0.4);
+}
+
+/* Responsive player */
+@media (max-width: 768px) {
+  .player-waveform { display: none; }
+  .player-volume-wrap { display: none; }
+  .player-inner { padding: 10px 16px; gap: 10px; }
+  .player-info { min-width: 80px; }
+  body { padding-bottom: 64px; }
+}
+
+@media (max-width: 480px) {
+  .player-info .player-track { display: none; }
+}
