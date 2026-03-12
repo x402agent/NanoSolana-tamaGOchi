@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "NanoBot — Solana Trading Companion",
+  "short_name": "NanoBot",
+  "version": "1.0.0",
+  "description": "Your AI-powered Solana trading companion. Agentic wallet, DAS portfolio, chat with NanoBot — all from your browser toolbar.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
+    },
+    "default_title": "NanoBot — Solana Trading Companion"
+  },
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://mainnet.helius-rpc.com/*",
+    "https://devnet.helius-rpc.com/*",
+    "http://127.0.0.1:7777/*",
+    "http://localhost:7777/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

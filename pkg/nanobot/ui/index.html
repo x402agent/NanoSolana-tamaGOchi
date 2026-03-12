@@ -112,6 +112,56 @@ html,body{height:100%;font-family:var(--font);background:transparent;color:var(-
 .send-btn:active{transform:scale(.9)}
 .send-btn svg{width:14px;height:14px;fill:#fff}
 
+/* ── Wallet Tab ─────────────── */
+.wallet-section{padding:12px;overflow-y:auto;max-height:480px;display:flex;flex-direction:column;gap:10px}
+.wallet-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px;position:relative;overflow:hidden}
+.wallet-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient)}
+.wallet-balance{font-size:28px;font-weight:800;background:var(--gradient);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px}
+.wallet-balance-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.wallet-addr{font-family:var(--mono);font-size:10px;color:var(--text-dim);cursor:pointer;display:flex;align-items:center;gap:6px;margin-top:8px;padding:6px 8px;background:var(--bg2);border-radius:6px;border:1px solid var(--border);transition:border-color .2s}
+.wallet-addr:hover{border-color:var(--sol-purple)}
+.wallet-addr .copy-icon{font-size:12px;opacity:.5;transition:opacity .2s}
+.wallet-addr:hover .copy-icon{opacity:1}
+.wallet-network{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.wallet-network.mainnet{background:#14F19520;color:#14F195;border:1px solid #14F19540}
+.wallet-network.devnet{background:#9945FF20;color:#9945FF;border:1px solid #9945FF40}
+.wallet-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.wallet-usd{font-size:11px;color:var(--text-dim);margin-top:2px;font-weight:500}
+.wallet-usd .sol-price{font-size:9px;color:var(--text-muted);margin-left:6px;padding:1px 6px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)}
+.wallet-stats{display:flex;gap:8px;margin-top:8px}
+.wallet-stat{flex:1;padding:6px 8px;background:var(--bg2);border-radius:6px;border:1px solid var(--border);text-align:center}
+.wallet-stat-value{font-size:12px;font-weight:700;color:var(--sol-green);font-family:var(--mono)}
+.wallet-stat-label{font-size:8px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.wallet-actions{display:flex;gap:6px;margin-top:8px}
+.wallet-action-btn{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:10px;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;font-family:var(--font)}
+.wallet-action-btn:hover{border-color:var(--sol-purple);background:var(--surface)}
+.wallet-action-btn.primary{background:linear-gradient(135deg,#9945FF40,#14F19520);border-color:#9945FF60}
+.wallet-action-btn.primary:hover{background:linear-gradient(135deg,#9945FF60,#14F19540)}
+.send-form{display:none;margin-top:8px;padding:10px;background:var(--bg2);border-radius:8px;border:1px solid var(--border)}
+.send-form.visible{display:block}
+.send-form input{width:100%;padding:8px 10px;margin-bottom:6px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:11px;outline:none}
+.send-form input:focus{border-color:var(--sol-purple)}
+.send-form input::placeholder{color:var(--text-muted)}
+.send-form button{width:100%;padding:8px;border-radius:6px;border:none;background:var(--gradient);color:#fff;font-weight:600;font-size:11px;cursor:pointer;font-family:var(--font);transition:transform .1s}
+.send-form button:hover{transform:scale(1.02)}
+.send-form button:active{transform:scale(.98)}
+.send-form button:disabled{opacity:.5;cursor:not-allowed}
+.token-item{display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg2);border-radius:8px;border:1px solid var(--border)}
+.token-icon{width:28px;height:28px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.token-info{flex:1;min-width:0}
+.token-name{font-size:11px;font-weight:600;color:var(--text)}
+.token-mint{font-family:var(--mono);font-size:8px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.token-amount{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--sol-green);text-align:right}
+.token-value{font-family:var(--mono);font-size:9px;color:var(--text-muted);text-align:right;margin-top:1px}
+.tx-item{padding:8px;background:var(--bg2);border-radius:8px;border:1px solid var(--border);font-size:10px}
+.tx-sig{font-family:var(--mono);font-size:9px;color:var(--sol-blue);cursor:pointer;text-decoration:none}
+.tx-sig:hover{text-decoration:underline}
+.section-label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
+.refresh-btn{width:18px;height:18px;border-radius:4px;border:1px solid var(--border);background:var(--bg3);color:var(--text-dim);cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.refresh-btn:hover{border-color:var(--sol-purple);color:var(--text)}
+.refresh-btn.spinning{animation:spin .8s linear infinite}
+.empty-state{text-align:center;padding:16px;color:var(--text-muted);font-size:11px}
+
 /* ── Greeting Toast ─────────── */
 .toast{position:absolute;bottom:80px;right:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;max-width:220px;font-size:12px;color:var(--text);box-shadow:0 4px 20px rgba(0,0,0,.4);animation:toastIn .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;opacity:0;transition:opacity .3s}
 .toast.show{opacity:1}
@@ -162,6 +212,7 @@ body.fullpage .bubble{display:none}
     <!-- Tabs -->
     <div class="tabs">
       <div class="tab active" data-tab="home" onclick="switchTab('home')">🏠 Home</div>
+      <div class="tab" data-tab="wallet" onclick="switchTab('wallet')">💰 Wallet</div>
       <div class="tab" data-tab="chat" onclick="switchTab('chat')">💬 Chat</div>
       <div class="tab" data-tab="tools" onclick="switchTab('tools')">🔧 Tools</div>
     </div>
@@ -224,6 +275,69 @@ body.fullpage .bubble{display:none}
           <button class="send-btn" onclick="sendChat()">
             <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wallet Tab -->
+    <div class="tab-content" id="tab-wallet">
+      <div class="wallet-section">
+        <!-- Balance Card -->
+        <div class="wallet-card">
+          <div class="wallet-row">
+            <div>
+              <div class="wallet-balance-label">SOL Balance</div>
+              <div class="wallet-balance" id="walletBalance">—</div>
+            <div class="wallet-usd" id="walletUSD"></div>
+            </div>
+            <div class="wallet-network" id="walletNetwork">—</div>
+          </div>
+          <div class="wallet-stats" id="walletStats" style="display:none">
+            <div class="wallet-stat">
+              <div class="wallet-stat-value" id="statSolPrice">—</div>
+              <div class="wallet-stat-label">SOL/USD</div>
+            </div>
+            <div class="wallet-stat">
+              <div class="wallet-stat-value" id="statTotalValue">—</div>
+              <div class="wallet-stat-label">Total USD</div>
+            </div>
+            <div class="wallet-stat">
+              <div class="wallet-stat-value" id="statAssets">—</div>
+              <div class="wallet-stat-label">Assets</div>
+            </div>
+          </div>
+          <div class="wallet-addr" id="walletAddr" onclick="copyAddress()">
+            <span id="walletAddrText">Loading...</span>
+            <span class="copy-icon">📋</span>
+          </div>
+          <div class="wallet-actions">
+            <button class="wallet-action-btn primary" onclick="toggleSendForm()">↗ Send SOL</button>
+            <button class="wallet-action-btn" onclick="refreshWallet()">🔄 Refresh</button>
+            <button class="wallet-action-btn" onclick="openExplorer()">🔍 Explorer</button>
+          </div>
+          <div class="send-form" id="sendForm">
+            <input type="text" id="sendTo" placeholder="Destination address (base58)">
+            <input type="text" id="sendAmount" placeholder="Amount (SOL)">
+            <button id="sendBtn" onclick="sendSOL()">Send SOL</button>
+          </div>
+        </div>
+
+        <!-- Token Portfolio -->
+        <div class="section-label">
+          <span>🪙 Token Portfolio</span>
+          <button class="refresh-btn" id="tokenRefresh" onclick="loadTokens()">↻</button>
+        </div>
+        <div id="tokenList">
+          <div class="empty-state">Loading tokens...</div>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="section-label">
+          <span>📜 Recent Transactions</span>
+          <button class="refresh-btn" id="historyRefresh" onclick="loadHistory()">↻</button>
+        </div>
+        <div id="txHistory">
+          <div class="empty-state">Loading history...</div>
         </div>
       </div>
     </div>
@@ -328,6 +442,7 @@ function switchTab(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + name));
   if (name === 'chat') chatInput.focus();
+  if (name === 'wallet') refreshWallet();
 }
 
 // ── Status ──
@@ -455,6 +570,181 @@ function resetIdleTimer() {
 resetIdleTimer();
 document.addEventListener('mousemove', resetIdleTimer);
 document.addEventListener('keydown', resetIdleTimer);
+
+// ── Wallet Functions ──
+let walletAddress = '';
+
+async function refreshWallet() {
+  try {
+    const r = await fetch(API + '/api/wallet');
+    const d = await r.json();
+    walletAddress = d.address || '';
+    const bal = d.balance ? parseFloat(d.balance) : 0;
+    document.getElementById('walletBalance').textContent = bal > 0 ? bal.toFixed(4) + ' SOL' : '0 SOL';
+    document.getElementById('walletBalance').style.fontSize = '';
+    document.getElementById('walletAddrText').textContent = walletAddress || 'No wallet';
+    const netEl = document.getElementById('walletNetwork');
+    const net = d.network || (d.engine ? 'mainnet' : 'devnet');
+    netEl.textContent = net;
+    netEl.className = 'wallet-network ' + net;
+    // Show USD value & SOL price
+    const usdEl = document.getElementById('walletUSD');
+    const statsEl = document.getElementById('walletStats');
+    if (d.solPrice && d.solPrice > 0) {
+      const usdVal = bal * d.solPrice;
+      usdEl.innerHTML = `≈ $${usdVal.toFixed(2)} <span class="sol-price">SOL $${d.solPrice.toFixed(2)}</span>`;
+      document.getElementById('statSolPrice').textContent = '$' + d.solPrice.toFixed(2);
+      document.getElementById('statTotalValue').textContent = d.totalValueUSD ? '$' + d.totalValueUSD.toFixed(2) : '$' + usdVal.toFixed(2);
+      document.getElementById('statAssets').textContent = d.totalAssets || '—';
+      statsEl.style.display = '';
+    } else if (d.engine) {
+      usdEl.innerHTML = '';
+      statsEl.style.display = 'none';
+    } else {
+      usdEl.innerHTML = '';
+      statsEl.style.display = 'none';
+    }
+    if (!d.engine) {
+      document.getElementById('walletBalance').textContent = 'Offline';
+      document.getElementById('walletBalance').style.fontSize = '18px';
+      usdEl.innerHTML = '<span style="font-size:9px;color:var(--text-muted)">Set HELIUS_RPC_URL to connect</span>';
+    }
+  } catch(e) {
+    document.getElementById('walletBalance').textContent = 'Error';
+    document.getElementById('walletAddrText').textContent = 'Connect Helius RPC';
+  }
+  loadTokens();
+  loadHistory();
+}
+
+function copyAddress() {
+  if (!walletAddress) return;
+  navigator.clipboard.writeText(walletAddress).then(() => {
+    const el = document.getElementById('walletAddrText');
+    const orig = el.textContent;
+    el.textContent = '✅ Copied!';
+    setTimeout(() => el.textContent = orig, 1500);
+  });
+}
+
+function toggleSendForm() {
+  document.getElementById('sendForm').classList.toggle('visible');
+}
+
+function openExplorer() {
+  if (walletAddress) window.open('https://solscan.io/account/' + walletAddress, '_blank');
+}
+
+async function sendSOL() {
+  const to = document.getElementById('sendTo').value.trim();
+  const amount = document.getElementById('sendAmount').value.trim();
+  const btn = document.getElementById('sendBtn');
+  if (!to || !amount) return;
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  try {
+    const r = await fetch(API + '/api/wallet/send', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({to, amount})
+    });
+    const d = await r.json();
+    if (d.ok) {
+      btn.textContent = '✅ Sent!';
+      addMessage('NanoBot', `✅ Sent ${d.amount} SOL!\nSignature: ${d.signature}\n🔍 ${d.explorer}`, 'bot');
+      switchTab('chat');
+      refreshWallet();
+    } else {
+      btn.textContent = '❌ ' + (d.error || 'Failed');
+    }
+  } catch(e) {
+    btn.textContent = '❌ Error';
+  }
+  setTimeout(() => { btn.textContent = 'Send SOL'; btn.disabled = false; }, 3000);
+}
+
+async function loadTokens() {
+  const el = document.getElementById('tokenList');
+  const btn = document.getElementById('tokenRefresh');
+  btn?.classList.add('spinning');
+  try {
+    // Try DAS portfolio first for rich data with prices
+    const r = await fetch(API + '/api/wallet/portfolio');
+    const d = await r.json();
+    btn?.classList.remove('spinning');
+    if (d.error) {
+      // Fall back to basic tokens endpoint
+      const r2 = await fetch(API + '/api/wallet/tokens');
+      const d2 = await r2.json();
+      if (!d2.tokens || d2.tokens.length === 0) {
+        el.innerHTML = '<div class="empty-state">No tokens found</div>';
+        return;
+      }
+      el.innerHTML = d2.tokens.map(t => `
+        <div class="token-item">
+          <div class="token-icon">🪙</div>
+          <div class="token-info">
+            <div class="token-name">${t.symbol || 'Unknown'}</div>
+            <div class="token-mint">${t.mint}</div>
+          </div>
+          <div><div class="token-amount">${t.ui_amount?.toFixed(4) || t.amount}</div></div>
+        </div>
+      `).join('');
+      return;
+    }
+    if (!d.tokens || d.tokens.length === 0) {
+      el.innerHTML = '<div class="empty-state">No tokens found</div>';
+      return;
+    }
+    // Sort by value descending
+    d.tokens.sort((a,b) => (b.totalValue||0) - (a.totalValue||0));
+    el.innerHTML = d.tokens.map(t => `
+      <div class="token-item">
+        <div class="token-icon">🪙</div>
+        <div class="token-info">
+          <div class="token-name">${t.symbol || t.name || 'Unknown'}</div>
+          <div class="token-mint">${t.mint}</div>
+        </div>
+        <div>
+          <div class="token-amount">${t.uiAmount ? t.uiAmount.toFixed(4) : t.balance}</div>
+          ${t.totalValue ? '<div class="token-value">$' + t.totalValue.toFixed(2) + '</div>' : ''}
+        </div>
+      </div>
+    `).join('');
+  } catch {
+    btn?.classList.remove('spinning');
+    el.innerHTML = '<div class="empty-state">Engine offline — set HELIUS_RPC_URL</div>';
+  }
+}
+
+async function loadHistory() {
+  const el = document.getElementById('txHistory');
+  const btn = document.getElementById('historyRefresh');
+  btn?.classList.add('spinning');
+  try {
+    const r = await fetch(API + '/api/wallet/history');
+    const d = await r.json();
+    btn?.classList.remove('spinning');
+    if (!d.history || d.history.length === 0) {
+      el.innerHTML = '<div class="empty-state">No transactions yet</div>';
+      return;
+    }
+    el.innerHTML = d.history.map(tx => `
+      <div class="tx-item">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-weight:600;color:var(--text)">${tx.type || 'Transaction'}</span>
+          <a class="tx-sig" href="https://solscan.io/tx/${tx.signature}" target="_blank">${(tx.signature||'').slice(0,8)}...</a>
+        </div>
+        ${tx.description ? '<div style="color:var(--text-dim);margin-top:2px">' + tx.description + '</div>' : ''}
+      </div>
+    `).join('');
+  } catch {
+    btn?.classList.remove('spinning');
+    el.innerHTML = '<div class="empty-state">Engine offline — set HELIUS_RPC_URL</div>';
+  }
+}
+
+// Auto-load wallet on hash
+if (window.location.hash === '#wallet') { setTimeout(() => switchTab('wallet'), 100); }
 </script>
 </body>
 </html>

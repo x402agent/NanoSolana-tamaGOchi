@@ -1,0 +1,6 @@
+{
+    "apiBase": "https://nanohub-dun.vercel.app",
+    "authBase": "https://nanohub-dun.vercel.app",
+    "minCliVersion": "0.1.0",
+    "registry": "https://nanohub-dun.vercel.app"
+}

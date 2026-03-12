@@ -11,7 +11,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"os/signal"
+	"path/filepath"
+	"runtime"
 	"syscall"
 	"time"
 
@@ -112,6 +115,7 @@ Features:
 		NewHardwareCommand(),
 		NewSeekerCommand(),
 		NewNanoBotCommand(),
+		NewMenuBarCommand(),
 		NewVersionCommand(),
 	)
 
@@ -793,6 +797,49 @@ The UI launches on localhost and opens in your browser.`,
 	cmd.Flags().IntVar(&port, "port", 7777, "NanoBot UI port")
 
 	return cmd
+}
+
+// ── Menu Bar ─────────────────────────────────────────────────────────
+
+func NewMenuBarCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:   "menubar",
+		Short: "Start NanoBot as macOS menu bar icon (like Docker/Tailscale)",
+		Long: `Launches a persistent 🤖 icon in your macOS menu bar.
+
+The menu bar agent provides:
+  🤖 Always-visible status icon
+  📊 Quick access to NanoBot UI
+  💰 One-click wallet access
+  🔧 Daemon start/stop
+  ⌨️  Open terminal with nanosolana
+
+Works alongside Docker, Tailscale, and other menu bar apps.
+Requires macOS.`,
+		Example: "  nanosolana menubar",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if runtime.GOOS != "darwin" {
+				return fmt.Errorf("menu bar is only available on macOS")
+			}
+
+			// Find the menubar script
+			binary, _ := os.Executable()
+			scriptDir := filepath.Dir(binary)
+			scriptPath := filepath.Join(scriptDir, "..", "scripts", "menubar.sh")
+
+			// Try relative to binary first, then project dir
+			if _, err := os.Stat(scriptPath); err != nil {
+				scriptPath = filepath.Join("scripts", "menubar.sh")
+			}
+
+			fmt.Fprintf(os.Stderr, "%s🤖 Starting NanoBot menu bar agent...%s\n", colorGreen, colorReset)
+
+			c := exec.CommandContext(cmd.Context(), "bash", scriptPath)
+			c.Stdout = os.Stdout
+			c.Stderr = os.Stderr
+			return c.Run()
+		},
+	}
 }
 
 // ── Version ──────────────────────────────────────────────────────────

@@ -15,13 +15,13 @@ function Settings() {
   const deleteAccount = useMutation(api.users.deleteAccount)
   const tokens = useQuery(api.tokens.listMine) as
     | Array<{
-        _id: Id<'apiTokens'>
-        label: string
-        prefix: string
-        createdAt: number
-        lastUsedAt?: number
-        revokedAt?: number
-      }>
+      _id: Id<'apiTokens'>
+      label: string
+      prefix: string
+      createdAt: number
+      lastUsedAt?: number
+      revokedAt?: number
+    }>
     | undefined
   const createToken = useMutation(api.tokens.create)
   const revokeToken = useMutation(api.tokens.revoke)
@@ -58,7 +58,7 @@ function Settings() {
   async function onDelete() {
     const ok = window.confirm(
       'Delete your account permanently? This cannot be undone.\n\n' +
-        'Published skills will remain public.',
+      'Published skills will remain public.',
     )
     if (!ok) return
     await deleteAccount()
@@ -119,7 +119,7 @@ function Settings() {
           API tokens
         </h2>
         <p className="section-subtitle">
-          Use these tokens for the `clawhub` CLI. Tokens are shown once on creation.
+          Use these tokens for the `nanohub` CLI. Tokens are shown once on creation.
         </p>
 
         <div className="settings-field">

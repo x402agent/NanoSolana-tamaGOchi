@@ -27,7 +27,7 @@ export default function Header() {
   const siteMode = getSiteMode()
   const siteName = useMemo(() => getSiteName(siteMode), [siteMode])
   const isSoulMode = siteMode === 'souls'
-  const clawHubUrl = getClawHubSiteUrl()
+  const skillsHubUrl = getClawHubSiteUrl()
 
   const avatar = me?.image ?? (me?.email ? gravatarUrl(me.email) : undefined)
   const handle = me?.handle ?? me?.displayName ?? 'user'
@@ -63,7 +63,7 @@ export default function Header() {
           <span className="brand-name">{siteName}</span>
         </Link>
         <nav className="nav-links">
-          {isSoulMode ? <a href={clawHubUrl}>ClawHub</a> : null}
+          {isSoulMode ? <a href={skillsHubUrl}>NanoHub Skills</a> : null}
           {isSoulMode ? (
             <Link
               to="/souls"
@@ -102,21 +102,21 @@ export default function Header() {
             search={
               isSoulMode
                 ? {
-                    q: undefined,
-                    sort: undefined,
-                    dir: undefined,
-                    view: undefined,
-                    focus: 'search',
-                  }
+                  q: undefined,
+                  sort: undefined,
+                  dir: undefined,
+                  view: undefined,
+                  focus: 'search',
+                }
                 : {
-                    q: undefined,
-                    sort: undefined,
-                    dir: undefined,
-                    highlighted: undefined,
-                    nonSuspicious: undefined,
-                    view: undefined,
-                    focus: 'search',
-                  }
+                  q: undefined,
+                  sort: undefined,
+                  dir: undefined,
+                  highlighted: undefined,
+                  nonSuspicious: undefined,
+                  view: undefined,
+                  focus: 'search',
+                }
             }
           >
             Search
@@ -139,7 +139,7 @@ export default function Header() {
               <DropdownMenuContent align="end">
                 {isSoulMode ? (
                   <DropdownMenuItem asChild>
-                    <a href={clawHubUrl}>ClawHub</a>
+                    <a href={skillsHubUrl}>NanoHub Skills</a>
                   </DropdownMenuItem>
                 ) : null}
                 <DropdownMenuItem asChild>
@@ -189,21 +189,21 @@ export default function Header() {
                     search={
                       isSoulMode
                         ? {
-                            q: undefined,
-                            sort: undefined,
-                            dir: undefined,
-                            view: undefined,
-                            focus: 'search',
-                          }
+                          q: undefined,
+                          sort: undefined,
+                          dir: undefined,
+                          view: undefined,
+                          focus: 'search',
+                        }
                         : {
-                            q: undefined,
-                            sort: undefined,
-                            dir: undefined,
-                            highlighted: undefined,
-                            nonSuspicious: undefined,
-                            view: undefined,
-                            focus: 'search',
-                          }
+                          q: undefined,
+                          sort: undefined,
+                          dir: undefined,
+                          highlighted: undefined,
+                          nonSuspicious: undefined,
+                          view: undefined,
+                          focus: 'search',
+                        }
                     }
                   >
                     Search

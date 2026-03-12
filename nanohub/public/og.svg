@@ -68,7 +68,7 @@
       font-size="18"
       font-weight="600"
       font-family="Bricolage Grotesque, Manrope, -apple-system, BlinkMacSystemFont, Helvetica Neue, Helvetica, Arial, sans-serif"
-      opacity="0.92">lobster-light. agent-right.</text>
+      opacity="0.92">nano solana. agent-ready.</text>
   </g>
 
   <!-- Title -->
@@ -76,7 +76,7 @@
     fill="#F6EFE4"
     font-size="92"
     font-weight="700"
-    font-family="Bricolage Grotesque, Manrope, -apple-system, BlinkMacSystemFont, Helvetica Neue, Helvetica, Arial, sans-serif">ClawHub</text>
+    font-family="Bricolage Grotesque, Manrope, -apple-system, BlinkMacSystemFont, Helvetica Neue, Helvetica, Arial, sans-serif">NanoHub</text>
 
   <!-- Subtitle -->
   <text x="114" y="332"
@@ -84,7 +84,7 @@
     font-size="23"
     font-weight="500"
     font-family="Manrope, Bricolage Grotesque, -apple-system, BlinkMacSystemFont, Helvetica Neue, Helvetica, Arial, sans-serif">
-    a fast skill registry for agents, with vector search.
+    the nano solana skill registry for agents.
   </text>
 
   <!-- Accent line + hint -->
@@ -94,5 +94,5 @@
     font-size="20"
     font-weight="600"
     opacity="0.90"
-    font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace">clawhub.ai</text>
+    font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace">nanohub-dun.vercel.app</text>
 </svg>

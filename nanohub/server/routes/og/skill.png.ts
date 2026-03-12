@@ -35,7 +35,7 @@ function getApiBase(eventHost: string | null) {
   if (site) return site
 
   if (eventHost) return `https://${eventHost}`
-  return 'https://clawhub.ai'
+  return 'https://nanohub-dun.vercel.app'
 }
 
 async function ensureWasm() {
@@ -66,9 +66,11 @@ export default defineEventHandler(async (event) => {
   const title = titleFromQuery || meta?.displayName || slug
   const description = descriptionFromQuery || meta?.summary || ''
 
-  const ownerLabel = owner ? `@${owner}` : 'clawhub'
+  const ownerLabel = owner ? `@${owner}` : 'nanohub'
   const versionLabel = version ? `v${version}` : 'latest'
-  const footer = owner ? `clawhub.ai/${owner}/${slug}` : `clawhub.ai/skills/${slug}`
+  const footer = owner
+    ? `nanohub-dun.vercel.app/${owner}/${slug}`
+    : `nanohub-dun.vercel.app/skills/${slug}`
 
   const cacheKey = version ? 'public, max-age=31536000, immutable' : 'public, max-age=3600'
   setHeader(event, 'Cache-Control', cacheKey)

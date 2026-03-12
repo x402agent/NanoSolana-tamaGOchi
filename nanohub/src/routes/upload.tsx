@@ -55,10 +55,10 @@ export function Upload() {
   )
   const existing = (isSoulMode ? existingSoul : existingSkill) as
     | {
-        skill?: { slug: string; displayName: string }
-        soul?: { slug: string; displayName: string }
-        latestVersion?: { version: string }
-      }
+      skill?: { slug: string; displayName: string }
+      soul?: { slug: string; displayName: string }
+      latestVersion?: { version: string }
+    }
     | null
     | undefined
 
@@ -142,11 +142,11 @@ export function Upload() {
       : 'skip',
   ) as
     | {
-        available: boolean
-        reason: 'available' | 'taken' | 'reserved'
-        message: string | null
-        url: string | null
-      }
+      available: boolean
+      reason: 'available' | 'taken' | 'reserved'
+      message: string | null
+      url: string | null
+    }
     | null
     | undefined
   const slugCollision = useMemo(
@@ -543,7 +543,7 @@ export function Upload() {
                   {PLATFORM_SKILL_LICENSE} · {PLATFORM_SKILL_LICENSE_NAME}
                 </div>
                 <p className="upload-license-copy">
-                  All skills published on ClawHub are licensed under {PLATFORM_SKILL_LICENSE}.{' '}
+                  All skills published on NanoHub are licensed under {PLATFORM_SKILL_LICENSE}.{' '}
                   {PLATFORM_SKILL_LICENSE_SUMMARY}
                 </p>
                 <label className="upload-license-check">

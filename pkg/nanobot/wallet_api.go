@@ -27,6 +27,7 @@ import (
 type WalletAPI struct {
 	engine *onchain.Engine
 	wallet *sol.Wallet
+	das    *HeliusDAS
 	logf   func(string, ...any)
 }
 
@@ -57,6 +58,12 @@ func NewWalletAPI() (*WalletAPI, error) {
 		}
 	}
 
+	// Init DAS API for rich blockchain data
+	api.das = NewHeliusDAS()
+	if api.das != nil {
+		api.logf("🔮 DAS API enabled — blockchain vision active")
+	}
+
 	return api, nil
 }
 
@@ -66,6 +73,7 @@ func (wa *WalletAPI) Register(mux *http.ServeMux) {
 	mux.HandleFunc("/api/wallet/send", wa.handleSend)
 	mux.HandleFunc("/api/wallet/tokens", wa.handleTokens)
 	mux.HandleFunc("/api/wallet/history", wa.handleHistory)
+	mux.HandleFunc("/api/wallet/portfolio", wa.handlePortfolio)
 	mux.HandleFunc("/api/wallet/airdrop", wa.handleAirdrop)
 }
 
@@ -96,8 +104,27 @@ func (wa *WalletAPI) handleWallet(w http.ResponseWriter, r *http.Request) {
 		result["address"] = wa.wallet.PublicKeyStr()
 		result["short"] = wa.wallet.ShortKey(4)
 
-		// Get SOL balance if engine is available
-		if wa.engine != nil {
+		// Get SOL balance — try DAS first for richer data, fall back to RPC
+		if wa.das != nil {
+			ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
+			defer cancel()
+			portfolio, err := wa.das.GetPortfolio(ctx, wa.wallet.PublicKeyStr())
+			if err == nil && portfolio.NativeBalance != nil {
+				solBal := float64(portfolio.NativeBalance.Lamports) / 1e9
+				result["balance"] = fmt.Sprintf("%.6f", solBal)
+				result["balanceLamports"] = portfolio.NativeBalance.Lamports
+				result["solPrice"] = portfolio.NativeBalance.PricePerSOL
+				result["totalValueUSD"] = portfolio.NativeBalance.TotalPrice
+				result["totalAssets"] = portfolio.Total
+				result["engine"] = true
+			} else if wa.engine != nil {
+				bal, err := wa.engine.GetSOLBalance(ctx, wa.wallet.PublicKey)
+				if err == nil {
+					result["balance"] = fmt.Sprintf("%.6f", bal.SOL)
+					result["balanceLamports"] = bal.Lamports
+				}
+			}
+		} else if wa.engine != nil {
 			ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
 			defer cancel()
 			bal, err := wa.engine.GetSOLBalance(ctx, wa.wallet.PublicKey)
@@ -258,4 +285,80 @@ func (wa *WalletAPI) handleAirdrop(w http.ResponseWriter, r *http.Request) {
 		"error":   "Use CLI: nanosolana solana airdrop",
 		"address": wa.wallet.PublicKeyStr(),
 	})
+}
+
+// handlePortfolio returns full DAS portfolio — tokens with prices, NFTs, SOL.
+func (wa *WalletAPI) handlePortfolio(w http.ResponseWriter, r *http.Request) {
+	corsJSON(w)
+	if r.Method == "OPTIONS" {
+		return
+	}
+
+	if wa.wallet == nil {
+		json.NewEncoder(w).Encode(map[string]any{"error": "no wallet"})
+		return
+	}
+	if wa.das == nil {
+		json.NewEncoder(w).Encode(map[string]any{"error": "DAS API not configured (set HELIUS_RPC_URL)"})
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 15*time.Second)
+	defer cancel()
+
+	portfolio, err := wa.das.GetPortfolio(ctx, wa.wallet.PublicKeyStr())
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]any{"error": err.Error()})
+		return
+	}
+
+	// Build a clean portfolio view
+	var tokens []map[string]any
+	var nfts []map[string]any
+
+	for _, item := range portfolio.Items {
+		if item.TokenInfo != nil {
+			tk := map[string]any{
+				"mint":     item.ID,
+				"symbol":   item.TokenInfo.Symbol,
+				"name":     item.Content.Metadata.Name,
+				"balance":  item.TokenInfo.Balance,
+				"decimals": item.TokenInfo.Decimals,
+			}
+			if item.TokenInfo.Decimals > 0 {
+				divisor := 1.0
+				for i := 0; i < item.TokenInfo.Decimals; i++ {
+					divisor *= 10
+				}
+				tk["uiAmount"] = float64(item.TokenInfo.Balance) / divisor
+			}
+			if item.TokenInfo.PriceInfo != nil {
+				tk["pricePerToken"] = item.TokenInfo.PriceInfo.PricePerToken
+				tk["totalValue"] = item.TokenInfo.PriceInfo.TotalPrice
+				tk["currency"] = item.TokenInfo.PriceInfo.Currency
+			}
+			tokens = append(tokens, tk)
+		} else if item.Interface == "V1_NFT" || item.Interface == "ProgrammableNFT" {
+			nfts = append(nfts, map[string]any{
+				"id":          item.ID,
+				"name":        item.Content.Metadata.Name,
+				"symbol":      item.Content.Metadata.Symbol,
+				"description": item.Content.Metadata.Description,
+			})
+		}
+	}
+
+	result := map[string]any{
+		"tokens":      tokens,
+		"nfts":        nfts,
+		"totalAssets": portfolio.Total,
+	}
+
+	if portfolio.NativeBalance != nil {
+		result["solBalance"] = float64(portfolio.NativeBalance.Lamports) / 1e9
+		result["solPrice"] = portfolio.NativeBalance.PricePerSOL
+		result["solValueUSD"] = portfolio.NativeBalance.TotalPrice
+	}
+
+	json.NewEncoder(w).Encode(result)
 }

@@ -33,8 +33,9 @@ type SoulMeta = {
   owner: string | null
 }
 
-const DEFAULT_DESCRIPTION = 'ClawHub — a fast skill registry for agents, with vector search.'
-const DEFAULT_SOUL_DESCRIPTION = 'SoulHub — the home for SOUL.md bundles and personal system lore.'
+const DEFAULT_DESCRIPTION = 'NanoHub — the Nano Solana skill registry for agents, with vector search.'
+const DEFAULT_SOUL_DESCRIPTION =
+  'NanoHub Souls — the home for SOUL.md bundles and personal system lore.'
 const OG_SKILL_IMAGE_LAYOUT_VERSION = '5'
 const OG_SOUL_IMAGE_LAYOUT_VERSION = '1'
 
@@ -103,9 +104,9 @@ export function buildSkillMeta(source: SkillMetaSource): SkillMeta {
   const displayName = clean(source.displayName) || clean(source.slug)
   const summary = clean(source.summary)
   const version = clean(source.version)
-  const title = `${displayName} — ClawHub`
+  const title = `${displayName} — NanoHub`
   const description =
-    summary || (owner ? `Agent skill by @${owner} on ClawHub.` : DEFAULT_DESCRIPTION)
+    summary || (owner ? `Agent skill by @${owner} on NanoHub.` : DEFAULT_DESCRIPTION)
   const ownerPath = owner || ownerId || 'unknown'
   const url = `${siteUrl}/${ownerPath}/${source.slug}`
   const imageParams = new URLSearchParams()
@@ -128,9 +129,9 @@ export function buildSoulMeta(source: SoulMetaSource): SoulMeta {
   const displayName = clean(source.displayName) || clean(source.slug)
   const summary = clean(source.summary)
   const version = clean(source.version)
-  const title = `${displayName} — SoulHub`
+  const title = `${displayName} — NanoHub Souls`
   const description =
-    summary || (owner ? `Soul by @${owner} on SoulHub.` : DEFAULT_SOUL_DESCRIPTION)
+    summary || (owner ? `Soul by @${owner} on NanoHub Souls.` : DEFAULT_SOUL_DESCRIPTION)
   const url = `${siteUrl}/souls/${source.slug}`
   const imageParams = new URLSearchParams()
   imageParams.set('v', OG_SOUL_IMAGE_LAYOUT_VERSION)

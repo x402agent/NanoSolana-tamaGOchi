@@ -44,11 +44,11 @@ function SkillsHome() {
       <section className="hero">
         <div className="hero-inner">
           <div className="hero-copy fade-up" data-delay="1">
-            <span className="hero-badge">Lobster-light. Agent-right.</span>
-            <h1 className="hero-title">ClawHub, the skill dock for sharp agents.</h1>
+            <span className="hero-badge">Nano Solana. Agent-ready.</span>
+            <h1 className="hero-title">NanoHub, the skill dock for Nano Solana agents.</h1>
             <p className="hero-subtitle">
-              Upload AgentSkills bundles, version them like npm, and make them searchable with
-              vectors. No gatekeeping, just signal.
+              Upload AgentSkills bundles, version them like npm, and host them in a searchable
+              Nano Solana registry. No gatekeeping, just signal.
             </p>
             <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
               <Link to="/upload" search={{ updateSlug: undefined }} className="btn btn-primary">
@@ -183,10 +183,10 @@ function OnlyCrabsHome() {
         <div className="hero-inner">
           <div className="hero-copy fade-up" data-delay="1">
             <span className="hero-badge">SOUL.md, shared.</span>
-            <h1 className="hero-title">SoulHub, where system lore lives.</h1>
+            <h1 className="hero-title">NanoHub Souls, where system lore lives.</h1>
             <p className="hero-subtitle">
               Share SOUL.md bundles, version them like docs, and keep personal system lore in one
-              public place.
+              public NanoHub space.
             </p>
             <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
               <Link to="/upload" search={{ updateSlug: undefined }} className="btn btn-primary">

@@ -36,7 +36,7 @@ function getApiBase(eventHost: string | null) {
   if (site) return site
 
   if (eventHost) return `https://${eventHost}`
-  return 'https://onlycrabs.ai'
+  return 'https://souls.nanohub-dun.vercel.app'
 }
 
 async function ensureWasm() {
@@ -74,7 +74,7 @@ export default defineEventHandler(async (event) => {
   const title = titleFromQuery || meta?.displayName || slug
   const description = descriptionFromQuery || meta?.summary || ''
 
-  const ownerLabel = owner ? `@${owner}` : 'SoulHub'
+  const ownerLabel = owner ? `@${owner}` : 'NanoHub Souls'
   const versionLabel = version ? `v${version}` : 'latest'
   const footer = buildFooter(slug, owner || null)
 

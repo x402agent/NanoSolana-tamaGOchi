@@ -1,6 +1,6 @@
 {
-  "apiBase": "https://clawhub.ai",
-  "authBase": "https://clawhub.ai",
+  "apiBase": "https://nanohub-dun.vercel.app",
+  "authBase": "https://nanohub-dun.vercel.app",
   "minCliVersion": "0.1.0",
-  "registry": "https://clawhub.ai"
+  "registry": "https://nanohub-dun.vercel.app"
 }
