@@ -233,14 +233,53 @@ function initMusicPlayer() {
   const durationEl = document.getElementById('playerDuration');
   const volumeSlider = document.getElementById('playerVolume');
   const volBtn = document.getElementById('playerVolBtn');
+  const prevBtn = document.getElementById('playerPrev');
+  const nextBtn = document.getElementById('playerNext');
+  const titleEl = document.getElementById('playerTitle');
+  const trackNameEl = document.getElementById('playerTrackName');
 
   if (!audio || !playBtn) return;
 
+  // ── Playlist ──
+  const playlist = [
+    {
+      src: 'https://pub-9530d10930474af1865d0724e40aab55.r2.dev/nanosolana.mp3',
+      title: '🐹 NanoSolana',
+      track: 'TamaGObot Theme',
+    },
+    {
+      src: 'https://pub-9530d10930474af1865d0724e40aab55.r2.dev/audio_375681031532668.mp3',
+      title: '🐹 NanoSolana',
+      track: 'SeekerClaw',
+    },
+  ];
+
+  let currentTrack = 0;
   let isMuted = false;
   let lastVolume = 0.6;
+  let wasPlaying = false;
 
-  // Set initial volume
+  // Set initial volume and load first track
   audio.volume = 0.6;
+
+  function loadTrack(idx) {
+    wasPlaying = !audio.paused;
+    currentTrack = ((idx % playlist.length) + playlist.length) % playlist.length;
+    const t = playlist[currentTrack];
+    audio.src = t.src;
+    audio.load();
+    titleEl.textContent = t.title;
+    trackNameEl.textContent = t.track;
+    durationEl.textContent = '0:00';
+    progressBar.style.width = '0%';
+    timeEl.textContent = '0:00';
+    if (wasPlaying) {
+      audio.play().catch(() => {});
+    }
+  }
+
+  // Load first track (don't autoplay)
+  loadTrack(0);
 
   function formatTime(sec) {
     if (isNaN(sec) || !isFinite(sec)) return '0:00';
@@ -273,6 +312,16 @@ function initMusicPlayer() {
   audio.addEventListener('play', () => updatePlayState(true));
   audio.addEventListener('pause', () => updatePlayState(false));
 
+  // Auto-advance to next track when current ends
+  audio.addEventListener('ended', () => {
+    loadTrack(currentTrack + 1);
+    audio.play().catch(() => {});
+  });
+
+  // Prev / Next
+  prevBtn?.addEventListener('click', () => loadTrack(currentTrack - 1));
+  nextBtn?.addEventListener('click', () => loadTrack(currentTrack + 1));
+
   // Time update
   audio.addEventListener('timeupdate', () => {
     if (!audio.duration) return;
@@ -286,7 +335,6 @@ function initMusicPlayer() {
     durationEl.textContent = formatTime(audio.duration);
   });
 
-  // Also try on durationchange (some browsers)
   audio.addEventListener('durationchange', () => {
     if (audio.duration && isFinite(audio.duration)) {
       durationEl.textContent = formatTime(audio.duration);

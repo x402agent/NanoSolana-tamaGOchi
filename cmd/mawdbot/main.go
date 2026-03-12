@@ -1093,14 +1093,22 @@ func sanitizeJSONInput(raw string) string {
 // ── Daemon Command ───────────────────────────────────────────────────
 
 func NewDaemonCommand() *cobra.Command {
+	var (
+		petName    string
+		seekerMode bool
+		noTelegram bool
+		noOODA     bool
+	)
+
 	cmd := &cobra.Command{
 		Use:   "daemon",
-		Short: "Start the NanoSolana daemon (OODA + TamaGObot + Telegram + x402)",
+		Short: "Start the NanoSolana daemon (Seeker mode + OODA + TamaGObot + Telegram + x402)",
 		Long: `Launch the full NanoSolana TamaGObot daemon — a long-running process that:
   • Generates/loads the agentic Solana wallet
   • Connects to Helius RPC (or fallback)
   • Starts the TamaGObot pet engine (wallet-driven evolution)
   • Starts the Telegram bot (if configured)
+  • Supports Seeker-focused mode + custom pet identity
   • Initializes x402 payment gateway
   • Runs the heartbeat loop
   • Waits for SIGINT/SIGTERM to shutdown`,
@@ -1110,7 +1118,20 @@ func NewDaemonCommand() *cobra.Command {
 				return fmt.Errorf("config error: %w", err)
 			}
 
-			d, err := daemon.New(cfg)
+			petNameResolved := strings.TrimSpace(petName)
+			if petNameResolved == "" {
+				petNameResolved = "MawdBot"
+			}
+			if seekerMode && !cmd.Flags().Changed("pet-name") {
+				petNameResolved = "SeekerClaw"
+			}
+
+			d, err := daemon.NewWithOptions(cfg, daemon.Options{
+				PetName:         petNameResolved,
+				SeekerMode:      seekerMode,
+				DisableTelegram: noTelegram,
+				AutoStartOODA:   !noOODA,
+			})
 			if err != nil {
 				return fmt.Errorf("daemon init: %w", err)
 			}
@@ -1118,6 +1139,12 @@ func NewDaemonCommand() *cobra.Command {
 			return d.Run()
 		},
 	}
+
+	cmd.Flags().StringVar(&petName, "pet-name", "MawdBot", "TamaGOchi pet name")
+	cmd.Flags().BoolVar(&seekerMode, "seeker", false, "Enable Seeker branding/mode for daemon runtime")
+	cmd.Flags().BoolVar(&noTelegram, "no-telegram", false, "Disable Telegram channel startup")
+	cmd.Flags().BoolVar(&noOODA, "no-ooda", false, "Disable OODA autostart (daemon still serves wallet/pet/x402/channels)")
+
 	return cmd
 }
 
