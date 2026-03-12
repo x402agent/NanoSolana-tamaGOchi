@@ -1,0 +1,10 @@
+{
+  "id": "google-gemini-cli-auth",
+  "name": "Google Gemini CLI Auth",
+  "description": "NanoSolana authentication bridge for Google Gemini CLI sessions",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

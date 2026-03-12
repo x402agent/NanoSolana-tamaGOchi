@@ -1,0 +1,14 @@
+# Nano Solana — Ignore
+node_modules/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
+coverage/
+
+# Secure files (never commit)
+vault.enc
+wallet.pub
+*.pem
+*.key

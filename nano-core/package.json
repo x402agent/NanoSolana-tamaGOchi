@@ -1,0 +1,66 @@
+{
+  "name": "nanosolana",
+  "version": "0.1.0",
+  "description": "Nano Solana — Security-first autonomous trading agent platform with real-time memory and Solana wallet integration",
+  "keywords": ["solana", "trading", "agent", "ai", "defi", "nano"],
+  "license": "MIT",
+  "author": "NanoSolana Labs",
+  "type": "module",
+  "bin": {
+    "nanosolana": "./dist/cli/entry.js"
+  },
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./sdk": "./dist/sdk/index.js"
+  },
+  "scripts": {
+    "dev": "tsx watch src/cli/entry.ts",
+    "build": "tsup src/index.ts src/cli/entry.ts --format esm --dts --sourcemap --out-dir dist --clean",
+    "start": "node dist/cli/entry.js",
+    "install:one-shot": "bash scripts/install-cli.sh",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "oxlint --type-aware",
+    "format": "oxfmt --write",
+    "gateway": "tsx src/gateway/server.ts",
+    "hub:dev": "cd ../nanohub && bun run dev",
+    "nanosolana": "tsx src/cli/entry.ts"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.95.0",
+    "@solana/spl-token": "^0.4.0",
+    "bs58": "^6.0.0",
+    "tweetnacl": "^1.0.3",
+    "@metaplex-foundation/mpl-token-metadata": "^3.3.0",
+    "bip39": "^3.1.0",
+    "commander": "^14.0.3",
+    "chalk": "^5.6.2",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "hono": "^4.12.7",
+    "ws": "^8.19.0",
+    "zod": "^4.3.6",
+    "undici": "^7.22.0",
+    "better-sqlite3": "^11.0.0",
+    "drizzle-orm": "^0.36.0",
+    "nanoid": "^5.0.0",
+    "eventemitter3": "^5.0.0",
+    "pino": "^9.0.0",
+    "pino-pretty": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.18.1",
+    "@types/better-sqlite3": "^7.6.0",
+    "tsx": "^4.21.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18",
+    "oxfmt": "0.38.0",
+    "oxlint": "^1.53.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

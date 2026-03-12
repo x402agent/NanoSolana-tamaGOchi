@@ -1,0 +1,14 @@
+{
+  "id": "nostr",
+  "name": "Nostr",
+  "description": "NanoSolana Nostr protocol — decentralized trading signal relay and identity",
+  "channels": ["nostr"],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "relayUrls": { "type": "array", "items": { "type": "string" }, "description": "Nostr relay URLs" },
+      "nsec": { "type": "string", "description": "Nostr secret key (nsec)" }
+    }
+  }
+}

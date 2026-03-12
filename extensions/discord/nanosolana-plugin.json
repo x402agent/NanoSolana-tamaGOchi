@@ -1,0 +1,14 @@
+{
+  "id": "discord",
+  "name": "Discord",
+  "description": "NanoSolana Discord channel — trading signals, alerts, and TamaGOchi status",
+  "channels": ["discord"],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "botToken": { "type": "string", "description": "Discord bot token" },
+      "guildId": { "type": "string", "description": "Target guild ID" }
+    }
+  }
+}

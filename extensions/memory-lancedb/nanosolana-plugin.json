@@ -1,0 +1,13 @@
+{
+  "id": "memory-lancedb",
+  "name": "Memory LanceDB",
+  "description": "NanoSolana vector memory with LanceDB — semantic search for ClawVault entries",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "dbPath": { "type": "string", "default": "~/.nanosolana/lancedb", "description": "LanceDB storage path" },
+      "embeddingModel": { "type": "string", "default": "openrouter/healer-alpha" }
+    }
+  }
+}

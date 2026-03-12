@@ -1,0 +1,10 @@
+{
+  "id": "minimax-portal-auth",
+  "name": "MiniMax Portal Auth",
+  "description": "NanoSolana MiniMax portal authentication bridge",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

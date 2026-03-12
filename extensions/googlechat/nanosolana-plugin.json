@@ -1,0 +1,11 @@
+{
+  "id": "googlechat",
+  "name": "Google Chat",
+  "description": "NanoSolana Google Chat channel — team trading notifications and portfolio alerts",
+  "channels": ["googlechat"],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

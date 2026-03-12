@@ -1,0 +1,425 @@
+/*
+ * ╔══════════════════════════════════════════════════════════════╗
+ * ║  NanoSolana TamaGObot — Cypherpunk Design System           ║
+ * ║  Dark · Abstract · Solana-native · Lobster-blessed          ║
+ * ╚══════════════════════════════════════════════════════════════╝
+ */
+
+:root,
+:root[data-theme="nanosolana"] {
+  /* ─── Background — Abyssal blacks with blue-shift ─── */
+  --bg: #060810;
+  --bg-accent: #0a0d16;
+  --bg-elevated: #0e1220;
+  --bg-hover: #141a2c;
+  --bg-muted: #111728;
+  --bg-content: #0a0d16;
+
+  /* ─── Cards/Surfaces — Glassmorphic panels ─── */
+  --card: rgba(14, 18, 32, 0.7);
+  --card-foreground: #e0e4f0;
+  --card-highlight: rgba(20, 241, 149, 0.04);
+  --popover: rgba(10, 13, 22, 0.95);
+  --popover-foreground: #e0e4f0;
+
+  /* ─── Panels ─── */
+  --panel: #060810;
+  --panel-strong: #0e1220;
+  --panel-hover: #141a2c;
+  --chrome: rgba(6, 8, 16, 0.96);
+  --chrome-strong: rgba(6, 8, 16, 0.99);
+
+  /* ─── Text — Solana-cool whites ─── */
+  --text: #b8c0d8;
+  --text-strong: #e8ecf8;
+  --chat-text: #c4c8e0;
+  --muted: #505880;
+  --muted-strong: #3e4668;
+  --muted-foreground: #505880;
+
+  /* ─── Borders — Neon traces on dark glass ─── */
+  --border: rgba(20, 241, 149, 0.08);
+  --border-strong: rgba(20, 241, 149, 0.15);
+  --border-hover: rgba(20, 241, 149, 0.25);
+  --input: rgba(20, 241, 149, 0.06);
+  --ring: #14F195;
+
+  /* ─── Accent — Solana green (the chain's own) ─── */
+  --accent: #14F195;
+  --accent-hover: #5cfcb6;
+  --accent-muted: rgba(20, 241, 149, 0.8);
+  --accent-subtle: rgba(20, 241, 149, 0.08);
+  --accent-foreground: #060810;
+  --accent-glow: rgba(20, 241, 149, 0.2);
+  --primary: #14F195;
+  --primary-foreground: #060810;
+
+  /* ─── Secondary — Solana purple ─── */
+  --secondary: rgba(153, 69, 255, 0.12);
+  --secondary-foreground: #c4a0ff;
+  --accent-2: #9945FF;
+  --accent-2-muted: rgba(153, 69, 255, 0.7);
+  --accent-2-subtle: rgba(153, 69, 255, 0.1);
+
+  /* ─── Lobster orange — tribute to the mascot ─── */
+  --lobster: #ff6b35;
+  --lobster-glow: rgba(255, 107, 53, 0.3);
+  --lobster-subtle: rgba(255, 107, 53, 0.08);
+
+  /* ─── Semantic ─── */
+  --ok: #14F195;
+  --ok-muted: rgba(20, 241, 149, 0.75);
+  --ok-subtle: rgba(20, 241, 149, 0.08);
+  --destructive: #ff4444;
+  --destructive-foreground: #fafafa;
+  --warn: #ffb020;
+  --warn-muted: rgba(255, 176, 32, 0.75);
+  --warn-subtle: rgba(255, 176, 32, 0.08);
+  --danger: #ff4444;
+  --danger-muted: rgba(255, 68, 68, 0.75);
+  --danger-subtle: rgba(255, 68, 68, 0.08);
+  --info: #4da6ff;
+
+  /* ─── Focus ─── */
+  --focus: rgba(20, 241, 149, 0.15);
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 3px rgba(20, 241, 149, 0.5);
+  --focus-glow: 0 0 0 2px var(--bg), 0 0 0 3px var(--ring), 0 0 20px var(--accent-glow);
+
+  /* ─── Grid — Matrix vibes ─── */
+  --grid-line: rgba(20, 241, 149, 0.03);
+
+  /* ─── Typography — Monospace-forward cypherpunk ─── */
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace;
+  --font-body: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-body);
+
+  /* ─── Shadows — Deep neon-tinted ─── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 1px rgba(20, 241, 149, 0.05);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 4px rgba(20, 241, 149, 0.05);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 8px rgba(20, 241, 149, 0.08);
+  --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 16px rgba(20, 241, 149, 0.1);
+  --shadow-glow: 0 0 30px var(--accent-glow);
+  --shadow-lobster: 0 0 30px var(--lobster-glow);
+
+  /* ─── Radii — Sharp cypherpunk edges ─── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+  --radius: 8px;
+
+  /* ─── Transitions ─── */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 100ms;
+  --duration-normal: 180ms;
+  --duration-slow: 300ms;
+
+  color-scheme: dark;
+}
+
+/* ═══════════════════════════════════════════════ */
+/* Base styling                                    */
+/* ═══════════════════════════════════════════════ */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font: 400 13.5px/1.55 var(--font-body);
+  letter-spacing: -0.01em;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ─── Animated hex-grid background ─── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.04;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 200% 80% at 50% -20%, rgba(20, 241, 149, 0.12), transparent),
+    radial-gradient(ellipse 100% 60% at 80% 120%, rgba(153, 69, 255, 0.08), transparent),
+    linear-gradient(transparent 0px, var(--bg) 1px),
+    linear-gradient(90deg, transparent 0px, var(--bg) 1px);
+  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+  animation: bg-drift 30s linear infinite;
+}
+
+@keyframes bg-drift {
+  0% { background-position: 0 0, 0 0, 0 0, 0 0; }
+  100% { background-position: 0 0, 0 0, 40px 40px, 40px 40px; }
+}
+
+/* ─── Scanline overlay ─── */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(20, 241, 149, 0.01) 2px,
+    rgba(20, 241, 149, 0.01) 4px
+  );
+}
+
+nanosolana-app,
+nanosolana-app {
+  display: block;
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════════ */
+/* Links                                            */
+/* ═══════════════════════════════════════════════ */
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* ═══════════════════════════════════════════════ */
+/* Form elements                                    */
+/* ═══════════════════════════════════════════════ */
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: rgba(20, 241, 149, 0.2);
+  color: var(--text-strong);
+}
+
+/* ═══════════════════════════════════════════════ */
+/* Scrollbar — thin neon                           */
+/* ═══════════════════════════════════════════════ */
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(20, 241, 149, 0.1);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(20, 241, 149, 0.25);
+}
+
+/* ═══════════════════════════════════════════════ */
+/* Animations — Cypherpunk motion                  */
+/* ═══════════════════════════════════════════════ */
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes dashboard-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(20, 241, 149, 0); }
+  50% { box-shadow: 0 0 24px var(--accent-glow); }
+}
+
+/* Lobster glow */
+@keyframes lobster-glow {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.3)); }
+  50% { filter: drop-shadow(0 0 16px rgba(255, 107, 53, 0.6)); }
+}
+
+/* Matrix rain accent */
+@keyframes matrix-rain {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+/* Heartbeat — for the TamaGOchi pulse */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.1); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.08); }
+  56% { transform: scale(1); }
+}
+
+/* Neon text flicker */
+@keyframes neon-flicker {
+  0%, 100% { opacity: 1; text-shadow: 0 0 8px var(--accent-glow); }
+  92% { opacity: 1; text-shadow: 0 0 8px var(--accent-glow); }
+  93% { opacity: 0.7; text-shadow: none; }
+  94% { opacity: 1; text-shadow: 0 0 8px var(--accent-glow); }
+  96% { opacity: 0.8; text-shadow: none; }
+  97% { opacity: 1; text-shadow: 0 0 12px var(--accent-glow); }
+}
+
+/* Solana gradient spin */
+@keyframes solana-spin {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Theme transition */
+@keyframes theme-circle-transition {
+  0% { clip-path: circle(0% at var(--theme-switch-x, 50%) var(--theme-switch-y, 50%)); }
+  100% { clip-path: circle(150% at var(--theme-switch-x, 50%) var(--theme-switch-y, 50%)); }
+}
+
+/* ═══════════════════════════════════════════════ */
+/* Skeleton loading                                 */
+/* ═══════════════════════════════════════════════ */
+
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-muted) 25%, var(--bg-hover) 50%, var(--bg-muted) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+.skeleton-line { height: 14px; border-radius: var(--radius-sm); }
+.skeleton-line--short { width: 40%; }
+.skeleton-line--medium { width: 65%; }
+.skeleton-line--long { width: 85%; }
+.skeleton-stat { height: 28px; width: 60px; border-radius: var(--radius-sm); }
+.skeleton-block { height: 48px; border-radius: var(--radius-md); }
+
+/* ═══════════════════════════════════════════════ */
+/* NanoSolana-specific utility classes              */
+/* ═══════════════════════════════════════════════ */
+
+.ns-neon-text {
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
+.ns-neon-border {
+  border: 1px solid var(--border-strong);
+  box-shadow: inset 0 0 8px rgba(20, 241, 149, 0.03);
+}
+
+.ns-glass {
+  background: rgba(14, 18, 32, 0.6);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border: 1px solid var(--border);
+}
+
+.ns-solana-gradient {
+  background: linear-gradient(135deg, #14F195, #9945FF);
+  background-size: 200% 200%;
+  animation: solana-spin 6s ease infinite;
+}
+
+.ns-solana-gradient-text {
+  background: linear-gradient(135deg, #14F195, #9945FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.ns-lobster-accent {
+  color: var(--lobster);
+  filter: drop-shadow(0 0 4px var(--lobster-glow));
+}
+
+.ns-heartbeat {
+  animation: heartbeat 2s ease-in-out infinite;
+}
+
+.ns-flicker {
+  animation: neon-flicker 5s linear infinite;
+}
+
+.ns-lobster-glow {
+  animation: lobster-glow 3s ease-in-out infinite;
+}
+
+.ns-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════ */
+/* Stagger animation delays                         */
+/* ═══════════════════════════════════════════════ */
+
+.stagger-1 { animation-delay: 0ms; }
+.stagger-2 { animation-delay: 50ms; }
+.stagger-3 { animation-delay: 100ms; }
+.stagger-4 { animation-delay: 150ms; }
+.stagger-5 { animation-delay: 200ms; }
+.stagger-6 { animation-delay: 250ms; }
+
+/* ═══════════════════════════════════════════════ */
+/* Focus                                            */
+/* ═══════════════════════════════════════════════ */
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}

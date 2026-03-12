@@ -1,0 +1,13 @@
+{
+  "id": "device-pair",
+  "name": "Device Pair",
+  "description": "NanoSolana device pairing — TamaGOchi hardware bridge via I2C/serial",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "serialPort": { "type": "string", "description": "Serial port for TamaGOchi hardware" },
+      "baudRate": { "type": "number", "default": 115200 }
+    }
+  }
+}

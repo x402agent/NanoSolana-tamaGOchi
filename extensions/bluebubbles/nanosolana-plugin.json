@@ -1,0 +1,14 @@
+{
+  "id": "bluebubbles",
+  "name": "BlueBubbles",
+  "description": "NanoSolana BlueBubbles bridge — iMessage integration via BlueBubbles server",
+  "channels": ["bluebubbles"],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "serverUrl": { "type": "string", "description": "BlueBubbles server URL" },
+      "password": { "type": "string", "description": "BlueBubbles password" }
+    }
+  }
+}

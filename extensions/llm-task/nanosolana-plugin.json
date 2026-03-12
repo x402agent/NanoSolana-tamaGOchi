@@ -1,0 +1,13 @@
+{
+  "id": "llm-task",
+  "name": "LLM Task",
+  "description": "NanoSolana LLM task runner — autonomous multi-step research and trading pipelines",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "maxSteps": { "type": "number", "default": 10, "description": "Max autonomous steps per task" },
+      "model": { "type": "string", "default": "openrouter/healer-alpha" }
+    }
+  }
+}

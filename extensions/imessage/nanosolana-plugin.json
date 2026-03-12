@@ -1,0 +1,11 @@
+{
+  "id": "imessage",
+  "name": "iMessage",
+  "description": "NanoSolana iMessage channel — trading alerts and portfolio updates via Apple Messages",
+  "channels": ["imessage"],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "phone-control",
+  "name": "Phone Control",
+  "description": "NanoSolana phone control — remote agent management via phone calls/SMS",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

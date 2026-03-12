@@ -1,0 +1,46 @@
+node_modules/
+**/node_modules/
+dist/
+.env
+.env.local
+*.enc
+*.log
+.DS_Store
+**/.DS_Store
+coverage/
+.turbo/
+tmp/
+.nanosolana/
+.tsbuildinfo
+pnpm-lock.yaml
+bun.lock
+bun.lockb
+package-lock.json
+__pycache__/
+*.pyc
+.pnpm-store
+
+# Build artifacts
+*.bun-build
+bin/
+
+# Local state
+.local/
+.dev-state
+memory/
+.agent/*.json
+!.agent/workflows/
+local/
+
+# IDE
+.idea/
+.vscode/
+.claude/
+.agents/
+.serena/
+
+# Vendor
+vendor/
+
+# Generated
+dist/protocol.schema.json

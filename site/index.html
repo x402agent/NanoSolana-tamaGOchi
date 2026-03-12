@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NanoSolana — Autonomous Solana Trading Intelligence</title>
+  <meta name="description" content="Deploy your own TamaGObot trading agent on Solana with one command. Autonomous OODA trading, ClawVault memory, and a virtual pet soul." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-abyss: #060810;
+      --bg-surface: #0a0e1a;
+      --bg-card: rgba(15, 20, 40, 0.85);
+      --solana-green: #14F195;
+      --solana-purple: #9945FF;
+      --lobster-orange: #FF6B35;
+      --text-primary: #e8ecf4;
+      --text-secondary: #8892b0;
+      --border-glow: rgba(20, 241, 149, 0.15);
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-body: 'Space Grotesk', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-abyss);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated hex-grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(20, 241, 149, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 50%, rgba(153, 69, 255, 0.03) 0%, transparent 50%),
+        repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg 60deg, rgba(20, 241, 149, 0.01) 60deg 120deg) 0 0 / 80px 80px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Header ────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 4rem 0 3rem;
+    }
+
+    .hero__logo {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 2px solid var(--solana-green);
+      box-shadow: 0 0 40px rgba(20, 241, 149, 0.2), 0 0 80px rgba(153, 69, 255, 0.1);
+      margin-bottom: 1.5rem;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .hero__title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--solana-green), var(--solana-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero__subtitle {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+
+    /* ── Install box ───────────────────────── */
+    .install-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin: 2rem auto;
+      max-width: 700px;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .install-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--solana-green), var(--solana-purple), var(--lobster-orange));
+    }
+
+    .install-box__label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--solana-green);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+
+    .install-box__cmd {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .install-box__code {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      flex: 1;
+      overflow-x: auto;
+      white-space: nowrap;
+      user-select: all;
+    }
+
+    .install-box__copy {
+      background: linear-gradient(135deg, var(--solana-green), var(--solana-purple));
+      color: var(--bg-abyss);
+      border: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+
+    .install-box__copy:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(20, 241, 149, 0.3);
+    }
+
+    .install-box__copy:active { transform: translateY(0); }
+
+    .install-box__or {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      margin: 1rem 0;
+    }
+
+    /* ── Feature grid ──────────────────────── */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 3rem 0;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
+      transition: border-color 0.3s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--solana-green);
+      transform: translateY(-4px);
+    }
+
+    .feature-card__icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-card__title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--solana-green);
+    }
+
+    .feature-card__desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ── How it works ──────────────────────── */
+    .steps {
+      margin: 3rem 0;
+    }
+
+    .steps__title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, var(--solana-green), var(--solana-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .step {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .step__num {
+      font-family: var(--font-mono);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--solana-green);
+      background: rgba(20, 241, 149, 0.1);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid var(--border-glow);
+    }
+
+    .step__content h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .step__content p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .step__content code {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--solana-green);
+      background: rgba(20, 241, 149, 0.08);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+    }
+
+    /* ── Footer ────────────────────────────── */
+    .footer {
+      text-align: center;
+      padding: 3rem 0 2rem;
+      border-top: 1px solid var(--border-glow);
+      margin-top: 3rem;
+    }
+
+    .footer__brand {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .footer__brand span {
+      color: var(--lobster-orange);
+    }
+
+    /* ── Responsive ────────────────────────── */
+    @media (max-width: 600px) {
+      .hero__title { font-size: 2.2rem; }
+      .install-box__cmd { flex-direction: column; }
+      .install-box__code { width: 100%; }
+      .install-box__copy { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Hero -->
+    <section class="hero">
+      <img src="lobster-logo.png" alt="NanoSolana Lobster" class="hero__logo" />
+      <h1 class="hero__title">NanoSolana</h1>
+      <p class="hero__subtitle">
+        Deploy your own autonomous Solana trading agent with a virtual pet soul.
+        One command. One wallet. One TamaGObot.
+      </p>
+    </section>
+
+    <!-- Install -->
+    <div class="install-box">
+      <div class="install-box__label">▸ one-shot install</div>
+      <div class="install-box__cmd">
+        <code class="install-box__code" id="install-cmd">curl -fsSL https://nanosolana.ai/install.sh | bash</code>
+        <button class="install-box__copy" onclick="copyCmd()">Copy</button>
+      </div>
+      <div class="install-box__or">— or —</div>
+      <div class="install-box__cmd">
+        <code class="install-box__code" id="npm-cmd">npx nanosolana init</code>
+        <button class="install-box__copy" onclick="copyNpm()">Copy</button>
+      </div>
+    </div>
+
+    <!-- What happens -->
+    <section class="steps">
+      <h2 class="steps__title">What happens when you run it</h2>
+      <div class="step">
+        <div class="step__num">1</div>
+        <div class="step__content">
+          <h3>🔑 Wallet Generation</h3>
+          <p>A fresh Solana Ed25519 keypair is generated and encrypted in your local vault (AES-256-GCM). Your private key never leaves your machine.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step__num">2</div>
+        <div class="step__content">
+          <h3>🎨 Birth Certificate NFT</h3>
+          <p>A gasless NFT is minted on Solana devnet via Metaplex — your TamaGObot's on-chain identity card. Automatically airdropped with devnet SOL.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step__num">3</div>
+        <div class="step__content">
+          <h3>🐾 TamaGOchi Egg</h3>
+          <p>Your pet starts as an egg. It evolves based on your trading performance — through Larva, Juvenile, Adult, and Alpha stages. Neglect it and it becomes a Ghost.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step__num">4</div>
+        <div class="step__content">
+          <h3>🤖 OODA Loop Starts</h3>
+          <p>The agent begins its Observe → Orient → Decide → Act → Learn cycle. Connect your <code>OPENROUTER_API_KEY</code>, <code>HELIUS_RPC_URL</code>, and <code>BIRDEYE_API_KEY</code> to go live.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-card__icon">🧠</div>
+        <div class="feature-card__title">ClawVault Memory</div>
+        <div class="feature-card__desc">3-tier epistemological memory: KNOWN (60s), LEARNED (7d), INFERRED (3d). Experience replay and contradiction detection.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">📊</div>
+        <div class="feature-card__title">RSI + EMA + ATR</div>
+        <div class="feature-card__desc">Auto-optimizing strategy engine with Jupiter swap execution, Kelly Criterion sizing, and configurable stop-loss/take-profit.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">🌐</div>
+        <div class="feature-card__title">Mesh Networking</div>
+        <div class="feature-card__desc">TamaGObots find each other via Tailscale. Shared signals, lessons, and memory across the agent mesh.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">💬</div>
+        <div class="feature-card__title">Multi-Channel</div>
+        <div class="feature-card__desc">Telegram (persistent), Discord, Nostr, iMessage, and 14+ extension plugins. Full conversation memory.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">🔐</div>
+        <div class="feature-card__title">Security First</div>
+        <div class="feature-card__desc">AES-256-GCM vault, HMAC-SHA256 gateway auth, timing-safe comparisons, rate limiting. Wallet key never leaves the vault.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">🦞</div>
+        <div class="feature-card__title">Cypherpunk UI</div>
+        <div class="feature-card__desc">Dark glassmorphic dashboard with Solana green/purple palette, neon animations, and a lobster mascot.</div>
+      </div>
+    </div>
+
+    <!-- Quick start -->
+    <section class="steps">
+      <h2 class="steps__title">Quick Start</h2>
+      <div class="step">
+        <div class="step__num">→</div>
+        <div class="step__content">
+          <h3>Configure API keys</h3>
+          <p><code>nanosolana vault set OPENROUTER_API_KEY sk-or-v1-...</code><br/>
+          <code>nanosolana vault set HELIUS_RPC_URL https://mainnet.helius-rpc.com/?api-key=...</code><br/>
+          <code>nanosolana vault set BIRDEYE_API_KEY ...</code></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step__num">→</div>
+        <div class="step__content">
+          <h3>Start trading</h3>
+          <p><code>nanosolana run</code> — starts the OODA loop<br/>
+          <code>nanosolana trade status</code> — check signals and P&L<br/>
+          <code>nanosolana pet status</code> — see your TamaGOchi</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p class="footer__brand">NanoSolana Labs · <span>🦞</span> TamaGObot · Built for the Solana ecosystem</p>
+    </footer>
+  </div>
+
+  <script>
+    function copyCmd() {
+      navigator.clipboard.writeText('curl -fsSL https://nanosolana.ai/install.sh | bash');
+      const btn = event.target;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 1500);
+    }
+    function copyNpm() {
+      navigator.clipboard.writeText('npx nanosolana init');
+      const btn = event.target;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 1500);
+    }
+  </script>
+</body>
+</html>

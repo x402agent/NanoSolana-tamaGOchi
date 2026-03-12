@@ -1,0 +1,13 @@
+{
+  "id": "memory-core",
+  "name": "Memory Core",
+  "description": "NanoSolana ClawVault memory extension — epistemological 3-tier memory integration",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "vaultPath": { "type": "string", "default": "~/.nanosolana/clawvault", "description": "ClawVault storage path" },
+      "decayEnabled": { "type": "boolean", "default": true }
+    }
+  }
+}
