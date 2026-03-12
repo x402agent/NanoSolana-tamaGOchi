@@ -583,7 +583,21 @@ X402_PAYWALL_ENABLED=true ./build/mawdbot daemon
 
 ---
 
+## 🔒 Security
+
+MawdBot uses **zero hardcoded secrets**. All API keys and credentials come from environment variables (`.env` file), which is gitignored.
+
+- See [SECURITY.md](SECURITY.md) for the full security policy and vulnerability reporting
+- See [.env.example](.env.example) for the complete environment variable reference
+- Private keys are never logged — only public addresses appear in output
+
+---
+
 ## 🤝 Contributing
+
+We'd love your contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide.
+
+**Quick version:**
 
 1. Fork the repo
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -591,6 +605,8 @@ X402_PAYWALL_ENABLED=true ./build/mawdbot daemon
 4. Commit your changes (`git commit -m 'Add amazing feature'`)
 5. Push to the branch (`git push origin feature/amazing-feature`)
 6. Open a Pull Request
+
+> ⚠️ **Security rule:** Never commit API keys or `.env` files. See [SECURITY.md](SECURITY.md).
 
 ---
 

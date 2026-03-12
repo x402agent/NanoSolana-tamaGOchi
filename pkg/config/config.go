@@ -448,6 +448,15 @@ func applyEnvOverrides(cfg *Config) {
 	if v := os.Getenv("ASTER_API_KEY"); v != "" {
 		cfg.Solana.AsterAPIKey = v
 	}
+	if v := os.Getenv("ASTER_API_SECRET"); v != "" {
+		cfg.Solana.AsterAPISecret = v
+	}
+	if v := os.Getenv("SOLANA_WALLET_PUBKEY"); v != "" {
+		cfg.Solana.WalletPubkey = v
+	}
+	if v := os.Getenv("ANTHROPIC_API_KEY"); v != "" {
+		cfg.Providers.Anthropic.APIKey = v
+	}
 	if v := os.Getenv("TELEGRAM_BOT_TOKEN"); v != "" {
 		cfg.Channels.Telegram.Token = v
 	}
