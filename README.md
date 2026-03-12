@@ -22,8 +22,10 @@
   <img src="https://img.shields.io/badge/Binary-9.6MB-14F195?style=flat" alt="Size">
   <img src="https://img.shields.io/badge/x402-Payment%20Protocol-FF6B35?style=flat" alt="x402">
   <img src="https://img.shields.io/badge/Solana-Mainnet-9945FF?style=flat&logo=solana&logoColor=white" alt="Solana">
+  <img src="https://img.shields.io/badge/NVIDIA-Orin%20Nano%20%C2%B7%20Spark-76B900?style=flat&logo=nvidia&logoColor=white" alt="NVIDIA">
+  <img src="https://img.shields.io/badge/Brev.dev-GPU%20Cloud-4A90D9?style=flat" alt="Brev">
+  <img src="https://img.shields.io/badge/Arduino-Modulino%C2%AE%20I2C-00979D?style=flat&logo=arduino&logoColor=white" alt="Arduino">
   <img src="https://img.shields.io/badge/Arch-x86__64%20ARM64%20RISC--V-blue?style=flat" alt="Arch">
-  <img src="https://img.shields.io/badge/Hardware-Modulino%C2%AE%20I2C-FF4060?style=flat" alt="Hardware">
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat" alt="License">
 </p>
 
@@ -33,8 +35,9 @@
 
 ## Overview
 
-NanoSolana TamaGOchi is an **ultra-lightweight autonomous Solana trading GoBot** built in pure Go. It deploys as a single 9.6MB binary on edge hardware like the **NVIDIA Orin Nano** or any Linux/macOS machine, running a full OODA trading loop with real-time market data, on-chain execution, **x402 payment protocol** for paywalled APIs, and a virtual **TamaGOchi** pet whose mood and evolution are driven by live trading performance.
+**NanoSolana TamaGOchi** is an ultra-lightweight autonomous Solana trading **GoBot** built in pure Go. It ships as a single **9.6MB binary** that runs on anything from an **NVIDIA Orin Nano** (via [Brev.dev](https://brev.dev) GPU cloud or bare-metal [NVIDIA Spark](https://developer.nvidia.com)) to a **Raspberry Pi** to any laptop — executing a full OODA trading loop with real-time market data, on-chain execution, **x402 payment protocol** for monetized APIs, and a virtual **TamaGOchi** pet whose mood and evolution are driven by live trading performance.
 
+The GoBot bridges **software intelligence** (LLM-powered OODA agent, RSI/EMA/ATR strategy, ClawVault memory) with **physical hardware** (Arduino Modulino® I2C sensor cluster) — LEDs pulse with trade signals, buzzers chirp on wins, a rotary knob tunes RSI thresholds in real-time, and a 6-axis IMU auto-pauses trading if you tilt the device.
 
 ```
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
@@ -45,10 +48,15 @@ NanoSolana TamaGOchi is an **ultra-lightweight autonomous Solana trading GoBot**
 └──────────────┘     └──────────────┘     └──────┬───────┘
                                                   │
 ┌──────────────┐     ┌──────────────┐     ┌───────▼──────┐
-│  🦞 TAMAGOCHI│◀────│   LEARN      │◀────│   ACT        │
+│ 🐹 TAMAGOCHI │◀────│   LEARN      │◀────│   ACT        │
 │  Pet Engine  │     │  Auto-Optim  │     │  Jupiter Swap│
 │  Mood/XP/Evo │     │  Vault Store │     │  SOL Transfer│
 └──────────────┘     └──────────────┘     └──────────────┘
+        │                                         │
+┌───────▼─────────────────────────────────────────▼──────┐
+│            🎛️ Arduino Modulino® Hardware Layer          │
+│  Pixels · Buzzer · Buttons · Knob · IMU · Thermo · ToF │
+└────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -58,14 +66,16 @@ NanoSolana TamaGOchi is an **ultra-lightweight autonomous Solana trading GoBot**
 | Feature | Description |
 |---------|-------------|
 | 🔄 **OODA Loop** | Autonomous Observe → Orient → Decide → Act trading cycle |
-| 🦞 **TamaGOchi** | Virtual pet evolves with your agent: Egg → Larva → Juvenile → Adult → Alpha |
+| 🐹 **TamaGOchi** | Virtual pet evolves with your GoBot: Egg → Larva → Juvenile → Adult → Alpha |
 | 🧠 **ClawVault** | 3-tier memory (known / learned / inferred) with epistemological honesty |
 | 📊 **Strategy** | RSI + EMA cross + ATR signal engine with auto-optimizer |
 | 🔑 **Agentic Wallet** | Auto-generates & persists Solana keypair on first boot |
 | 🌐 **Native RPC** | Direct Solana integration via `solana-go` + Helius endpoints |
 | 📱 **Telegram Bot** | Zero-dep bot channel with markdown→HTML, commands, allowlist |
 | 💰 **x402 Protocol** | Multi-chain USDC payment gateway (Solana, Base, Polygon, Avalanche) |
-| 🎛️ **Hardware I2C** | Arduino Modulino® sensors: LEDs, buzzer, buttons, knob, IMU, thermo |
+| 🎛️ **Arduino I2C** | Modulino® sensors: 8× RGB LEDs, buzzer, 3× buttons, rotary knob, IMU, thermo, ToF |
+| 🟢 **NVIDIA Orin Nano** | Native ARM64 binary for Jetson edge AI hardware |
+| ☁️ **Brev.dev** | One-click GPU cloud deployment for NVIDIA Spark instances |
 | 🐳 **Docker** | Multi-stage Alpine image ~15MB total |
 | ⚡ **Cross-Compile** | x86_64, ARM64 (Orin/RPi), RISC-V targets |
 
@@ -81,41 +91,58 @@ NanoSolana TamaGOchi is an **ultra-lightweight autonomous Solana trading GoBot**
 ### 1. Clone & Build
 
 ```bash
-git clone https://github.com/x402agent/mawdbot-go.git
-cd mawdbot-go
+git clone https://github.com/x402agent/NanoSolana-tamaGOchi.git
+cd NanoSolana-tamaGOchi
 cp .env.example .env   # Edit with your API keys
 make build
 ```
 
-### 2. Run the Daemon
+### 2. Run the GoBot
 
 ```bash
-# Full autonomous agent (wallet + RPC + TamaGOchi + Telegram + x402)
+# Full autonomous GoBot (wallet + RPC + TamaGOchi + Telegram + x402)
 ./build/mawdbot daemon
 
-# Or start the OODA trading loop directly
+# Start the OODA trading loop directly
 ./build/mawdbot ooda --interval 60
+
+# Simulated mode (no real money)
+./build/mawdbot ooda --sim --interval 30
 
 # Check your pet's status
 ./build/mawdbot pet
 
-# x402 paywall mode
+# x402 paywall mode (monetize your agent's API)
 X402_PAYWALL_ENABLED=true ./build/mawdbot daemon
 ```
 
 ### 3. Docker
 
 ```bash
-docker build -t mawdbot .
-docker run --env-file .env mawdbot
+docker build -t nanosolana .
+docker run --env-file .env nanosolana
 ```
 
 ### 4. Deploy to NVIDIA Orin Nano
 
 ```bash
+# Cross-compile for ARM64
 make orin
-scp build/mawdbot-orin user@orin-nano:~/mawdbot
-ssh user@orin-nano './mawdbot daemon'
+
+# Deploy to your Orin Nano (bare-metal or via Brev.dev)
+scp build/mawdbot-orin user@orin-nano:~/nanosolana
+ssh user@orin-nano './nanosolana daemon'
+```
+
+### 5. Deploy to Brev.dev (NVIDIA Spark GPU Cloud)
+
+```bash
+# Create a Brev instance with NVIDIA GPU
+brev create nanosolana --gpu
+
+# SSH in and run
+brev shell nanosolana
+./nanosolana daemon
 ```
 
 ---
@@ -123,76 +150,70 @@ ssh user@orin-nano './mawdbot daemon'
 ## 📁 Project Structure
 
 ```
-mawdbot-go/
+NanoSolana-tamaGOchi/
 ├── main.go                    # CLI entry point (cobra commands)
 ├── hardware.go                # Hardware CLI subcommands
 ├── go.mod / go.sum            # Go module + dependencies
 ├── Makefile                   # Build targets (all platforms)
 ├── Dockerfile                 # Multi-stage Alpine build
 ├── .env.example               # Environment variable template
+├── SECURITY.md                # Security policy & secret handling
+├── CONTRIBUTING.md            # Contributor guide
 ├── schema.sql                 # Supabase database schema
-├── SOUL.md                    # Agent personality & trading philosophy
+├── SOUL.md                    # GoBot personality & trading philosophy
 │
 ├── cmd/
 │   ├── mawdbot/               # Primary CLI entry point (make build)
-│   │   ├── main.go            #    All commands: daemon, ooda, pet, solana, etc.
-│   │   └── hardware.go        #    Hardware CLI subcommands
+│   │   ├── main.go            #   All commands: daemon, ooda, pet, solana, hardware
+│   │   └── hardware.go        #   Arduino Modulino® I2C commands (scan/test/monitor/demo)
 │   └── mawdbot-tui/           # TUI launcher
 │
 ├── pkg/                       # Core packages
-│   ├── daemon/                # 🌐 Nano Solana daemon (orchestrator)
-│   │   └── daemon.go          #    Wallet + RPC + TamaGOchi + Telegram + x402
+│   ├── daemon/                # 🌐 NanoSolana daemon (orchestrator)
+│   │   └── daemon.go          #   Wallet + RPC + TamaGOchi + Telegram + x402
 │   │
 │   ├── agent/                 # 🧠 OODA agent core
-│   │   ├── ooda.go            #    Trading loop logic
-│   │   └── hooks.go           #    AgentHooks interface
+│   │   ├── ooda.go            #   Trading loop logic
+│   │   └── hooks.go           #   AgentHooks interface (→ hardware adapter)
 │   │
 │   ├── solana/                # ⛓️ Solana integration
-│   │   ├── wallet.go          #    Agentic wallet (auto-gen + persist)
-│   │   ├── rpc.go             #    Native RPC client (solana-go)
-│   │   ├── programs.go        #    Program IDs, mints, PDA helpers
-│   │   └── tx.go              #    Transaction builders (swap, transfer)
+│   │   ├── wallet.go          #   Agentic wallet (auto-gen + persist)
+│   │   ├── rpc.go             #   Native RPC client (solana-go)
+│   │   ├── clients.go         #   Helius, Birdeye, Jupiter, Aster clients
+│   │   ├── programs.go        #   Program IDs, mints, PDA helpers
+│   │   └── tx.go              #   Transaction builders (swap, transfer)
 │   │
-│   ├── tamagochi/             # 🦞 Nano Solana TamaGOchi
-│   │   └── tamagochi.go       #    Pet engine (mood, XP, evolution)
+│   ├── tamagochi/             # 🐹 TamaGOchi pet engine
+│   │   └── tamagochi.go       #   Mood, XP, evolution, on-chain performance
 │   │
 │   ├── strategy/              # 📈 Trading strategy
-│   │   └── strategy.go        #    RSI + EMA + ATR + auto-optimizer
+│   │   └── strategy.go        #   RSI + EMA + ATR + auto-optimizer
 │   │
-│   ├── hardware/              # 🎛️ Arduino Modulino® I2C
-│   │   ├── modulino.go        #    Sensor drivers (7 devices)
-│   │   └── adapter.go         #    OODA → hardware event mapping
+│   ├── hardware/              # 🎛️ Arduino Modulino® I2C drivers
+│   │   ├── modulino.go        #   7 sensor drivers (Pixels, Buzzer, Buttons, Knob, IMU, Thermo, ToF)
+│   │   └── adapter.go         #   OODA → hardware event mapping (signal→LED, trade→buzzer)
 │   │
 │   ├── channels/              # 📡 Multi-channel gateway
-│   │   ├── channels.go        #    Channel/Manager interface
-│   │   └── telegram/          #    Telegram bot (zero-dep HTTP)
-│   │       ├── telegram.go    #    Long polling, commands, markdown
-│   │       └── api.go         #    Raw Telegram Bot API client
+│   │   ├── channels.go        #   Channel/Manager interface
+│   │   └── telegram/          #   Telegram bot (zero-dep HTTP)
 │   │
 │   ├── x402/                  # 💰 x402 payment protocol
-│   │   └── x402.go            #    SVM signer, USDC middleware, paywall server
+│   │   └── x402.go            #   SVM signer, USDC middleware, paywall server
 │   │
 │   ├── bus/                   # 🔀 Message bus (inbound/outbound)
 │   ├── config/                # ⚙️ Configuration + env overrides
-│   ├── logger/                # 📝 Structured logging
 │   ├── memory/                # 💾 ClawVault persistent memory
-│   ├── research/              # 🔬 Token research engine
-│   ├── aster/                 # 📊 Aster DEX client
-│   ├── health/                # ❤️ Health check endpoint
-│   ├── heartbeat/             # 💓 Periodic heartbeat
+│   ├── aster/                 # 📊 Aster DEX perp futures client
 │   └── ...                    # (20+ more packages)
 │
 ├── internal/
-│   └── hal/                   # Hardware abstraction layer
-│       ├── hal.go             #    HAL interface
-│       ├── hal_linux.go       #    Linux I2C implementation
-│       └── hal_stub.go        #    Stub for non-Linux platforms
+│   └── hal/                   # Hardware Abstraction Layer
+│       ├── hal.go             #   HAL interface
+│       ├── hal_linux.go       #   Linux I2C implementation (Orin Nano / RPi)
+│       └── hal_stub.go        #   Stub for non-Linux (macOS, Windows)
 │
 ├── docs/
 │   └── HARDWARE.md            # Modulino® wiring & setup guide
-│
-├── scripts/
-│   └── launch.mjs             # Animated TUI launcher (Node.js)
 │
 └── web/                       # Dashboard (optional)
     ├── frontend/              # React frontend
@@ -201,16 +222,16 @@ mawdbot-go/
 
 ---
 
-## 🦞 The TamaGOchi
+## 🐹 The TamaGOchi
 
-Your agent has a virtual pet whose life is driven by **real on-chain performance**:
+Your GoBot has a virtual pet whose life is driven by **real on-chain performance**:
 
 | Stage | Emoji | Requirement |
 |-------|-------|-------------|
 | Egg | 🥚 | First boot (no wallet yet) |
 | Larva | 🦐 | Wallet created, no trades |
-| Juvenile | 🦞 | 10+ trades completed |
-| Adult | 🦞 | 50+ trades, >40% win rate |
+| Juvenile | 🐹 | 10+ trades completed |
+| Adult | 🐹 | 50+ trades, >40% win rate |
 | Alpha | 👑 | 200+ trades, >55% WR, profitable |
 | Ghost | 💀 | Wallet drained or offline >24h |
 
@@ -220,7 +241,7 @@ Your agent has a virtual pet whose life is driven by **real on-chain performance
 ```bash
 $ mawdbot pet
 
-🥚 MawdBot  😐
+🥚 NanoSolana  😐
 
 📊 Stage: egg · Level 1 · XP 0
 😐 Mood: neutral
@@ -240,7 +261,7 @@ State persists to `~/.mawdbot/tamagochi.json`.
 
 ## 🔑 Agentic Wallet
 
-On first boot, MawdBot automatically generates a Solana keypair:
+On first boot, NanoSolana automatically generates a Solana keypair:
 
 ```
 ~/.mawdbot/wallet/agent-wallet.json    # Standard Solana keygen format
@@ -263,6 +284,80 @@ $ mawdbot solana wallet
 
 ---
 
+## 🎛️ Hardware Integration — Arduino Modulino® + NVIDIA Orin Nano
+
+NanoSolana TamaGOchi bridges **software intelligence** with **physical hardware** via the Arduino Modulino® I2C sensor cluster. The GoBot talks to 7 sensors over a single Qwiic/I2C cable connected to the NVIDIA Orin Nano (JetPack 6.x), NVIDIA Spark, Raspberry Pi, or any Linux SBC.
+
+### Supported Hardware Platforms
+
+| Platform | Arch | Deploy Method |
+|----------|------|--------------|
+| **NVIDIA Orin Nano** | ARM64 | `make orin` → bare-metal or [JetPack 6.x](https://developer.nvidia.com/embedded/jetpack) |
+| **NVIDIA Spark** | ARM64 | Via [Brev.dev](https://brev.dev) GPU cloud instances |
+| **Raspberry Pi 4/5** | ARM64 | `make rpi` → direct I2C on GPIO |
+| **Any Linux SBC** | ARM64/x86 | Standard `/dev/i2c-*` interface |
+| **macOS / Windows** | x86/ARM | Runs in **stub mode** (no I2C, software-only) |
+
+### Arduino Modulino® Sensor Cluster
+
+| Sensor | I2C Addr | Chip | GoBot Function |
+|--------|----------|------|---------------|
+| **Pixels** (8× RGB LED) | `0x6C` | LC8822 | Status display: idle 🔵 · signal 🟣 · trade 🟡 · win 🟢 · loss 🔴 |
+| **Buzzer** | `0x3C` | PKLCS1212E | Audio alerts for signals, trades, wins, losses, errors |
+| **Buttons** (3× push) | `0x7C` | — | A = trigger OODA cycle · B = toggle sim/live · C = emergency stop |
+| **Knob** (rotary encoder) | `0x76` | PEC11J | Real-time RSI threshold tuning (turn = adjust, press = reset) |
+| **Thermo** | `0x44` | HS3003 | Temperature + humidity → logged to ClawVault |
+| **Distance** (ToF) | `0x29` | VL53L4CD | Proximity wake-up (<5cm triggers cycle) |
+| **Movement** (6-axis IMU) | `0x6A` | LSM6DSOX | Tilt detection → auto-pause trading |
+
+### Hardware CLI
+
+```bash
+# Scan I2C bus for connected Modulino® sensors
+mawdbot hardware scan --bus 1
+
+# Run full hardware self-test (LED sweep + buzzer + sensor reads)
+mawdbot hardware test --bus 1
+
+# Live sensor monitor (real-time readings, Ctrl+C to stop)
+mawdbot hardware monitor --bus 1 --interval 200
+
+# Play trading event demo animations
+# (startup → signal → trade open → win → loss → learning → error → idle)
+mawdbot hardware demo --bus 1
+
+# OODA loop with hardware integration
+mawdbot ooda --hw-bus 1 --interval 30
+
+# OODA loop without hardware (software-only)
+mawdbot ooda --no-hw --interval 60
+```
+
+### How Hardware Integrates with the OODA Loop
+
+```
+OODA Event              │  Pixels (8× LED)    │  Buzzer           │  Knob
+─────────────────────────┼──────────────────────┼────────────────────┼──────────────────
+Agent idle               │  Slow blue pulse     │  —                │  —
+Signal detected          │  Purple flash        │  Double chirp     │  —
+Trade opened             │  Yellow sweep        │  Rising tone      │  —
+Win (+PnL)               │  Green cascade       │  Victory fanfare  │  —
+Loss (-PnL)              │  Red blink ×2        │  Low buzz         │  —
+Learning cycle           │  Purple pulse ×3     │  —                │  —
+Error                    │  Solid red           │  Error tone       │  —
+Knob turned              │  —                   │  —                │  RSI ± adjust
+Knob pressed             │  —                   │  —                │  RSI reset
+Button A                 │  —                   │  —                │  Trigger cycle
+Button B                 │  —                   │  —                │  Toggle sim/live
+Button C                 │  —                   │  —                │  Emergency stop
+```
+
+All hardware **gracefully degrades** — no sensors connected? Runs in stub mode with zero errors.
+
+See [docs/HARDWARE.md](docs/HARDWARE.md) for wiring diagrams and physical setup.
+
+---
+
 ## 📱 Telegram Bot
 
 Set `TELEGRAM_BOT_TOKEN` in `.env` and the daemon auto-starts the bot:
@@ -270,7 +365,7 @@ Set `TELEGRAM_BOT_TOKEN` in `.env` and the daemon auto-starts the bot:
 | Command | Description |
 |---------|-------------|
 | `/start` | Welcome & command list |
-| `/status` | Agent status, wallet balance, TamaGOchi |
+| `/status` | GoBot status, wallet balance, TamaGOchi |
 | `/wallet` | Wallet address & Solscan link |
 | `/pet` | Full TamaGOchi status |
 | `/x402` | x402 payment gateway status |
@@ -289,40 +384,9 @@ Bot features:
 
 ---
 
-## 🎛️ Hardware Integration
-
-MawdBot supports the **Arduino Modulino® I2C sensor cluster** on the Orin Nano:
-
-| Sensor | Addr | Trading Function |
-|--------|------|-----------------|
-| Pixels (8× RGB) | `0x6C` | Status LEDs: idle/signal/trade/win/loss |
-| Buzzer | `0x3C` | Audio alerts for signals, trades, errors |
-| Buttons (3×) | `0x7C` | A=trigger cycle, B=toggle mode, C=e-stop |
-| Knob | `0x76` | Real-time RSI threshold tuning |
-| Thermo | `0x44` | Environment logging to ClawVault |
-| Distance | `0x29` | Proximity wake-up (<5cm) |
-| Movement | `0x6A` | Tilt detection → auto-pause trading |
-
-```bash
-# Scan for connected sensors
-mawdbot hardware scan
-
-# Run hardware demo (LED sweep + buzzer)
-mawdbot hardware demo
-
-# OODA loop with hardware integration
-mawdbot ooda --hw-bus 1 --interval 30
-```
-
-All hardware gracefully degrades — no sensors? Runs in stub mode.
-
-See [docs/HARDWARE.md](docs/HARDWARE.md) for wiring diagrams and setup.
-
----
-
 ## ⚙️ Configuration
 
-MawdBot uses a layered configuration system:
+NanoSolana uses a layered configuration system:
 
 1. **Defaults** — sane defaults baked into the binary
 2. **Config file** — `~/.mawdbot/config.json`
@@ -346,16 +410,13 @@ Key environment variables:
 | `BIRDEYE_API_KEY` | Optional | Market data & analytics |
 | `JUPITER_API_KEY` | Optional | DEX swap execution |
 | `SOLANA_PRIVATE_KEY` | Optional | Use existing wallet (base58) |
+| `OPENROUTER_API_KEY` | Optional | LLM agent responses |
+| `ANTHROPIC_API_KEY` | Optional | LLM agent responses (Anthropic) |
 | `X402_FACILITATOR_URL` | Optional | x402 facilitator (default: facilitator.x402.rs) |
 | `X402_RECIPIENT_ADDRESS` | Optional | Payment recipient (default: agent wallet) |
 | `X402_PAYMENT_AMOUNT` | Optional | USDC per API call (default: 0.001) |
 | `X402_NETWORK` | Optional | Network: solana, solana-devnet |
-| `X402_CHAINS` | Optional | Chains to accept payments (default: solana) |
 | `X402_PAYWALL_ENABLED` | Optional | Start local paywall server |
-| `X402_PAYWALL_PORT` | Optional | Paywall server port (default: 18402) |
-| `X402_PROXY_ENABLED` | Optional | Enable facilitator proxy |
-| `X402_PROXY_PORT` | Optional | Proxy port (default: 18403) |
-| `OPENROUTER_API_KEY` | Optional | LLM agent responses |
 
 See [.env.example](.env.example) for the full list.
 
@@ -392,130 +453,13 @@ Auto-optimizer adjusts parameters based on rolling trade performance.
 
 ---
 
-## 🐳 Docker & Deployment
-
-### Docker
-
-```bash
-# Build (~15MB image)
-make docker
-
-# Run with env file
-docker run -d --name mawdbot \
-  --env-file .env \
-  --restart unless-stopped \
-  mawdbot:latest
-
-# View logs
-docker logs -f mawdbot
-```
-
-### Cross-Compilation
-
-```bash
-make orin       # NVIDIA Orin Nano (linux/arm64)
-make rpi        # Raspberry Pi (linux/arm64)
-make riscv      # RISC-V (linux/riscv64)
-make macos      # macOS Apple Silicon
-make cross      # All platforms
-```
-
-### systemd (Linux)
-
-```ini
-[Unit]
-Description=MawdBot Nano Solana Agent
-After=network.target
-
-[Service]
-Type=simple
-User=mawdbot
-EnvironmentFile=/home/mawdbot/.env
-ExecStart=/usr/local/bin/mawdbot daemon
-Restart=always
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target
-```
-
----
-
-## 🗄️ Database Schema
-
-MawdBot uses Supabase (PostgreSQL + pgvector) for persistent memory:
-
-```bash
-# Apply schema to your Supabase project
-psql $SUPABASE_URL -f schema.sql
-```
-
-Tables: `agent_memories`, `trade_records`, `market_snapshots`, `research_reports`, `learning_events`, `knowledge_index`, `strategy_state`
-
-See [schema.sql](schema.sql) for the complete schema.
-
----
-
-## 🏗️ Build Targets
-
-| Target | Command | Output |
-|--------|---------|--------|
-| Current platform | `make build` | `build/mawdbot` |
-| TUI launcher | `make tui` | `build/mawdbot-tui` |
-| Orin Nano | `make orin` | `build/mawdbot-orin` |
-| Raspberry Pi | `make rpi` | `build/mawdbot-rpi` |
-| RISC-V | `make riscv` | `build/mawdbot-riscv` |
-| macOS | `make macos` | `build/mawdbot-macos` |
-| Docker | `make docker` | `mawdbot:latest` |
-| All | `make cross` | All binaries |
-| Install | `make install` | `/usr/local/bin/mawdbot` |
-| Test | `make test` | Run test suite |
-| Clean | `make clean` | Remove build/ |
-
----
-
-## 📚 CLI Reference
-
-```
-mawdbot                         Show help
-mawdbot daemon                  Start full autonomous daemon (wallet+RPC+TamaGOchi+Telegram+x402)
-mawdbot ooda                    Start OODA trading loop
-mawdbot ooda --interval 30      Custom cycle interval (seconds)
-mawdbot ooda --sim              Simulated mode (no real trades)
-mawdbot ooda --hw-bus 1         With Modulino® hardware on I2C bus 1
-mawdbot ooda --no-hw            Disable hardware integration
-mawdbot agent                   Interactive chat REPL
-mawdbot agent -m "message"      Single message mode
-mawdbot pet                     Show TamaGOchi status
-mawdbot gateway                 Start multi-channel gateway (Telegram, Discord)
-mawdbot solana wallet           Show wallet info + balance
-mawdbot solana trending         Trending tokens (Birdeye)
-mawdbot solana search <keyword> Search tokens by name/symbol
-mawdbot solana research <mint>  Deep research a token
-mawdbot solana das get-asset    Helius DAS: getAsset
-mawdbot solana das owner-assets Helius DAS: getAssetsByOwner
-mawdbot solana das search       Helius DAS: searchAssets
-mawdbot solana spl token-balance   SPL token account balance
-mawdbot solana spl token-accounts  SPL token accounts by owner
-mawdbot solana spl token-supply    SPL token supply
-mawdbot solana spl token-largest   SPL largest token holders
-mawdbot solana spl rpc <method>    Generic Helius RPC passthrough
-mawdbot hardware scan           Scan I2C bus for Modulino® sensors
-mawdbot hardware demo           Hardware demo animation
-mawdbot status                  System status + config overview
-mawdbot onboard                 Initialize config & workspace
-mawdbot version                 Version + build info
-```
-
----
-
 ## 💰 x402 Payment Protocol
 
-MawdBot integrates the [x402 payment standard](https://x402.org) for crypto-gated HTTP APIs:
+NanoSolana integrates the [x402 payment standard](https://x402.org) for crypto-gated HTTP APIs:
 
 ```
 ┌──────────┐     ┌──────────────┐     ┌──────────────┐
-│  Client  │────▶│ X-PAYMENT    │────▶│   MawdBot    │
+│  Client  │────▶│ X-PAYMENT    │────▶│ NanoSolana   │
 │          │     │  Header      │     │   Paywall    │
 └──────────┘     └──────────────┘     └──────┬───────┘
                                               │
@@ -528,7 +472,7 @@ MawdBot integrates the [x402 payment standard](https://x402.org) for crypto-gate
 **Features:**
 - **Solana USDC** payments via agent wallet (auto-configured SVM signer)
 - **Multi-chain** support: Solana, Base, Polygon, Avalanche (mainnet + testnet)
-- **HTTP middleware** for paywalling MawdBot API endpoints
+- **HTTP middleware** for paywalling GoBot API endpoints
 - **Payment client** for consuming x402-gated APIs
 - **Facilitator proxy** connects to `facilitator.x402.rs`
 - **Config-driven** — all x402 settings in `config.json` + env var overrides
@@ -548,45 +492,157 @@ X402_PAYWALL_ENABLED=true ./build/mawdbot daemon
 
 ---
 
+## 🐳 Docker & Deployment
+
+### Docker
+
+```bash
+# Build (~15MB image)
+make docker
+
+# Run with env file
+docker run -d --name nanosolana \
+  --env-file .env \
+  --restart unless-stopped \
+  mawdbot:latest
+
+# View logs
+docker logs -f nanosolana
+```
+
+### Cross-Compilation
+
+```bash
+make orin       # NVIDIA Orin Nano / Spark (linux/arm64)
+make rpi        # Raspberry Pi (linux/arm64)
+make riscv      # RISC-V (linux/riscv64)
+make macos      # macOS Apple Silicon
+make cross      # All platforms
+```
+
+### systemd (Linux / Orin Nano)
+
+```ini
+[Unit]
+Description=NanoSolana TamaGOchi GoBot
+After=network.target
+
+[Service]
+Type=simple
+User=nanosolana
+EnvironmentFile=/home/nanosolana/.env
+ExecStart=/usr/local/bin/mawdbot daemon
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
+---
+
+## 🗄️ Database Schema
+
+NanoSolana uses Supabase (PostgreSQL + pgvector) for persistent memory:
+
+```bash
+# Apply schema to your Supabase project
+psql $SUPABASE_URL -f schema.sql
+```
+
+Tables: `agent_memories`, `trade_records`, `market_snapshots`, `research_reports`, `learning_events`, `knowledge_index`, `strategy_state`
+
+See [schema.sql](schema.sql) for the complete schema.
+
+---
+
+## 🏗️ Build Targets
+
+| Target | Command | Output |
+|--------|---------|--------|
+| Current platform | `make build` | `build/mawdbot` |
+| TUI launcher | `make tui` | `build/mawdbot-tui` |
+| NVIDIA Orin Nano / Spark | `make orin` | `build/mawdbot-orin` |
+| Raspberry Pi | `make rpi` | `build/mawdbot-rpi` |
+| RISC-V | `make riscv` | `build/mawdbot-riscv` |
+| macOS | `make macos` | `build/mawdbot-macos` |
+| Docker | `make docker` | `mawdbot:latest` |
+| All | `make cross` | All binaries |
+| Install | `make install` | `/usr/local/bin/mawdbot` |
+| Test | `make test` | Run test suite |
+| Clean | `make clean` | Remove build/ |
+
+---
+
+## 📚 CLI Reference
+
+```
+mawdbot                         Show help
+mawdbot daemon                  Start full GoBot (wallet+RPC+TamaGOchi+Telegram+x402)
+mawdbot ooda                    Start OODA trading loop
+mawdbot ooda --interval 30      Custom cycle interval (seconds)
+mawdbot ooda --sim              Simulated mode (no real trades)
+mawdbot ooda --hw-bus 1         With Modulino® hardware on I2C bus 1
+mawdbot ooda --no-hw            Disable hardware integration
+mawdbot agent                   Interactive chat REPL
+mawdbot agent -m "message"      Single message mode
+mawdbot pet                     Show TamaGOchi status
+mawdbot gateway                 Start multi-channel gateway (Telegram, Discord)
+mawdbot solana wallet           Show wallet info + balance
+mawdbot solana trending         Trending tokens (Birdeye)
+mawdbot solana search <keyword> Search tokens by name/symbol
+mawdbot solana research <mint>  Deep research a token
+mawdbot hardware scan           Scan I2C bus for Modulino® sensors
+mawdbot hardware test           Run hardware self-test
+mawdbot hardware monitor        Live sensor readings
+mawdbot hardware demo           Play trading event animations
+mawdbot status                  System status + config overview
+mawdbot onboard                 Initialize config & workspace
+mawdbot version                 Version + build info
+```
+
+---
+
 ## 🧠 Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    mawdbot daemon                            │
-│                                                               │
-│  1. Agentic Wallet  ─  auto-gen/load Solana keypair          │
-│  2. Solana RPC      ─  Helius mainnet connection             │
-│  3. TamaGOchi       ─  virtual pet engine                    │
-│  4. Telegram        ─  bot channel (if configured)           │
-│  5. x402 Gateway    ─  SVM signer + paywall server           │
-│  6. Channels        ─  multi-channel message routing         │
-│  7. Heartbeat       ─  periodic health + balance checks      │
-│                                                               │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
-│  │ Telegram │  │  OODA    │  │ TamaGOchi│  │  x402    │   │
-│  │ Channel  │  │  Agent   │  │  Pet     │  │  Paywall │   │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘   │
-│       │              │              │              │         │
-│  ┌────▼──────────────▼──────────────▼──────────────▼─────┐  │
-│  │              Message Bus + Hardware Adapter            │  │
-│  └────────────────────────┬───────────────────────────────┘  │
-│                           │                                   │
-│  ┌────────────────────────▼───────────────────────────────┐  │
-│  │                  pkg/solana + pkg/x402                  │  │
-│  │  wallet · rpc · programs · tx · signer · middleware     │  │
-│  └────────────────────────┬───────────────────────────────┘  │
-│                           │                                   │
-│  ┌────────────────────────▼───────────────────────────────┐  │
-│  │     Solana + EVM Chains (via Helius + Facilitator)      │  │
-│  └────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────┐
+│                  NanoSolana TamaGOchi Daemon                    │
+│                                                                  │
+│  1. Agentic Wallet  ─  auto-gen/load Solana keypair             │
+│  2. Solana RPC      ─  Helius mainnet connection                │
+│  3. TamaGOchi       ─  virtual pet engine (on-chain driven)    │
+│  4. Telegram        ─  bot channel (if configured)              │
+│  5. x402 Gateway    ─  SVM signer + paywall server             │
+│  6. Channels        ─  multi-channel message routing            │
+│  7. Heartbeat       ─  periodic health + balance checks         │
+│                                                                  │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐      │
+│  │ Telegram │  │  OODA    │  │ TamaGOchi│  │  x402    │      │
+│  │ Channel  │  │  Agent   │  │  Pet     │  │  Paywall │      │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘      │
+│       │              │              │              │            │
+│  ┌────▼──────────────▼──────────────▼──────────────▼────────┐  │
+│  │         Message Bus + Arduino Hardware Adapter            │  │
+│  │     (Pixels · Buzzer · Buttons · Knob · IMU · Thermo)    │  │
+│  └─────────────────────────┬────────────────────────────────┘  │
+│                            │                                     │
+│  ┌─────────────────────────▼────────────────────────────────┐  │
+│  │                pkg/solana + pkg/x402                       │  │
+│  │  wallet · rpc · programs · tx · signer · middleware       │  │
+│  └─────────────────────────┬────────────────────────────────┘  │
+│                            │                                     │
+│  ┌─────────────────────────▼────────────────────────────────┐  │
+│  │    Solana Mainnet (via Helius + Jupiter + Birdeye)         │  │
+│  └──────────────────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## 🔒 Security
 
-MawdBot uses **zero hardcoded secrets**. All API keys and credentials come from environment variables (`.env` file), which is gitignored.
+NanoSolana uses **zero hardcoded secrets**. All API keys and credentials come from environment variables (`.env` file), which is gitignored.
 
 - See [SECURITY.md](SECURITY.md) for the full security policy and vulnerability reporting
 - See [.env.example](.env.example) for the complete environment variable reference
@@ -619,8 +675,10 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 <div align="center">
 
-**Built by [8BIT Labs](https://github.com/x402agent) · Factory Division**
+**Built with Go on Solana · Powered by x402 Protocol**
 
-🦞 *Show me the on-chain data.* 🦞
+**[NanoSolana OS](https://github.com/x402agent) · Arduino Modulino® · NVIDIA Orin Nano**
+
+🐹 *A GoBot with a soul.* 🐹
 
 </div>

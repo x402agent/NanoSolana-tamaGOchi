@@ -1,4 +1,4 @@
-// MawdBot TUI Launcher — Lobster-themed terminal UI
+// NanoSolana TamaGOchi TUI Launcher — GoBot-themed terminal UI
 // Uses tview for a rich interactive experience.
 package main
 
@@ -24,30 +24,26 @@ const (
 	mawdDim    = "#556680"
 )
 
-const lobsterArt = `[#FF4060]
+const gobotArt = `[#14F195]
               ██████╗████████████████████████████╗
              ██╔═══████╔═══════════════════════████╗
-            ██║   ████║  [#14F195]🦞 MAWDBOT GO[#FF4060]           ████║
-           ██║   ████║  [#00D4FF]Sentient Solana Robot[#FF4060]    ████║
-          ██║   ████║  [#9945FF]NVIDIA Orin Nano[#FF4060]         ████║
-         ██║   ████║  [#FFAA00]$MAWD :: Droids Lead[#FF4060]    ████║
+            ██║   ████║  [#14F195]🐹 NANOSOLANA[#14F195]          ████║
+           ██║   ████║  [#00D4FF]TamaGOchi GoBot[#14F195]       ████║
+          ██║   ████║  [#9945FF]NVIDIA Orin Nano[#14F195]       ████║
+         ██║   ████║  [#FFAA00]x402 · Go · Solana[#14F195]    ████║
         ██║   ████╚═══════════════════════════████║
        ██║   ████████████████████████████████████║
-      ██╔╝  /|      __                      ████║
-     ██╔╝  / |   ,-~ /                     ████║
-    ██╔╝  Y :|  //  /                     ████║
-   ██╔╝   | jj /( .^                    ████║
-  ██╔╝    >-"~"-v"                     ████║
- ██╔╝    /       Y   [#14F195]OODA LOOP[#FF4060]       ████║
-██╔╝    jo  o    |   [#14F195]ACTIVE[#FF4060]          ████║
-██║     ( ~T~     j                   ████║
-██║      >._-' _./                  ████║
-██╚══════/═══"~"══|════════════════████╝
- ╚══════Y═════_,══|═══════════════██╝
-         /| ;-"~ _  l
-        / l/ ,-"~    \
-        \//\/      .- \
-         Y        /    Y[-]
+      ██╔╝                                   ████║
+     ██╔╝   [#9945FF]╔══════════════════════╗[#14F195]     ████║
+    ██╔╝    [#9945FF]║  ◉   OODA LOOP   ◉  ║[#14F195]    ████║
+   ██╔╝     [#9945FF]║  OBSERVE → ORIENT   ║[#14F195]   ████║
+  ██╔╝      [#9945FF]║  DECIDE  →  ACT     ║[#14F195]  ████║
+ ██╔╝       [#9945FF]╚══════════════════════╝[#14F195] ████║
+██╔╝                                       ████║
+██║      [#FFAA00]🎛️ Modulino® I2C[#14F195]              ████║
+██║      [#FFAA00]Pixels·Buzzer·Knob·IMU[#14F195]        ████║
+██╚══════════════════════════════════════████╝
+ ╚══════════════════════════════════════██╝[-]
 `
 
 func main() {
@@ -57,7 +53,7 @@ func main() {
 	header := tview.NewTextView().
 		SetDynamicColors(true).
 		SetTextAlign(tview.AlignCenter).
-		SetText(fmt.Sprintf("[%s]MAWDBOT[%s] [%s]OS[%s] [%s]:: v1.0 :: Go Runtime :: %s[-]",
+		SetText(fmt.Sprintf("[%s]NANOSOLANA[%s] [%s]TamaGOchi[%s] [%s]:: v1.0 :: Go Runtime :: x402 :: %s[-]",
 			mawdGreen, mawdPurple, mawdTeal, "", mawdDim, time.Now().Format("15:04:05")))
 	header.SetBackgroundColor(tcell.ColorBlack)
 	header.SetBorderPadding(0, 0, 2, 2)
@@ -65,11 +61,11 @@ func main() {
 	// ── Lobster Art Panel ────────────────────────────────────
 	artView := tview.NewTextView().
 		SetDynamicColors(true).
-		SetText(lobsterArt)
+		SetText(gobotArt)
 	artView.SetBackgroundColor(tcell.ColorBlack)
 	artView.SetBorder(true).
 		SetBorderColor(tcell.NewRGBColor(20, 241, 149)).
-		SetTitle(fmt.Sprintf(" [%s]🦞 MAWDBOT SOLANA ROBOT[-] ", mawdGreen)).
+		SetTitle(fmt.Sprintf(" [%s]🐹 NANOSOLANA TamaGOchi[-] ", mawdGreen)).
 		SetTitleAlign(tview.AlignCenter)
 
 	// ── Menu ─────────────────────────────────────────────────
@@ -78,7 +74,7 @@ func main() {
 		desc  string
 		cmd   string
 	}{
-		{"🤖 Agent Chat", "Interactive chat with MawdBot AI", "agent"},
+		{"🤖 Agent Chat", "Interactive chat with NanoSolana AI", "agent"},
 		{"🔄 OODA Loop", "Start autonomous trading cycle", "ooda"},
 		{"💰 Wallet", "Solana wallet info & balance", "solana wallet"},
 		{"🌐 Trending", "Birdeye trending tokens", "solana trending"},
@@ -88,7 +84,7 @@ func main() {
 		{"⚡ RPC Ping", "Helius generic RPC getSlot", "solana spl rpc getSlot --params '[]'"},
 		{"📊 Status", "System status & health", "status"},
 		{"🛠  Onboard", "Initialize config & workspace", "onboard"},
-		{"🎛  Hardware", "Scan Modulino I2C sensors", "hardware scan"},
+		{"🎛  Hardware", "Scan Arduino Modulino® I2C sensors", "hardware scan"},
 		{"⚙  Gateway", "Start multi-channel gateway", "gateway"},
 		{"📜 Version", "Version & build info", "version"},
 	}
@@ -110,7 +106,7 @@ func main() {
 		shortcut := rune('a' + i)
 		menu.AddItem(item.label, item.desc, shortcut, func() {
 			app.Stop()
-			runMawdBotCommand(cmdCopy)
+			runGoBot(cmdCopy)
 		})
 	}
 
@@ -133,7 +129,7 @@ func main() {
 	infoBar := tview.NewTextView().
 		SetDynamicColors(true).
 		SetTextAlign(tview.AlignCenter).
-		SetText(fmt.Sprintf("[%s]$MAWD :: Droids Lead The Way :: 8BIT Labs / Factory Division[-]", mawdDim))
+		SetText(fmt.Sprintf("[%s]NanoSolana TamaGOchi :: A GoBot on Solana :: Powered by x402[-]", mawdDim))
 	infoBar.SetBackgroundColor(tcell.ColorBlack)
 
 	// ── Layout ───────────────────────────────────────────────
@@ -234,7 +230,7 @@ func envValue(key, fallback string) string {
 	return fmt.Sprintf("[%s]%s[-]", mawdTeal, v)
 }
 
-func runMawdBotCommand(subcmd string) {
+func runGoBot(subcmd string) {
 	parts := strings.Fields(subcmd)
 	args := append([]string{}, parts...)
 

@@ -1,6 +1,6 @@
-// MawdBot Go — Ultra-lightweight Solana Trading Intelligence
-// Adapted from PicoClaw architecture for NVIDIA Orin Nano deployment
-// Built by 8BIT Labs / Factory Division
+// NanoSolana TamaGOchi — A GoBot on Solana
+// Ultra-lightweight autonomous trading agent with x402 payment protocol
+// Powered by NanoSolana OS · Go Runtime · Arduino Modulino® I2C
 //
 // Copyright (c) 2026 8BIT Labs. All rights reserved.
 // License: MIT
@@ -36,18 +36,18 @@ const (
 	colorReset  = "\033[0m"
 
 	banner = "\r\n" +
-		colorGreen + "    ███╗   ███╗ █████╗ ██╗    ██╗██████╗ " + colorPurple + "██████╗  ██████╗ ████████╗\n" +
-		colorGreen + "    ████╗ ████║██╔══██╗██║    ██║██╔══██╗" + colorPurple + "██╔══██╗██╔═══██╗╚══██╔══╝\n" +
-		colorGreen + "    ██╔████╔██║███████║██║ █╗ ██║██║  ██║" + colorPurple + "██████╔╝██║   ██║   ██║   \n" +
-		colorGreen + "    ██║╚██╔╝██║██╔══██║██║███╗██║██║  ██║" + colorPurple + "██╔══██╗██║   ██║   ██║   \n" +
-		colorGreen + "    ██║ ╚═╝ ██║██║  ██║╚███╔███╔╝██████╔╝" + colorPurple + "██████╔╝╚██████╔╝   ██║   \n" +
-		colorGreen + "    ╚═╝     ╚═╝╚═╝  ╚═╝ ╚══╝╚══╝ ╚═════╝ " + colorPurple + "╚═════╝  ╚═════╝    ╚═╝   \n" +
+		colorGreen + "    ███╗   ██╗ █████╗ ███╗   ██╗ ██████╗ " + colorPurple + "███████╗ ██████╗ ██╗      █████╗ ███╗   ██╗ █████╗ \n" +
+		colorGreen + "    ████╗  ██║██╔══██╗████╗  ██║██╔═══██╗" + colorPurple + "██╔════╝██╔═══██╗██║     ██╔══██╗████╗  ██║██╔══██╗\n" +
+		colorGreen + "    ██╔██╗ ██║███████║██╔██╗ ██║██║   ██║" + colorPurple + "███████╗██║   ██║██║     ███████║██╔██╗ ██║███████║\n" +
+		colorGreen + "    ██║╚██╗██║██╔══██║██║╚██╗██║██║   ██║" + colorPurple + "╚════██║██║   ██║██║     ██╔══██║██║╚██╗██║██╔══██║\n" +
+		colorGreen + "    ██║ ╚████║██║  ██║██║ ╚████║╚██████╔╝" + colorPurple + "███████║╚██████╔╝███████╗██║  ██║██║ ╚████║██║  ██║\n" +
+		colorGreen + "    ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ " + colorPurple + "╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝\n" +
 		colorReset + "\n" +
-		colorDim + "    ┌─────────────────────────────────────────────────────────┐\n" +
-		colorDim + "    │" + colorTeal + "  🦞 Sentient Solana Trading Intelligence" + colorDim + "                 │\n" +
-		colorDim + "    │" + colorAmber + "  NVIDIA Orin Nano · <10MB RAM · Go Runtime" + colorDim + "             │\n" +
-		colorDim + "    │" + colorGreen + "  $MAWD :: Droids Lead The Way" + colorDim + "                          │\n" +
-		colorDim + "    └─────────────────────────────────────────────────────────┘\n" +
+		colorDim + "    ┌──────────────────────────────────────────────────────────────────┐\n" +
+		colorDim + "    │" + colorTeal + "  🐹 TamaGOchi — A GoBot on Solana" + colorDim + "                                │\n" +
+		colorDim + "    │" + colorAmber + "  Powered by NanoSolana OS · Go Runtime · x402 Protocol" + colorDim + "           │\n" +
+		colorDim + "    │" + colorGreen + "  Autonomous Trading Intelligence · <10MB · Boots in <1s" + colorDim + "          │\n" +
+		colorDim + "    └──────────────────────────────────────────────────────────────────┘\n" +
 		colorReset + "\n"
 
 	lobster = colorRed + `              ,
@@ -72,23 +72,24 @@ const (
 )
 
 func NewMawdBotCommand() *cobra.Command {
-	short := fmt.Sprintf("%s MawdBot — Sentient Solana Trading Intelligence v%s", "🦞", config.GetVersion())
+	short := fmt.Sprintf("🐹 NanoSolana TamaGOchi — A GoBot on Solana v%s", config.GetVersion())
 
 	cmd := &cobra.Command{
 		Use:   "mawdbot",
 		Short: short,
-		Long: `MawdBot Go — Ultra-lightweight autonomous trading agent for Solana.
-Powered by the PicoClaw Go runtime, adapted for NVIDIA Orin Nano hardware.
+		Long: `NanoSolana TamaGOchi — A GoBot on Solana.
+Powered by NanoSolana OS · Go Runtime · x402 Protocol.
 
 Features:
   • OODA Loop (Observe → Orient → Decide → Act)
   • ClawVault persistent memory (known/learned/inferred)
-  • MawdBot Strategy: RSI + EMA cross + ATR signal engine
+  • RSI + EMA cross + ATR signal engine with auto-optimizer
   • Solana: Jupiter swaps, Birdeye analytics, Helius RPC, Aster perps
-  • Arduino Modulino® I2C: LEDs, buzzer, buttons, knob, sensors
-  • Dexter deep research agent
+  • Arduino Modulino® I2C: LEDs, buzzer, buttons, knob, IMU, thermo, ToF
+  • TamaGOchi virtual pet (on-chain performance driven)
+  • x402 payment protocol (multi-chain USDC)
   • Multi-channel: Telegram, Discord, CLI
-  • <10MB RAM, boots in <1s on ARM64`,
+  • <10MB binary, <10MB RAM, boots in <1s on ARM64`,
 		Example: "mawdbot agent -m \"What is SOL price?\"\nmawdbot ooda --interval 60\nmawdbot ooda --hw-bus 1\nmawdbot hardware scan\nmawdbot hardware demo",
 	}
 
@@ -115,7 +116,7 @@ func NewAgentCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "agent",
-		Short: "Chat with MawdBot agent",
+		Short: "Chat with NanoSolana agent",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load()
 			if err != nil {
@@ -123,16 +124,16 @@ func NewAgentCommand() *cobra.Command {
 			}
 
 			if message != "" {
-				fmt.Printf("%s[MAWDBOT]%s Processing: %s\n", colorGreen, colorReset, message)
+				fmt.Printf("%s[NANOSOLANA]%s Processing: %s\n", colorGreen, colorReset, message)
 				// TODO: Wire to LLM provider from config
 				_ = cfg
-				fmt.Printf("%s[MAWDBOT]%s Agent mode ready. Model: %s\n", colorGreen, colorReset, cfg.Agents.Defaults.ModelName)
+				fmt.Printf("%s[NANOSOLANA]%s Agent mode ready. Model: %s\n", colorGreen, colorReset, cfg.Agents.Defaults.ModelName)
 				return nil
 			}
 
 			// Interactive REPL mode
 			fmt.Print(lobster)
-			fmt.Printf("%s🦞 MawdBot Interactive Mode%s\n", colorGreen, colorReset)
+			fmt.Printf("%s🐹 NanoSolana Interactive Mode%s\n", colorGreen, colorReset)
 			fmt.Printf("%sModel: %s | Workspace: %s%s\n", colorDim, cfg.Agents.Defaults.ModelName, cfg.Agents.Defaults.Workspace, colorReset)
 			fmt.Printf("%sType your message or use memory commands (!remember, !recall, !trades, !lessons)%s\n\n", colorDim, colorReset)
 
@@ -149,13 +150,13 @@ func NewAgentCommand() *cobra.Command {
 func NewGatewayCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "gateway",
-		Short: "Start MawdBot gateway (Telegram, Discord, WebSocket)",
+		Short: "Start NanoSolana gateway (Telegram, Discord, WebSocket)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load()
 			if err != nil {
 				return fmt.Errorf("config error: %w", err)
 			}
-			fmt.Printf("%s🦞 MawdBot Gateway starting...%s\n", colorGreen, colorReset)
+			fmt.Printf("%s🐹 NanoSolana Gateway starting...%s\n", colorGreen, colorReset)
 			fmt.Printf("%sHost: %s:%d%s\n", colorDim, cfg.Gateway.Host, cfg.Gateway.Port, colorReset)
 
 			// Print enabled channels
@@ -183,10 +184,10 @@ func NewGatewayCommand() *cobra.Command {
 func NewOnboardCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "onboard",
-		Short: "Initialize MawdBot config & workspace",
+		Short: "Initialize NanoSolana config & workspace",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Print(lobster)
-			fmt.Printf("%s🦞 Welcome to MawdBot!%s\n\n", colorGreen, colorReset)
+			fmt.Printf("%s🐹 Welcome to NanoSolana TamaGOchi!%s\n\n", colorGreen, colorReset)
 
 			configPath := config.DefaultConfigPath()
 			workspacePath := config.DefaultWorkspacePath()
@@ -198,7 +199,7 @@ func NewOnboardCommand() *cobra.Command {
 				return fmt.Errorf("onboard failed: %w", err)
 			}
 
-			fmt.Printf("\n%s✓ MawdBot initialized!%s\n", colorGreen, colorReset)
+			fmt.Printf("\n%s✓ NanoSolana initialized!%s\n", colorGreen, colorReset)
 			fmt.Printf("%sEdit %s to configure API keys.%s\n", colorDim, configPath, colorReset)
 			fmt.Printf("\nQuick start:\n")
 			fmt.Printf("  %smawdbot agent -m \"Hello\"%s\n", colorGreen, colorReset)
@@ -216,14 +217,14 @@ func NewStatusCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "status",
-		Short: "Show MawdBot status",
+		Short: "Show NanoSolana status",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load()
 			if err != nil {
 				return fmt.Errorf("config error: %w", err)
 			}
 
-			fmt.Printf("%s🦞 MawdBot Status%s\n\n", colorGreen, colorReset)
+			fmt.Printf("%s🐹 NanoSolana Status%s\n\n", colorGreen, colorReset)
 			fmt.Printf("Version:    %s\n", config.FormatVersion())
 			buildTime, goVer := config.FormatBuildInfo()
 			fmt.Printf("Go:         %s\n", goVer)
@@ -314,7 +315,7 @@ Hardware integration (when --hw-bus is set):
 				cfg.OODA.Mode = "simulated"
 			}
 
-			fmt.Printf("%s🔄 MawdBot OODA Loop%s\n", colorGreen, colorReset)
+			fmt.Printf("%s🔄 NanoSolana OODA Loop%s\n", colorGreen, colorReset)
 			fmt.Printf("%sMode: %s | Interval: %ds | Watchlist: %d tokens%s\n",
 				colorDim, cfg.OODA.Mode, cfg.OODA.IntervalSeconds,
 				len(cfg.OODA.Watchlist), colorReset)
@@ -1093,8 +1094,8 @@ func sanitizeJSONInput(raw string) string {
 func NewDaemonCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "daemon",
-		Short: "Start the nano Solana daemon (OODA + TamaGOchi + Telegram + x402)",
-		Long: `Launch the full MawdBot daemon — a long-running process that:
+		Short: "Start the NanoSolana daemon (OODA + TamaGOchi + Telegram + x402)",
+		Long: `Launch the full NanoSolana TamaGOchi daemon — a long-running process that:
   • Generates/loads the agentic Solana wallet
   • Connects to Helius RPC (or fallback)
   • Starts the TamaGOchi pet engine (wallet-driven evolution)
@@ -1127,7 +1128,7 @@ func NewPetCommand() *cobra.Command {
 		Short: "Show TamaGOchi pet status",
 		Long:  "Display the Nano Solana TamaGOchi — your agent's virtual pet whose evolution is driven by on-chain performance.",
 		Run: func(cmd *cobra.Command, args []string) {
-			pet := tamagochi.New("MawdBot")
+			pet := tamagochi.New("NanoSolana")
 			fmt.Println()
 			fmt.Println(pet.StatusString())
 			fmt.Println()
@@ -1143,7 +1144,7 @@ func NewVersionCommand() *cobra.Command {
 		Use:   "version",
 		Short: "Show version info",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("mawdbot %s\n", config.FormatVersion())
+			fmt.Printf("nanosolana %s\n", config.FormatVersion())
 			buildTime, goVer := config.FormatBuildInfo()
 			if buildTime != "" {
 				fmt.Printf("built:  %s\n", buildTime)
@@ -1205,7 +1206,7 @@ func runInteractiveAgent(cfg *config.Config) error {
 	reader := os.Stdin
 	buf := make([]byte, 4096)
 	for {
-		fmt.Printf("%s🦞 > %s", colorGreen, colorReset)
+		fmt.Printf("%s🐹 > %s", colorGreen, colorReset)
 		n, err := reader.Read(buf)
 		if err != nil {
 			return nil
@@ -1214,7 +1215,7 @@ func runInteractiveAgent(cfg *config.Config) error {
 
 		switch {
 		case input == "exit" || input == "quit":
-			fmt.Printf("%s💤 MawdBot sleeping. Vault saved.%s\n", colorDim, colorReset)
+			fmt.Printf("%s💤 NanoSolana sleeping. Vault saved.%s\n", colorDim, colorReset)
 			return nil
 		case input == "!trades":
 			fmt.Printf("%s📊 Trade history: (not yet implemented)%s\n", colorDim, colorReset)
@@ -1225,7 +1226,7 @@ func runInteractiveAgent(cfg *config.Config) error {
 		case len(input) > 8 && input[:8] == "!recall ":
 			fmt.Printf("%s🔍 Searching memory: %s%s\n", colorTeal, input[8:], colorReset)
 		default:
-			fmt.Printf("%s[MAWDBOT]%s Processing with %s...\n", colorGreen, colorReset, cfg.Agents.Defaults.ModelName)
+			fmt.Printf("%s[NANOSOLANA]%s Processing with %s...\n", colorGreen, colorReset, cfg.Agents.Defaults.ModelName)
 			fmt.Printf("%s(LLM integration pending — connect your API keys in config)%s\n", colorDim, colorReset)
 		}
 	}
