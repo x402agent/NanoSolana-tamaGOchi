@@ -1,8 +1,8 @@
-// NanoSolana TamaGOchi — A GoBot on Solana
+// NanoSolana TamaGObot — A GoBot on Solana
 // Ultra-lightweight autonomous trading agent with x402 payment protocol
-// Powered by NanoSolana OS · Go Runtime · Arduino Modulino® I2C
+// Physical companion: TamaGOchi by NanoSolana Labs (Arduino Modulino® I2C)
 //
-// Copyright (c) 2026 8BIT Labs. All rights reserved.
+// Copyright (c) 2026 NanoSolana Labs. All rights reserved.
 // License: MIT
 
 package main
@@ -44,7 +44,7 @@ const (
 		colorGreen + "    ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ " + colorPurple + "╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝\n" +
 		colorReset + "\n" +
 		colorDim + "    ┌──────────────────────────────────────────────────────────────────┐\n" +
-		colorDim + "    │" + colorTeal + "  🐹 TamaGOchi — A GoBot on Solana" + colorDim + "                                │\n" +
+		colorDim + "    │" + colorTeal + "  🐹 TamaGObot — A GoBot on Solana" + colorDim + "                                │\n" +
 		colorDim + "    │" + colorAmber + "  Powered by NanoSolana OS · Go Runtime · x402 Protocol" + colorDim + "           │\n" +
 		colorDim + "    │" + colorGreen + "  Autonomous Trading Intelligence · <10MB · Boots in <1s" + colorDim + "          │\n" +
 		colorDim + "    └──────────────────────────────────────────────────────────────────┘\n" +
@@ -72,13 +72,13 @@ const (
 )
 
 func NewMawdBotCommand() *cobra.Command {
-	short := fmt.Sprintf("🐹 NanoSolana TamaGOchi — A GoBot on Solana v%s", config.GetVersion())
+	short := fmt.Sprintf("🐹 NanoSolana TamaGObot — A GoBot on Solana v%s", config.GetVersion())
 
 	cmd := &cobra.Command{
 		Use:   "mawdbot",
 		Short: short,
-		Long: `NanoSolana TamaGOchi — A GoBot on Solana.
-Powered by NanoSolana OS · Go Runtime · x402 Protocol.
+		Long: `NanoSolana TamaGObot — A GoBot on Solana.
+Powered by NanoSolana Labs · Go Runtime · x402 Protocol.
 
 Features:
   • OODA Loop (Observe → Orient → Decide → Act)
@@ -86,7 +86,8 @@ Features:
   • RSI + EMA cross + ATR signal engine with auto-optimizer
   • Solana: Jupiter swaps, Birdeye analytics, Helius RPC, Aster perps
   • Arduino Modulino® I2C: LEDs, buzzer, buttons, knob, IMU, thermo, ToF
-  • TamaGOchi virtual pet (on-chain performance driven)
+  • TamaGOchi physical pet companion (Arduino Modulino® hardware)
+  • TamaGObot virtual pet engine (on-chain performance driven)
   • x402 payment protocol (multi-chain USDC)
   • Multi-channel: Telegram, Discord, CLI
   • <10MB binary, <10MB RAM, boots in <1s on ARM64`,
@@ -1094,11 +1095,11 @@ func sanitizeJSONInput(raw string) string {
 func NewDaemonCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "daemon",
-		Short: "Start the NanoSolana daemon (OODA + TamaGOchi + Telegram + x402)",
-		Long: `Launch the full NanoSolana TamaGOchi daemon — a long-running process that:
+		Short: "Start the NanoSolana daemon (OODA + TamaGObot + Telegram + x402)",
+		Long: `Launch the full NanoSolana TamaGObot daemon — a long-running process that:
   • Generates/loads the agentic Solana wallet
   • Connects to Helius RPC (or fallback)
-  • Starts the TamaGOchi pet engine (wallet-driven evolution)
+  • Starts the TamaGObot pet engine (wallet-driven evolution)
   • Starts the Telegram bot (if configured)
   • Initializes x402 payment gateway
   • Runs the heartbeat loop
@@ -1125,8 +1126,8 @@ func NewDaemonCommand() *cobra.Command {
 func NewPetCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "pet",
-		Short: "Show TamaGOchi pet status",
-		Long:  "Display the Nano Solana TamaGOchi — your agent's virtual pet whose evolution is driven by on-chain performance.",
+		Short: "Show TamaGObot pet status",
+		Long:  "Display the NanoSolana TamaGObot — your agent's virtual pet whose evolution is driven by on-chain performance.",
 		Run: func(cmd *cobra.Command, args []string) {
 			pet := tamagochi.New("NanoSolana")
 			fmt.Println()

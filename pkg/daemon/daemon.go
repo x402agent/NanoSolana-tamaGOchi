@@ -241,13 +241,17 @@ func (d *Daemon) processCommand(msg bus.InboundMessage) string {
 
 	switch {
 	case content == "/start":
-		return fmt.Sprintf("🦞 **MawdBot Nano Solana Agent**\n\n" +
-			"I'm your autonomous trading lobster!\n\n" +
+		return fmt.Sprintf("🐹 **NanoSolana TamaGObot**\n\n" +
+			"I'm your autonomous GoBot daemon — wallet, OODA engine, and TamaGObot online.\n\n" +
 			"Commands:\n" +
-			"/status — Agent & TamaGOchi status\n" +
+			"/status — Agent & TamaGObot status\n" +
 			"/wallet — Wallet address & balance\n" +
-			"/pet — TamaGOchi status\n" +
+			"/pet — TamaGObot pet status\n" +
 			"/trending — Trending tokens\n" +
+			"/trades — Recent trades\n" +
+			"/research <mint> — Research token\n" +
+			"/ooda — Trigger OODA cycle\n" +
+			"/x402 — Payment info\n" +
 			"/help — All commands")
 
 	case content == "/status":
@@ -263,26 +267,28 @@ func (d *Daemon) processCommand(msg bus.InboundMessage) string {
 		return d.x402Response()
 
 	case content == "/help":
-		return "🦞 **MawdBot Commands**\n\n" +
+		return "🐹 **NanoSolana TamaGObot Commands**\n\n" +
 			"/start — Welcome\n" +
 			"/status — Agent status\n" +
 			"/wallet — Wallet info\n" +
-			"/pet — TamaGOchi status\n" +
+			"/pet — TamaGObot pet status\n" +
 			"/x402 — Payment gateway status\n" +
 			"/trending — Trending tokens\n" +
 			"/trades — Recent trades\n" +
 			"/research <mint> — Research token\n" +
-			"/ooda — Trigger OODA cycle"
+			"/ooda — Trigger OODA cycle\n" +
+			"/sim — Switch to simulated\n" +
+			"/live — Switch to live"
 
 	default:
 		// Pass to LLM agent for natural language processing
-		return fmt.Sprintf("🦞 Received: _%s_\n\n"+
-			"(LLM agent processing not yet wired — use /help for commands)", content)
+		return fmt.Sprintf("🐹 Received: _%s_\n\n"+
+			"(Use /help for available TamaGObot commands)", content)
 	}
 }
 
 func (d *Daemon) statusResponse() string {
-	status := "🦞 **MawdBot Agent Status**\n\n"
+	status := "🐹 **NanoSolana TamaGObot Status**\n\n"
 
 	if d.wallet != nil {
 		status += fmt.Sprintf("🔑 Wallet: `%s`\n", d.wallet.PublicKeyStr())
@@ -298,7 +304,7 @@ func (d *Daemon) statusResponse() string {
 	}
 
 	petState := d.pet.State()
-	status += fmt.Sprintf("\n🦞 TamaGOchi: %s (Lvl %d)\n", petState.Name, petState.Level)
+	status += fmt.Sprintf("\n🐹 TamaGObot: %s (Lvl %d)\n", petState.Name, petState.Level)
 	status += fmt.Sprintf("😊 Mood: %s · Energy: %.0f%%\n", petState.Mood, petState.Energy*100)
 
 	channelNames := d.chanMgr.List()

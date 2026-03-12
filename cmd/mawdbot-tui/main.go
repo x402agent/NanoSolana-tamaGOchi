@@ -28,7 +28,7 @@ const gobotArt = `[#14F195]
               ██████╗████████████████████████████╗
              ██╔═══████╔═══════════════════════████╗
             ██║   ████║  [#14F195]🐹 NANOSOLANA[#14F195]          ████║
-           ██║   ████║  [#00D4FF]TamaGOchi GoBot[#14F195]       ████║
+           ██║   ████║  [#00D4FF]TamaGObot[#14F195]              ████║
           ██║   ████║  [#9945FF]NVIDIA Orin Nano[#14F195]       ████║
          ██║   ████║  [#FFAA00]x402 · Go · Solana[#14F195]    ████║
         ██║   ████╚═══════════════════════════████║
@@ -53,7 +53,7 @@ func main() {
 	header := tview.NewTextView().
 		SetDynamicColors(true).
 		SetTextAlign(tview.AlignCenter).
-		SetText(fmt.Sprintf("[%s]NANOSOLANA[%s] [%s]TamaGOchi[%s] [%s]:: v1.0 :: Go Runtime :: x402 :: %s[-]",
+		SetText(fmt.Sprintf("[%s]NANOSOLANA[%s] [%s]TamaGObot[%s] [%s]:: v1.0 :: Go Runtime :: x402 :: %s[-]",
 			mawdGreen, mawdPurple, mawdTeal, "", mawdDim, time.Now().Format("15:04:05")))
 	header.SetBackgroundColor(tcell.ColorBlack)
 	header.SetBorderPadding(0, 0, 2, 2)
@@ -65,7 +65,7 @@ func main() {
 	artView.SetBackgroundColor(tcell.ColorBlack)
 	artView.SetBorder(true).
 		SetBorderColor(tcell.NewRGBColor(20, 241, 149)).
-		SetTitle(fmt.Sprintf(" [%s]🐹 NANOSOLANA TamaGOchi[-] ", mawdGreen)).
+		SetTitle(fmt.Sprintf(" [%s]🐹 NANOSOLANA TamaGObot[-] ", mawdGreen)).
 		SetTitleAlign(tview.AlignCenter)
 
 	// ── Menu ─────────────────────────────────────────────────

@@ -9,9 +9,9 @@
     ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝
 ```
 
-# 🐹 NanoSolana TamaGOchi
+# 🐹 NanoSolana TamaGObot
 
-### A GoBot on Solana · Powered by NanoSolana OS · x402 Protocol
+### A GoBot on Solana · Physical Companion: TamaGOchi · By NanoSolana Labs
 
 **9.6MB Binary · <10MB RAM · 1s Boot · Pure Go**
 
@@ -35,7 +35,7 @@
 
 ## Overview
 
-**NanoSolana TamaGOchi** is an ultra-lightweight autonomous Solana trading **GoBot** built in pure Go. It ships as a single **9.6MB binary** that runs on anything from an **NVIDIA Orin Nano** (via [Brev.dev](https://brev.dev) GPU cloud or bare-metal [NVIDIA Spark](https://developer.nvidia.com)) to a **Raspberry Pi** to any laptop — executing a full OODA trading loop with real-time market data, on-chain execution, **x402 payment protocol** for monetized APIs, and a virtual **TamaGOchi** pet whose mood and evolution are driven by live trading performance.
+**NanoSolana TamaGObot** is an ultra-lightweight autonomous Solana trading **GoBot** built in pure Go by **NanoSolana Labs**. It ships as a single **9.6MB binary** that runs on anything from an **NVIDIA Orin Nano** (via [Brev.dev](https://brev.dev) GPU cloud or bare-metal [NVIDIA Spark](https://developer.nvidia.com)) to a **Raspberry Pi** to any laptop — executing a full OODA trading loop with real-time market data, on-chain execution, **x402 payment protocol** for monetized APIs, and a virtual **TamaGObot** pet engine whose mood and evolution are driven by live trading performance. Its physical companion, **TamaGOchi**, bridges the digital agent with Arduino Modulino® I2C hardware.
 
 The GoBot bridges **software intelligence** (LLM-powered OODA agent, RSI/EMA/ATR strategy, ClawVault memory) with **physical hardware** (Arduino Modulino® I2C sensor cluster) — LEDs pulse with trade signals, buzzers chirp on wins, a rotary knob tunes RSI thresholds in real-time, and a 6-axis IMU auto-pauses trading if you tilt the device.
 
@@ -66,7 +66,8 @@ The GoBot bridges **software intelligence** (LLM-powered OODA agent, RSI/EMA/ATR
 | Feature | Description |
 |---------|-------------|
 | 🔄 **OODA Loop** | Autonomous Observe → Orient → Decide → Act trading cycle |
-| 🐹 **TamaGOchi** | Virtual pet evolves with your GoBot: Egg → Larva → Juvenile → Adult → Alpha |
+| 🐹 **TamaGObot** | Virtual pet engine: Egg → Larva → Juvenile → Adult → Alpha (on-chain driven) |
+| 🎮 **TamaGOchi** | Physical hardware pet companion (Arduino Modulino® I2C sensors) |
 | 🧠 **ClawVault** | 3-tier memory (known / learned / inferred) with epistemological honesty |
 | 📊 **Strategy** | RSI + EMA cross + ATR signal engine with auto-optimizer |
 | 🔑 **Agentic Wallet** | Auto-generates & persists Solana keypair on first boot |
