@@ -103,11 +103,53 @@ async function getGatewayToken() {
   return token || ''
 }
 
+async function getGatewayBaseUrl() {
+  const stored = await chrome.storage.local.get(['gatewayBaseUrl'])
+  const raw = String(stored.gatewayBaseUrl || '').trim()
+  if (!raw) return 'http://127.0.0.1:18790'
+
+  const normalized = raw.endsWith('/') ? raw.slice(0, -1) : raw
+  return normalized || 'http://127.0.0.1:18790'
+}
+
+async function getGatewaySecret() {
+  const stored = await chrome.storage.local.get(['gatewaySecret'])
+  return String(stored.gatewaySecret || '').trim()
+}
+
+async function buildGatewayHeaders() {
+  const secret = await getGatewaySecret()
+  if (!secret) return {}
+
+  return {
+    Authorization: `Bearer ${secret}`,
+    'x-nanosolana-secret': secret,
+  }
+}
+
+async function fetchGateway(path, options = {}) {
+  const base = await getGatewayBaseUrl()
+  const normalizedPath = String(path || '/').startsWith('/')
+    ? String(path || '/')
+    : `/${String(path || '/')}`
+  const headers = {
+    ...(options.headers || {}),
+    ...(await buildGatewayHeaders()),
+  }
+
+  const finalOptions = {
+    ...options,
+    headers,
+  }
+
+  return await fetch(`${base}${normalizedPath}`, finalOptions)
+}
+
 function setBadge(tabId, kind) {
   const cfg = BADGE[kind]
   void chrome.action.setBadgeText({ tabId, text: cfg.text })
   void chrome.action.setBadgeBackgroundColor({ tabId, color: cfg.color })
-  void chrome.action.setBadgeTextColor({ tabId, color: '#FFFFFF' }).catch(() => {})
+  void chrome.action.setBadgeTextColor({ tabId, color: '#FFFFFF' }).catch(() => { })
 }
 
 // Persist attached tab state to survive MV3 service worker restarts.
@@ -381,10 +423,10 @@ function ensureGatewayHandshakeStarted(payload) {
       minProtocol: 3,
       maxProtocol: 3,
       client: {
-        id: 'chrome-relay-extension',
-        version: '1.0.0',
+        id: 'nanosolana-chrome-relay-extension',
+        version: '0.2.0',
         platform: 'chrome-extension',
-        mode: 'webchat',
+        mode: 'nanosolana-agent',
       },
       role: 'operator',
       scopes: ['operator.read', 'operator.write'],
@@ -510,7 +552,7 @@ function getTabByTargetId(targetId) {
 async function attachTab(tabId, opts = {}) {
   const debuggee = { tabId }
   await chrome.debugger.attach(debuggee, '1.3')
-  await chrome.debugger.sendCommand(debuggee, 'Page.enable').catch(() => {})
+  await chrome.debugger.sendCommand(debuggee, 'Page.enable').catch(() => { })
 
   const info = /** @type {any} */ (await chrome.debugger.sendCommand(debuggee, 'Target.getTargetInfo'))
   const targetInfo = info?.targetInfo
@@ -724,9 +766,9 @@ async function handleForwardCdpCommand(msg) {
     const tab = await chrome.tabs.get(toActivate).catch(() => null)
     if (!tab) return {}
     if (tab.windowId) {
-      await chrome.windows.update(tab.windowId, { focused: true }).catch(() => {})
+      await chrome.windows.update(tab.windowId, { focused: true }).catch(() => { })
     }
-    await chrome.tabs.update(toActivate, { active: true }).catch(() => {})
+    await chrome.tabs.update(toActivate, { active: true }).catch(() => { })
     return {}
   }
 
@@ -944,6 +986,53 @@ chrome.tabs.onActivated.addListener(({ tabId }) => void whenReady(() => {
 
 chrome.runtime.onInstalled.addListener(() => {
   void chrome.runtime.openOptionsPage()
+})
+
+chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+  if (msg?.type !== 'gatewayApiRequest') return false
+
+  const method = String(msg.method || 'GET').toUpperCase()
+  const path = String(msg.path || '/').trim()
+  const body = msg.body
+
+  const requestOptions = {
+    method,
+    headers: {},
+  }
+
+  if (body !== undefined) {
+    requestOptions.headers['Content-Type'] = 'application/json'
+    requestOptions.body = JSON.stringify(body)
+  }
+
+  fetchGateway(path, requestOptions)
+    .then(async (res) => {
+      const contentType = String(res.headers.get('content-type') || '')
+      let json = null
+      if (contentType.includes('application/json')) {
+        try {
+          json = await res.json()
+        } catch {
+          json = null
+        }
+      }
+
+      sendResponse({
+        ok: res.ok,
+        status: res.status,
+        contentType,
+        json,
+      })
+    })
+    .catch((err) => {
+      sendResponse({
+        ok: false,
+        status: 0,
+        error: err instanceof Error ? err.message : String(err),
+      })
+    })
+
+  return true
 })
 
 // MV3 keepalive via chrome.alarms — more reliable than setInterval across
