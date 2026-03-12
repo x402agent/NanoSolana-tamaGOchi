@@ -22,6 +22,10 @@
   <img src="https://img.shields.io/badge/Binary-10MB-14F195?style=flat" alt="Size">
   <img src="https://img.shields.io/badge/x402-Payment%20Protocol-FF6B35?style=flat" alt="x402">
   <img src="https://img.shields.io/badge/Solana-Mainnet-9945FF?style=flat&logo=solana&logoColor=white" alt="Solana">
+  <img src="https://img.shields.io/badge/Helius-DAS%20API-FF6B6B?style=flat" alt="Helius">
+  <img src="https://img.shields.io/badge/Chrome-Extension-4285F4?style=flat&logo=googlechrome&logoColor=white" alt="Chrome Extension">
+  <img src="https://img.shields.io/badge/macOS-DMG%20App-000000?style=flat&logo=apple&logoColor=white" alt="macOS">
+  <img src="https://img.shields.io/badge/Android-14+-3DDC84?style=flat&logo=android&logoColor=white" alt="Android">
   <img src="https://img.shields.io/badge/NVIDIA-Orin%20Nano%20%C2%B7%20Spark-76B900?style=flat&logo=nvidia&logoColor=white" alt="NVIDIA">
   <img src="https://img.shields.io/badge/Brev.dev-GPU%20Cloud-4A90D9?style=flat" alt="Brev">
   <img src="https://img.shields.io/badge/Arduino-Modulino%C2%AE%20I2C-00979D?style=flat&logo=arduino&logoColor=white" alt="Arduino">
@@ -78,6 +82,12 @@ The GoBot bridges **software intelligence** (LLM-powered OODA agent, RSI/EMA/ATR
 | ⛓️ **On-Chain Engine** | Native Solana SDK (gagliardetto/solana-go) + Helius RPC/WSS + Jupiter swaps |
 | 🔄 **Jupiter Swaps** | DEX swap quotes + execution via Jupiter Ultra API with auto priority fees |
 | 🌐 **Native Gateway** | Pure Go TCP bridge with token auth, Tailscale mesh, tmux management |
+| 🤖 **NanoBot UI** | Interactive floating widget with wallet, chat, tools — embedded in the binary |
+| 🧩 **Chrome Extension** | Browser toolbar extension — wallet, chat, tools popup (MV3) |
+| 🍎 **macOS App** | Installable `.dmg` with native menu bar icon + status control |
+| 📱 **Android App** | SeekerClaw Android agent (Kotlin, Android 14+, foreground service) |
+| 🔮 **Helius DAS API** | Rich blockchain data — portfolio with token prices, NFTs, SOL/USD |
+| 🌐 **NanoHub** | Web dashboard for agent registry, skills marketplace, profiles |
 | 🟢 **NVIDIA Orin Nano** | Native ARM64 binary for Jetson edge AI hardware |
 | ☁️ **Brev.dev** | One-click GPU cloud deployment for NVIDIA Spark instances |
 | 🐳 **Docker** | Multi-stage Alpine image ~15MB total |
@@ -145,6 +155,12 @@ make build
 ./build/nanosolana solana health
 ./build/nanosolana solana balance [pubkey]
 
+# NanoBot interactive UI (wallet + chat + tools)
+./build/nanosolana nanobot
+
+# macOS menu bar agent
+./build/nanosolana menubar
+
 # Native gateway (no OpenClaw, pure Go)
 ./build/nanosolana gateway start
 ./build/nanosolana gateway stop
@@ -188,21 +204,23 @@ brev shell nanosolana
 
 ```
 nano-solana-go/
-├── main.go                    # CLI entry point (`nano` binary, cobra commands)
+├── main.go                    # CLI entry point (`nanosolana` binary, cobra commands)
 ├── hardware.go                # Hardware CLI subcommands
 ├── go.mod / go.sum            # Go module + dependencies
 ├── Makefile                   # Build targets (all platforms)
 ├── Dockerfile                 # Multi-stage Alpine build
+├── install.sh                 # One-shot curl installer
 ├── .env.example               # Environment variable template
 ├── SECURITY.md                # Security policy & secret handling
 ├── CONTRIBUTING.md            # Contributor guide
 ├── schema.sql                 # Supabase database schema
 ├── SOUL.md                    # GoBot personality & trading philosophy
+├── strategy.md                # Trading strategy documentation
 ├── skills/                    # Agent skills (SKILL.md format)
 │
 ├── cmd/
-│   ├── mawdbot/               # Primary CLI entry point (builds `nano`)
-│   │   ├── main.go            #   All commands: daemon, ooda, pet, solana, gateway, hardware
+│   ├── mawdbot/               # Primary CLI entry point
+│   │   ├── main.go            #   All commands: daemon, ooda, pet, solana, nanobot, menubar
 │   │   └── hardware.go        #   Arduino Modulino® I2C commands
 │   └── mawdbot-tui/           # TUI launcher
 │
@@ -214,6 +232,13 @@ nano-solana-go/
 │   │   ├── ooda.go            #   Trading loop logic
 │   │   └── hooks.go           #   AgentHooks interface (→ hardware adapter)
 │   │
+│   ├── nanobot/               # 🤖 NanoBot interactive UI server
+│   │   ├── server.go          #   HTTP server with embedded UI + API
+│   │   ├── wallet_api.go      #   Wallet REST endpoints (balance, send, tokens, history)
+│   │   ├── das_api.go         #   Helius DAS API client (portfolio, prices, NFTs)
+│   │   └── ui/
+│   │       └── index.html     #   Floating widget UI (wallet, chat, tools tabs)
+│   │
 │   ├── solana/                # ⛓️ Solana integration
 │   │   ├── wallet.go          #   Agentic wallet (auto-gen at ~/.nanosolana/wallet/)
 │   │   ├── rpc.go             #   Native RPC client (solana-go)
@@ -221,9 +246,12 @@ nano-solana-go/
 │   │   ├── programs.go        #   Program IDs, mints, PDA helpers
 │   │   └── tx.go              #   Transaction builders (swap, transfer)
 │   │
-│   ├── onchain/               # ⛓️ On-chain financial engine (NEW)
-│   │   ├── engine.go          #   Helius RPC/WSS: balance, txns, transfers, fees, WSS
+│   ├── onchain/               # ⛓️ On-chain financial engine
+│   │   ├── engine.go          #   Helius RPC/WSS: balance, txns, transfers, fees
 │   │   └── jupiter.go         #   Jupiter Ultra API: quotes, swaps, well-known mints
+│   │
+│   ├── seeker/                # 📱 Seeker-branded agent profile
+│   │   └── agent.go           #   SeekerClaw agent configuration
 │   │
 │   ├── tamagochi/             # 🐹 TamaGOchi pet engine
 │   │   └── tamagochi.go       #   Mood, XP, evolution, on-chain performance
@@ -252,18 +280,76 @@ nano-solana-go/
 │   ├── aster/                 # 📊 Aster DEX perp futures client
 │   └── ...                    # (20+ more packages)
 │
+├── chrome-extension/          # 🧩 Chrome browser extension
+│   ├── manifest.json          #   MV3 manifest with Helius permissions
+│   ├── background.js          #   Service worker (status polling, badge)
+│   ├── popup.html/css/js      #   Extension popup (wallet, chat, tools)
+│   └── icons/                 #   Extension icons (16/32/48/128px)
+│
+├── apps/                      # 📱 Platform-specific apps
+│   ├── macos/                 #   🍎 macOS native app (Swift, menu bar)
+│   │   ├── Package.swift      #     Swift Package Manager
+│   │   └── Sources/           #     SwiftUI + AppKit menu bar agent
+│   └── android/               #   🤖 Android app (Kotlin, Gradle)
+│       ├── app/               #     Main application module
+│       └── build.gradle.kts   #     Gradle build config
+│
+├── SeekerClaw-main/           # 📱 SeekerClaw — AgentOS for Android
+│   ├── app/                   #   Kotlin Android app (24/7 AI agent)
+│   ├── design/                #   Brand assets & design system
+│   └── docs/                  #   Architecture & audit docs
+│
+├── nanohub/                   # 🌐 NanoHub — Agent Registry & Skills Hub
+│   ├── src/                   #   React + TanStack Router frontend
+│   │   ├── components/        #     UI components
+│   │   ├── routes/            #     Page routes (settings, profiles)
+│   │   └── lib/               #     Utilities, badges, themes
+│   ├── convex/                #   Convex backend (real-time DB)
+│   ├── server/                #   SSR server
+│   ├── packages/clawdhub/     #   CLI + SDK for hub interactions
+│   └── scripts/               #   Deploy scripts (Vercel, Convex)
+│
+├── picoclaw/                  # 🐾 PicoClaw — Multi-channel AI gateway
+│   ├── cmd/                   #   CLI entry point
+│   ├── pkg/                   #   Channel drivers (Telegram, Discord, Slack, Matrix, etc.)
+│   └── web/                   #   Admin dashboard
+│
+├── scripts/                   # 🔧 Build & deploy scripts
+│   ├── menubar.sh             #   macOS menu bar agent launcher
+│   ├── package-macos.sh       #   macOS .app/.dmg packager
+│   ├── build-seeker.sh        #   Seeker-branded build
+│   └── launch.mjs             #   Node.js process launcher
+│
+├── dist/                      # 📦 Built distributable artifacts
+│   ├── NanoSolana-v2.0.0.dmg  #   macOS installer disk image
+│   ├── NanoSolana.app/        #   macOS application bundle
+│   ├── nanosolana-darwin-*     #   macOS binaries (amd64 + arm64)
+│   └── nanosolana-universal    #   Universal macOS binary
+│
+├── docs-site/                 # 📚 Documentation website
+│   ├── index.html             #   Interactive docs (Vercel-hosted)
+│   └── style.css              #   Documentation theme
+│
 ├── internal/
 │   └── hal/                   # Hardware Abstraction Layer
 │       ├── hal.go             #   HAL interface
 │       ├── hal_linux.go       #   Linux I2C implementation (Orin Nano / RPi)
 │       └── hal_stub.go        #   Stub for non-Linux (macOS, Windows)
 │
-├── docs/
-│   └── HARDWARE.md            # Modulino® wiring & setup guide
+├── solana-go-main/            # 📦 Vendored solana-go SDK
+├── x402-go-main/              # 📦 Vendored x402 payment protocol SDK
+├── clawgo-main/               # 📦 ClawGo module framework
+├── npm/mawdbot-installer/     # 📦 npm installer wrapper
 │
-└── web/                       # Dashboard (optional)
-    ├── frontend/              # React frontend
-    └── backend/               # API backend
+├── web/                       # 🌐 Web Dashboard
+│   ├── frontend/              #   React frontend (MawdBot OS)
+│   └── backend/               #   API backend
+│
+├── docs/                      # 📖 Documentation
+│   └── HARDWARE.md            #   Modulino® wiring & setup guide
+│
+└── build/                     # 🔨 Build output
+    └── nanosolana              #   Compiled binary
 ```
 
 ---
@@ -329,6 +415,177 @@ $ nanosolana solana wallet
 ```
 
 ---
+
+## 🤖 NanoBot — Interactive UI
+
+NanoBot is a floating interactive widget embedded in the binary. Launch it with:
+
+```bash
+# Start NanoBot UI on http://127.0.0.1:7777
+nanosolana nanobot
+
+# With Helius mainnet for live wallet data
+HELIUS_RPC_URL='https://mainnet.helius-rpc.com/?api-key=YOUR_KEY' \
+HELIUS_API_KEY='YOUR_KEY' \
+HELIUS_NETWORK='mainnet' \
+nanosolana nanobot
+```
+
+**Tabs:**
+
+| Tab | Features |
+|-----|----------|
+| 🏠 **Home** | Quick actions (Health, Trending, Pet, Wallet, Version), command output |
+| 💰 **Wallet** | Live SOL balance, SOL/USD price, token portfolio with prices, send SOL, tx history |
+| 💬 **Chat** | Talk to NanoBot, command execution, typing indicators |
+| 🔧 **Tools** | On-chain registration, system status, registry, terminal commands |
+
+**Wallet API Endpoints:**
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/wallet` | GET | Wallet address, SOL balance, USD price, network |
+| `/api/wallet/portfolio` | GET | DAS portfolio — tokens with prices, NFTs, SOL value |
+| `/api/wallet/tokens` | GET | Basic SPL token balances |
+| `/api/wallet/history` | GET | Enhanced transaction history (Helius) |
+| `/api/wallet/send` | POST | Send SOL to a destination address |
+| `/api/chat` | POST | Chat with NanoBot |
+| `/api/run` | POST | Execute CLI commands |
+| `/api/status` | GET | Server health check |
+
+---
+
+## 🧩 Chrome Extension
+
+NanoBot ships as a Chrome browser extension for quick access from your toolbar:
+
+```
+chrome-extension/
+├── manifest.json      # MV3 manifest
+├── background.js      # Status polling + badge
+├── popup.html/css/js  # Full wallet, chat, tools UI
+└── icons/             # 16/32/48/128px icons
+```
+
+**Install:**
+1. Go to `chrome://extensions/`
+2. Enable **Developer mode**
+3. Click **Load unpacked** → select `chrome-extension/`
+4. NanoBot icon appears in your toolbar 🎉
+
+**Features:**
+- 💰 Live SOL balance with USD conversion (via Helius DAS API)
+- 💬 Chat with NanoBot directly from the toolbar popup
+- 🔧 Quick tool access (trending tokens, system status, on-chain registration)
+- ⚙️ Configurable server URL and network (mainnet/devnet)
+- 🟢 Green badge dot when NanoBot server is online
+- 🔴 Offline detection with "start server" instructions
+
+---
+
+## 🍎 macOS App & Menu Bar
+
+NanoSolana is available as a native macOS application:
+
+```bash
+# Package as .app + .dmg
+bash scripts/package-macos.sh
+
+# Launch the macOS menu bar agent
+nanosolana menubar
+```
+
+**Distributable:** `dist/NanoSolana-v2.0.0.dmg` — installable `.dmg` for macOS  
+**Menu bar** icon sits next to Dock/Tailscale for quick status control & UI access.
+
+| Menu Item | Action |
+|-----------|--------|
+| 🤖 Open NanoBot UI | Opens the NanoBot web UI |
+| 💰 Wallet | Opens the wallet tab |
+| 📊 Health Check | Runs system status |
+| 📈 Trending Tokens | Shows trending Solana tokens |
+| ⏸ Pause / ▶ Resume | Toggle OODA trading loop |
+| 🔴 Quit | Stops NanoBot and menu bar |
+
+---
+
+## 🔮 Helius DAS API Integration
+
+When `HELIUS_RPC_URL` is configured, NanoBot uses the **DAS (Digital Asset Standard)** API for rich blockchain data:
+
+```
+getAssetsByOwner  →  Full portfolio with token prices, NFTs, SOL/USD
+searchAssets      →  Fungible token discovery
+getAsset          →  Single asset lookup by mint
+```
+
+**What you get automatically:**
+- Real-time **SOL/USD price** (displayed in wallet UI and Chrome extension)
+- **Token portfolio** sorted by USD value with per-token pricing
+- **NFT inventory** with metadata (name, symbol, description)
+- **Total portfolio value** in USD
+- Falls back gracefully to basic RPC if DAS is unavailable
+
+---
+
+## 🌐 NanoHub — Agent Registry & Skills Marketplace
+
+NanoHub (`nanohub/`) is the web-based dashboard and agent registry:
+
+```bash
+cd nanohub && bun install && bun run dev
+```
+
+**Stack:** React + TanStack Router + Convex (real-time backend) + Vercel  
+**URL:** Deployed to `https://nanohub.nanosolana.com`
+
+**Features:**
+- 👤 Agent profiles and public pages (`/u/:handle`)
+- 🔧 Skills marketplace (publish & discover agent skills)
+- ⚙️ Settings management
+- 📊 Agent deployment tracking
+- 🔄 Real-time updates via Convex
+
+---
+
+## 📱 SeekerClaw — AgentOS for Android
+
+SeekerClaw (`SeekerClaw-main/`) is an Android 14+ app that runs a 24/7 AI agent on **Solana Seeker** devices:
+
+```
+SeekerClaw-main/
+├── app/                   # Kotlin Android app
+├── design/                # Brand assets
+├── docs/                  # Architecture docs
+├── build.gradle.kts       # Gradle build
+└── README.md              # Setup guide
+```
+
+**Features:**
+- 🤖 Background AI agent running as Android foreground service
+- 📱 Telegram bot interface for remote control
+- ⛓️ Native Solana wallet integration
+- 🧠 Claude-powered reasoning engine
+- 🔒 Secure on-device key management
+
+---
+
+## 🐾 PicoClaw — Multi-Channel Gateway
+
+PicoClaw (`picoclaw/`) is the multi-channel AI gateway powering NanoSolana's communication layer:
+
+**Supported Channels:**
+
+| Channel | Protocol |
+|---------|----------|
+| Telegram | HTTP Bot API |
+| Discord | WebSocket gateway |
+| Slack | Bolt SDK |
+| Matrix | Matrix CS API |
+| LINE | Messaging API |
+| QQ | OneBot v11 |
+| MaixCam | Custom serial |
+| Pico | Hardware bridge |
 
 ## 🎛️ Hardware Integration — Arduino Modulino® + NVIDIA Orin Nano
 
@@ -779,6 +1036,8 @@ nanosolana hardware scan                Scan I2C bus for Modulino® sensors
 nanosolana hardware test                Run hardware self-test
 nanosolana hardware monitor             Live sensor readings
 nanosolana hardware demo                Play trading event animations
+nanosolana nanobot                      Start NanoBot interactive UI (http://127.0.0.1:7777)
+nanosolana menubar                      Launch macOS menu bar agent
 nanosolana status                       System status + config overview
 nanosolana onboard                      Initialize config & workspace
 nanosolana version                      Version + build info
@@ -789,36 +1048,44 @@ nanosolana version                      Version + build info
 ## 🧠 Architecture
 
 ```
-┌───────────────────────────────────────────────────────────────┐
-│                  NanoSolana TamaGOchi Daemon                    │
-│                                                                  │
-│  1. Agentic Wallet  ─  auto-gen/load Solana keypair             │
-│  2. Solana RPC      ─  Helius mainnet connection                │
-│  3. TamaGOchi       ─  virtual pet engine (on-chain driven)    │
-│  4. Telegram        ─  bot channel (if configured)              │
-│  5. x402 Gateway    ─  SVM signer + paywall server             │
-│  6. Channels        ─  multi-channel message routing            │
-│  7. Heartbeat       ─  periodic health + balance checks         │
-│                                                                  │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐      │
-│  │ Telegram │  │  OODA    │  │ TamaGOchi│  │  x402    │      │
-│  │ Channel  │  │  Agent   │  │  Pet     │  │  Paywall │      │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘      │
-│       │              │              │              │            │
-│  ┌────▼──────────────▼──────────────▼──────────────▼────────┐  │
-│  │         Message Bus + Arduino Hardware Adapter            │  │
-│  │     (Pixels · Buzzer · Buttons · Knob · IMU · Thermo)    │  │
-│  └─────────────────────────┬────────────────────────────────┘  │
-│                            │                                     │
-│  ┌─────────────────────────▼────────────────────────────────┐  │
-│  │                pkg/solana + pkg/x402                       │  │
-│  │  wallet · rpc · programs · tx · signer · middleware       │  │
-│  └─────────────────────────┬────────────────────────────────┘  │
-│                            │                                     │
-│  ┌─────────────────────────▼────────────────────────────────┐  │
-│  │    Solana Mainnet (via Helius + Jupiter + Birdeye)         │  │
-│  └──────────────────────────────────────────────────────────┘  │
-└───────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                    NanoSolana TamaGOchi Daemon                        │
+│                                                                        │
+│  1. Agentic Wallet   ─  auto-gen/load Solana keypair                  │
+│  2. Solana RPC       ─  Helius mainnet + DAS API                      │
+│  3. TamaGOchi        ─  virtual pet engine (on-chain driven)          │
+│  4. Telegram         ─  bot channel (if configured)                    │
+│  5. x402 Gateway     ─  SVM signer + paywall server                  │
+│  6. Channels         ─  multi-channel message routing                  │
+│  7. NanoBot UI       ─  interactive widget (wallet, chat, tools)      │
+│  8. Heartbeat        ─  periodic health + balance checks               │
+│                                                                        │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌────────┐ │
+│  │ NanoBot  │  │  OODA    │  │ TamaGOchi│  │  x402    │  │ Chrome │ │
+│  │ UI+API   │  │  Agent   │  │  Pet     │  │  Paywall │  │  Ext   │ │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  └───┬────┘ │
+│       │              │              │              │            │      │
+│  ┌────▼──────────────▼──────────────▼──────────────▼────────────▼──┐  │
+│  │       Message Bus + DAS API + Arduino Hardware Adapter          │  │
+│  │     (Pixels · Buzzer · Buttons · Knob · IMU · Thermo · ToF)    │  │
+│  └──────────────────────────┬──────────────────────────────────────┘  │
+│                             │                                          │
+│  ┌──────────────────────────▼──────────────────────────────────────┐  │
+│  │             pkg/solana + pkg/onchain + pkg/x402                  │  │
+│  │  wallet · rpc · DAS · programs · tx · signer · middleware       │  │
+│  └──────────────────────────┬──────────────────────────────────────┘  │
+│                             │                                          │
+│  ┌──────────────────────────▼──────────────────────────────────────┐  │
+│  │   Solana Mainnet (Helius RPC/WSS + DAS + Jupiter + Birdeye)     │  │
+│  └─────────────────────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────────────────────┘
+
+  ┌──────────────────────────────────────────────────────────────────┐
+  │                     Client Surfaces                               │
+  │  🤖 NanoBot UI (localhost:7777)  ·  🧩 Chrome Extension          │
+  │  🍎 macOS Menu Bar + DMG         ·  📱 SeekerClaw Android        │
+  │  🌐 NanoHub (nanohub.nanosolana.com)  ·  📱 Telegram Bot         │
+  └──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -858,9 +1125,11 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 <div align="center">
 
-**Built with Go on Solana · Powered by x402 Protocol**
+**Built with Go on Solana · Powered by x402 Protocol · Helius DAS API**
 
-**[NanoSolana OS](https://github.com/x402agent) · Arduino Modulino® · NVIDIA Orin Nano**
+**[NanoSolana OS](https://github.com/x402agent) · [NanoHub](https://nanohub.nanosolana.com) · [nanosolana.com](https://nanosolana.com)**
+
+**🤖 NanoBot UI · 🧩 Chrome Extension · 🍎 macOS App · 📱 Android · 🎛️ Arduino Modulino® · 🟢 NVIDIA Orin Nano**
 
 🐹 *A GoBot with a soul.* 🐹
 
