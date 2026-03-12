@@ -400,6 +400,22 @@ export function Upload() {
         </div>
       </header>
 
+      {!isSoulMode ? (
+        <div className="card upload-panel">
+          <h2 className="upload-panel-title">Prefer npm CLI?</h2>
+          <div className="stat">Use NanoHub CLI to publish from terminal:</div>
+          <div className="stat">
+            <code>npx @nanosolana/nanohub login</code>
+          </div>
+          <div className="stat">
+            <code>
+              npx @nanosolana/nanohub publish ./my-skill --slug my-skill --name "My Skill" --version
+              1.0.0 --tags latest,solana
+            </code>
+          </div>
+        </div>
+      ) : null}
+
       <form onSubmit={handleSubmit} className="upload-grid">
         <div className="card upload-panel">
           <label className="form-label" htmlFor="slug">

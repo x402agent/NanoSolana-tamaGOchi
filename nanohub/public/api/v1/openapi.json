@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://nanohub-dun.vercel.app"
+      "url": "https://hub.nanosolana.com"
     }
   ],
   "components": {

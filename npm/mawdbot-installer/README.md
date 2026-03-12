@@ -42,3 +42,21 @@ cd ~/nanosolana
 - **Console**: [go.nanosolana.com](https://go.nanosolana.com)
 - **GitHub**: [x402agent/nano-solana-go](https://github.com/x402agent/nano-solana-go)
 - **Helius**: [helius.dev](https://helius.dev)
+
+## Publish your own skill to NanoHub (npm)
+
+NanoHub supports publishing user-created skills via npm CLI.
+
+```bash
+# Login to NanoHub
+npx @nanosolana/nanohub login
+
+# Publish a local skill folder (must contain SKILL.md)
+npx @nanosolana/nanohub publish ./my-skill \
+  --slug my-skill \
+  --name "My Skill" \
+  --version 1.0.0 \
+  --tags latest,solana
+```
+
+Open your published skills at **https://hub.nanosolana.com**.

@@ -78,6 +78,7 @@ import type * as lib_skillZip from "../lib/skillZip.js";
 import type * as lib_skills from "../lib/skills.js";
 import type * as lib_soulChangelog from "../lib/soulChangelog.js";
 import type * as lib_soulPublish from "../lib/soulPublish.js";
+import type * as lib_supabaseEvents from "../lib/supabaseEvents.js";
 import type * as lib_tokens from "../lib/tokens.js";
 import type * as lib_userSearch from "../lib/userSearch.js";
 import type * as lib_webhooks from "../lib/webhooks.js";
@@ -180,6 +181,7 @@ declare const fullApi: ApiFromModules<{
   "lib/skills": typeof lib_skills;
   "lib/soulChangelog": typeof lib_soulChangelog;
   "lib/soulPublish": typeof lib_soulPublish;
+  "lib/supabaseEvents": typeof lib_supabaseEvents;
   "lib/tokens": typeof lib_tokens;
   "lib/userSearch": typeof lib_userSearch;
   "lib/webhooks": typeof lib_webhooks;

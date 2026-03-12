@@ -35,7 +35,7 @@ function getApiBase(eventHost: string | null) {
   if (site) return site
 
   if (eventHost) return `https://${eventHost}`
-  return 'https://nanohub-dun.vercel.app'
+  return 'https://hub.nanosolana.com'
 }
 
 async function ensureWasm() {
@@ -69,8 +69,8 @@ export default defineEventHandler(async (event) => {
   const ownerLabel = owner ? `@${owner}` : 'nanohub'
   const versionLabel = version ? `v${version}` : 'latest'
   const footer = owner
-    ? `nanohub-dun.vercel.app/${owner}/${slug}`
-    : `nanohub-dun.vercel.app/skills/${slug}`
+    ? `hub.nanosolana.com/${owner}/${slug}`
+    : `hub.nanosolana.com/skills/${slug}`
 
   const cacheKey = version ? 'public, max-age=31536000, immutable' : 'public, max-age=3600'
   setHeader(event, 'Cache-Control', cacheKey)

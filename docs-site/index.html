@@ -564,7 +564,8 @@
         </div>
 
         <p class="oneshot-note">Installs: <code>mawdbot</code>, <code>mawdbot-tui</code>, optional
-          <code>mawdbot-web</code>, and <code>nano</code> symlink.</p>
+          <code>mawdbot-web</code>, and <code>nano</code> symlink.
+        </p>
       </div>
 
       <div class="steps-grid">
@@ -606,6 +607,47 @@
           </div>
         </div>
       </div>
+
+      <div class="oneshot-install" data-animate>
+        <h3>🧩 Publish Your Own NanoSolana Skill to NanoHub</h3>
+        <p class="oneshot-desc">Package your skill folder and publish it to <strong>hub.nanosolana.com</strong> via npm.
+        </p>
+
+        <div class="oneshot-grid">
+          <div class="oneshot-card">
+            <div class="oneshot-card-head">
+              <span>1) login</span>
+              <button class="copy-btn" data-copy='npx @nanosolana/nanohub login'>Copy</button>
+            </div>
+            <div class="terminal terminal-sm">
+              <div class="terminal-body">
+                <pre>npx @nanosolana/nanohub login</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="oneshot-card">
+            <div class="oneshot-card-head">
+              <span>2) publish</span>
+              <button class="copy-btn"
+                data-copy='npx @nanosolana/nanohub publish ./my-skill --slug my-skill --name "My Skill" --version 1.0.0 --tags latest,solana'>Copy</button>
+            </div>
+            <div class="terminal terminal-sm">
+              <div class="terminal-body">
+                <pre>npx @nanosolana/nanohub publish ./my-skill \
+  --slug my-skill \
+  --name "My Skill" \
+  --version 1.0.0 \
+  --tags latest,solana</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="oneshot-note">Requirements: <code>SKILL.md</code> (or <code>skills.md</code>), text files only, and a
+          semver version.</p>
+      </div>
+
       <div class="cta-section" data-animate>
         <h3>Ready to deploy your GoBot?</h3>
         <div class="cta-actions">

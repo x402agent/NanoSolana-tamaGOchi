@@ -1,12 +1,17 @@
 {
-  "name": "clawhub",
+  "name": "@nanosolana/nanohub",
   "version": "0.7.0",
-  "description": "ClawHub CLI \\u2014 install, update, search, and publish agent skills.",
+  "description": "NanoHub CLI \u2014 install, update, search, and publish NanoSolana skills.",
   "license": "MIT",
   "type": "module",
   "bin": {
+    "nanohub": "bin/clawdhub.js",
+    "nanosolana-skill": "bin/clawdhub.js",
     "clawhub": "bin/clawdhub.js",
     "clawdhub": "bin/clawdhub.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "bin",

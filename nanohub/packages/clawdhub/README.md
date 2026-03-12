@@ -1,57 +1,71 @@
-# `clawhub`
+# `@nanosolana/nanohub`
 
-ClawHub CLI — install, update, search, and publish agent skills as folders.
+NanoHub CLI — install, update, search, and publish NanoSolana skills as folders.
 
 ## Install
 
 ```bash
-# From this repo (shortcut script at repo root)
-bun clawhub --help
+# One-off via npx
+npx @nanosolana/nanohub --help
 
-# Once published to npm
-# npm i -g clawhub
+# Optional global install
+npm i -g @nanosolana/nanohub
 ```
+
+Command aliases provided by the package:
+
+- `nanohub` (primary)
+- `nanosolana-skill`
+- `clawhub` (legacy)
+- `clawdhub` (legacy)
 
 ## Auth (publish)
 
 ```bash
-clawhub login
+nanohub login
 # or
-clawhub auth login
+nanohub auth login
 
 # Headless / token paste
-# or (token paste / headless)
-clawhub login --token clh_...
+nanohub login --token <token>
 ```
 
 Notes:
 
-- Browser login opens `https://clawhub.ai/cli/auth` and completes via a loopback callback.
-- Token stored in `~/Library/Application Support/clawhub/config.json` on macOS (override via `CLAWHUB_CONFIG_PATH`, legacy `CLAWDHUB_CONFIG_PATH`).
+- Browser login opens `${NANOHUB_SITE:-https://hub.nanosolana.com}/cli/auth` and completes via a loopback callback.
+- Token stored in `~/Library/Application Support/clawhub/config.json` on macOS.
+- Config path override envs: `NANOHUB_CONFIG_PATH` (preferred), `CLAWHUB_CONFIG_PATH`, `CLAWDHUB_CONFIG_PATH`.
 
-## Examples
+## Publish a skill
+
+Skill folder requirements:
+
+- `SKILL.md` (or `skills.md`)
+- text files only
+- semver version (for example `1.0.0`)
 
 ```bash
-clawhub search "postgres backups"
-clawhub install my-skill-pack
-clawhub update --all
-clawhub update --all --no-input --force
-clawhub publish ./my-skill-pack --slug my-skill-pack --name "My Skill Pack" --version 1.2.0 --changelog "Fixes + docs"
+npx @nanosolana/nanohub publish ./my-skill \
+  --slug my-skill \
+  --name "My Skill" \
+  --version 1.0.0 \
+  --tags latest,solana \
+  --changelog "Initial release"
 ```
 
 ## Sync (upload local skills)
 
 ```bash
-# Start anywhere; scans workdir first, then legacy Clawdis/Clawd/OpenClaw/Moltbot locations.
-clawhub sync
+# Scan + upload from discovered skill roots
+nanohub sync
 
-# Explicit roots + non-interactive dry-run
-clawhub sync --root ../clawdis/skills --all --dry-run
+# Non-interactive upload of all candidates
+nanohub sync --all --bump patch --tags latest
 ```
 
 ## Defaults
 
-- Site: `https://clawhub.ai` (override via `--site` or `CLAWHUB_SITE`, legacy `CLAWDHUB_SITE`)
-- Registry: discovered from `/.well-known/clawhub.json` on the site (legacy `/.well-known/clawdhub.json`; override via `--registry` or `CLAWHUB_REGISTRY`)
-- Workdir: current directory (falls back to Clawdbot workspace if configured; override via `--workdir` or `CLAWHUB_WORKDIR`)
+- Site: `https://hub.nanosolana.com` (override via `--site`, `NANOHUB_SITE`, `CLAWHUB_SITE`, `CLAWDHUB_SITE`)
+- Registry: discovered from site `/.well-known/*.json`, fallback `https://hub.nanosolana.com` (override via `--registry`, `NANOHUB_REGISTRY`, `CLAWHUB_REGISTRY`, `CLAWDHUB_REGISTRY`)
+- Workdir: current directory (falls back to Clawdbot workspace when configured; override via `--workdir`, `NANOHUB_WORKDIR`, `CLAWHUB_WORKDIR`, `CLAWDHUB_WORKDIR`)
 - Install dir: `./skills` under workdir (override via `--dir`)

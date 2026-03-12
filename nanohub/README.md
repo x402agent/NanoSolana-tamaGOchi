@@ -64,13 +64,41 @@ Useful environment flags:
 
 ## CLI workflows
 
-Common commands (compatibility name retained):
+Primary npm package:
 
-- Auth: `clawhub login`, `clawhub whoami`
-- Discover: `clawhub search ...`, `clawhub explore`
-- Local installs: `clawhub install <slug>`, `clawhub uninstall <slug>`, `clawhub list`, `clawhub update --all`
-- Inspect: `clawhub inspect <slug>`
-- Publish/sync: `clawhub publish <path>`, `clawhub sync`
+- `@nanosolana/nanohub`
+
+Quick start:
+
+```bash
+# one-off run
+npx @nanosolana/nanohub --help
+
+# login
+npx @nanosolana/nanohub login
+
+# publish a local skill folder
+npx @nanosolana/nanohub publish ./my-skill \
+  --slug my-skill \
+  --name "My Skill" \
+  --version 1.0.0 \
+  --tags latest,solana
+```
+
+Global command aliases (primary + compatibility):
+
+- `nanohub` (primary)
+- `nanosolana-skill`
+- `clawhub` (legacy)
+- `clawdhub` (legacy)
+
+Common commands:
+
+- Auth: `nanohub login`, `nanohub whoami`
+- Discover: `nanohub search ...`, `nanohub explore`
+- Local installs: `nanohub install <slug>`, `nanohub uninstall <slug>`, `nanohub list`, `nanohub update --all`
+- Inspect: `nanohub inspect <slug>`
+- Publish/sync: `nanohub publish <path>`, `nanohub sync`
 
 Docs: [`docs/quickstart.md`](docs/quickstart.md), [`docs/cli.md`](docs/cli.md).
 
@@ -106,6 +134,13 @@ For complete setup (OAuth, JWT/JWKS, env configuration), see [CONTRIBUTING.md](C
 - `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET`
 - `JWT_PRIVATE_KEY` / `JWKS`
 - `OPENAI_API_KEY`
+- `VITE_SUPABASE_URL` (optional)
+- `VITE_SUPABASE_ANON_KEY` (optional)
+- `SUPABASE_URL` (optional)
+- `SUPABASE_ANON_KEY` (optional)
+- `SUPABASE_SERVICE_ROLE_KEY` (optional, server only)
+
+Supabase is optional and can be used as an external persistence layer alongside Convex.
 
 ## Repo layout
 
@@ -119,6 +154,8 @@ For complete setup (OAuth, JWT/JWKS, env configuration), see [CONTRIBUTING.md](C
 Install telemetry can be disabled with:
 
 ```bash
+export NANOHUB_DISABLE_TELEMETRY=1
+# legacy env vars also supported:
 export CLAWHUB_DISABLE_TELEMETRY=1
 ```
 

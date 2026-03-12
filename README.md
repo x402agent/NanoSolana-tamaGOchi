@@ -306,7 +306,7 @@ nano-solana-go/
 │   │   └── lib/               #     Utilities, badges, themes
 │   ├── convex/                #   Convex backend (real-time DB)
 │   ├── server/                #   SSR server
-│   ├── packages/clawdhub/     #   CLI + SDK for hub interactions
+│   ├── packages/clawdhub/     #   NanoHub CLI package (@nanosolana/nanohub)
 │   └── scripts/               #   Deploy scripts (Vercel, Convex)
 │
 ├── picoclaw/                  # 🐾 PicoClaw — Multi-channel AI gateway
@@ -538,6 +538,34 @@ cd nanohub && bun install && bun run dev
 
 **Stack:** React + TanStack Router + Convex (real-time backend) + Vercel  
 **URL:** Deployed to `https://nanohub.nanosolana.com`
+
+### Publish your own skill via npm CLI
+
+```bash
+# one-off usage
+npx @nanosolana/nanohub --help
+
+# login
+npx @nanosolana/nanohub login
+
+# publish local folder (requires SKILL.md or skills.md)
+npx @nanosolana/nanohub publish ./my-skill \
+  --slug my-skill \
+  --name "My Skill" \
+  --version 1.0.0 \
+  --tags latest,solana
+```
+
+Command aliases are supported for compatibility: `nanohub`, `nanosolana-skill`, `clawhub`, `clawdhub`.
+
+### Deploy NanoHub (Convex + Vercel)
+
+```bash
+cd nanohub
+cp .env.deploy.example .env.deploy
+# fill in deploy secrets/URLs
+bun run deploy:prod
+```
 
 **Features:**
 - 👤 Agent profiles and public pages (`/u/:handle`)

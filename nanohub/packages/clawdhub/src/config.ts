@@ -24,7 +24,9 @@ function isNonFatalChmodError(error: unknown): boolean {
 
 export function getGlobalConfigPath() {
   const override =
-    process.env.CLAWHUB_CONFIG_PATH?.trim() ?? process.env.CLAWDHUB_CONFIG_PATH?.trim()
+    process.env.NANOHUB_CONFIG_PATH?.trim() ??
+    process.env.CLAWHUB_CONFIG_PATH?.trim() ??
+    process.env.CLAWDHUB_CONFIG_PATH?.trim()
   if (override) return resolve(override)
 
   const home = resolveHome()

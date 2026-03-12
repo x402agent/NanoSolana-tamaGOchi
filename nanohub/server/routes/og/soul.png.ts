@@ -36,7 +36,7 @@ function getApiBase(eventHost: string | null) {
   if (site) return site
 
   if (eventHost) return `https://${eventHost}`
-  return 'https://souls.nanohub-dun.vercel.app'
+  return 'https://souls.hub.nanosolana.com'
 }
 
 async function ensureWasm() {

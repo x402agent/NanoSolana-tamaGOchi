@@ -113,7 +113,7 @@ export async function startLoopbackAuthServer(params?: { timeoutMs?: number }) {
     server.close()
     rejectToken?.(new Error('Timed out waiting for browser login'))
   }, timeoutMs)
-  tokenPromise.finally(() => clearTimeout(timeout)).catch(() => {})
+  tokenPromise.finally(() => clearTimeout(timeout)).catch(() => { })
 
   return {
     redirectUri,
@@ -127,7 +127,7 @@ const CALLBACK_HTML = `<!doctype html>
 <html lang="en">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ClawHub CLI Login</title>
+  <title>NanoHub CLI Login</title>
   <style>
     :root { color-scheme: light dark; }
     body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; padding: 24px; }

@@ -39,10 +39,10 @@ import { fail } from './cli/ui.js'
 import { readGlobalConfig } from './config.js'
 
 const program = new Command()
-  .name('clawhub')
+  .name('nanohub')
   .description(
-    `${styleTitle(`ClawHub CLI ${getCliBuildLabel()}`)}\n${styleEnvBlock(
-      'install, update, search, and publish agent skills.',
+    `${styleTitle(`NanoHub CLI ${getCliBuildLabel()}`)}\n${styleEnvBlock(
+      'install, update, search, and publish NanoSolana skills.',
     )}`,
   )
   .version(getCliVersion(), '-V, --cli-version', 'Show CLI version')
@@ -56,7 +56,7 @@ const program = new Command()
   .addHelpText(
     'after',
     styleEnvBlock(
-      '\nEnv:\n  CLAWHUB_SITE\n  CLAWHUB_REGISTRY\n  CLAWHUB_WORKDIR\n  (CLAWDHUB_* supported)\n',
+      '\nEnv:\n  NANOHUB_SITE\n  NANOHUB_REGISTRY\n  NANOHUB_WORKDIR\n  (CLAWHUB_* and CLAWDHUB_* supported)\n',
     ),
   )
 
@@ -66,14 +66,20 @@ async function resolveGlobalOpts(): Promise<GlobalOpts> {
   const raw = program.opts<{ workdir?: string; dir?: string; site?: string; registry?: string }>()
   const workdir = await resolveWorkdir(raw.workdir)
   const dir = resolve(workdir, raw.dir ?? 'skills')
-  const site = raw.site ?? process.env.CLAWHUB_SITE ?? process.env.CLAWDHUB_SITE ?? DEFAULT_SITE
+  const site =
+    raw.site ??
+    process.env.NANOHUB_SITE ??
+    process.env.CLAWHUB_SITE ??
+    process.env.CLAWDHUB_SITE ??
+    DEFAULT_SITE
   const registrySource = raw.registry
     ? 'cli'
-    : process.env.CLAWHUB_REGISTRY || process.env.CLAWDHUB_REGISTRY
+    : process.env.NANOHUB_REGISTRY || process.env.CLAWHUB_REGISTRY || process.env.CLAWDHUB_REGISTRY
       ? 'env'
       : 'default'
   const registry =
     raw.registry ??
+    process.env.NANOHUB_REGISTRY ??
     process.env.CLAWHUB_REGISTRY ??
     process.env.CLAWDHUB_REGISTRY ??
     DEFAULT_REGISTRY
@@ -87,7 +93,10 @@ function isInputAllowed() {
 
 async function resolveWorkdir(explicit?: string) {
   if (explicit?.trim()) return resolve(explicit.trim())
-  const envWorkdir = process.env.CLAWHUB_WORKDIR?.trim() ?? process.env.CLAWDHUB_WORKDIR?.trim()
+  const envWorkdir =
+    process.env.NANOHUB_WORKDIR?.trim() ??
+    process.env.CLAWHUB_WORKDIR?.trim() ??
+    process.env.CLAWDHUB_WORKDIR?.trim()
   if (envWorkdir) return resolve(envWorkdir)
 
   const cwd = resolve(process.cwd())

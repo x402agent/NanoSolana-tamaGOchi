@@ -141,9 +141,9 @@ export async function publishVersionForUser(
   // Check for description in metadata.description (nested) or description (direct frontmatter field)
   const metadataDescription =
     frontmatterMetadata &&
-    typeof frontmatterMetadata === 'object' &&
-    !Array.isArray(frontmatterMetadata) &&
-    typeof (frontmatterMetadata as Record<string, unknown>).description === 'string'
+      typeof frontmatterMetadata === 'object' &&
+      !Array.isArray(frontmatterMetadata) &&
+      typeof (frontmatterMetadata as Record<string, unknown>).description === 'string'
       ? ((frontmatterMetadata as Record<string, unknown>).description as string)
       : undefined
   const directDescription = getFrontmatterValue(frontmatter, 'description')
@@ -245,11 +245,11 @@ export async function publishVersionForUser(
     changelogSource === 'user'
       ? Promise.resolve(suppliedChangelog)
       : generateChangelogForPublish(ctx, {
-          slug,
-          version,
-          readmeText,
-          files: publishFiles.map((file) => ({ path: file.path, sha256: file.sha256 })),
-        })
+        slug,
+        version,
+        readmeText,
+        files: publishFiles.map((file) => ({ path: file.path, sha256: file.sha256 })),
+      })
 
   const embeddingPromise = generateEmbedding(embeddingText)
 
@@ -272,9 +272,9 @@ export async function publishVersionForUser(
     fingerprint,
     forkOf: args.forkOf
       ? {
-          slug: args.forkOf.slug.trim().toLowerCase(),
-          version: args.forkOf.version?.trim() || undefined,
-        }
+        slug: args.forkOf.slug.trim().toLowerCase(),
+        version: args.forkOf.version?.trim() || undefined,
+      }
       : undefined,
     bypassNewSkillRateLimit: options.bypassNewSkillRateLimit || undefined,
     files: publishFiles.map((file) => ({
@@ -292,13 +292,13 @@ export async function publishVersionForUser(
     embedding,
     qualityAssessment: qualityAssessment
       ? {
-          decision: qualityAssessment.decision,
-          score: qualityAssessment.score,
-          reason: qualityAssessment.reason,
-          trustTier: qualityAssessment.trustTier,
-          similarRecentCount: qualityAssessment.similarRecentCount,
-          signals: qualityAssessment.signals,
-        }
+        decision: qualityAssessment.decision,
+        score: qualityAssessment.score,
+        reason: qualityAssessment.reason,
+        trustTier: qualityAssessment.trustTier,
+        similarRecentCount: qualityAssessment.similarRecentCount,
+        signals: qualityAssessment.signals,
+      }
       : undefined,
   })) as PublishResult
 
@@ -399,6 +399,11 @@ export async function queueHighlightedWebhook(ctx: MutationCtx, skillId: Id<'ski
     tags: Object.keys(skill.tags ?? {}),
   }
 
+  await ctx.scheduler.runAfter(0, internal.webhooks.persistSkillEventToSupabaseAction, {
+    event: 'skill.highlighted',
+    skill: payload,
+  })
+
   await ctx.scheduler.runAfter(0, internal.webhooks.sendDiscordWebhook, {
     event: 'skill.highlighted',
     skill: payload,
@@ -444,6 +449,11 @@ async function schedulePublishWebhook(
     highlighted: isSkillHighlighted(result.skill),
     tags: Object.keys(result.skill.tags ?? {}),
   }
+
+  await ctx.scheduler.runAfter(0, internal.webhooks.persistSkillEventToSupabaseAction, {
+    event: 'skill.publish',
+    skill: payload,
+  })
 
   await ctx.scheduler.runAfter(0, internal.webhooks.sendDiscordWebhook, {
     event: 'skill.publish',

@@ -8,53 +8,53 @@ read_when:
 # Manual testing (CLI)
 
 ## Setup
-- Ensure logged in: `bun clawhub whoami` (or `bun clawhub login`).
+- Ensure logged in: `npx @nanosolana/nanohub@latest whoami` (or `npx @nanosolana/nanohub@latest login`).
 - Optional: set env
-  - `CLAWHUB_SITE=https://clawhub.ai`
-  - `CLAWHUB_REGISTRY=https://clawhub.ai`
+  - `CLAWHUB_SITE=https://hub.nanosolana.com`
+  - `CLAWHUB_REGISTRY=https://hub.nanosolana.com`
 
 ## Smoke
-- `bun clawhub --help`
-- `bun clawhub --cli-version`
-- `bun clawhub whoami`
+- `npx @nanosolana/nanohub@latest --help`
+- `npx @nanosolana/nanohub@latest --cli-version`
+- `npx @nanosolana/nanohub@latest whoami`
 
 ## Search
-- `bun clawhub search gif --limit 5`
+- `npx @nanosolana/nanohub@latest search gif --limit 5`
 
 ## Install / list / update
-- `mkdir -p /tmp/clawhub-manual && cd /tmp/clawhub-manual`
-- `bunx clawhub@beta install gifgrep --force`
-- `bunx clawhub@beta list`
-- `bunx clawhub@beta update gifgrep --force`
+- `mkdir -p /tmp/nanohub-manual && cd /tmp/nanohub-manual`
+- `bunx @nanosolana/nanohub@latest install gifgrep --force`
+- `bunx @nanosolana/nanohub@latest list`
+- `bunx @nanosolana/nanohub@latest update gifgrep --force`
 
 ## Publish (changelog optional)
-- `mkdir -p /tmp/clawhub-skill-demo/SKILL && cd /tmp/clawhub-skill-demo`
+- `mkdir -p /tmp/nanohub-skill-demo/SKILL && cd /tmp/nanohub-skill-demo`
 - Create files:
   - `SKILL.md`
   - `notes.md`
 - Publish:
-  - `bun clawhub publish . --slug clawhub-manual-<ts> --name "Manual <ts>" --version 1.0.0 --tags latest`
+  - `npx @nanosolana/nanohub@latest publish . --slug nanohub-manual-<ts> --name "Manual <ts>" --version 1.0.0 --tags latest`
 - Publish update with empty changelog:
-  - `bun clawhub publish . --slug clawhub-manual-<ts> --name "Manual <ts>" --version 1.0.1 --tags latest`
+  - `npx @nanosolana/nanohub@latest publish . --slug nanohub-manual-<ts> --name "Manual <ts>" --version 1.0.1 --tags latest`
 
 ## Delete / undelete (owner/admin)
-- `bun clawhub delete clawhub-manual-<ts> --yes`
+- `npx @nanosolana/nanohub@latest delete nanohub-manual-<ts> --yes`
 - Verify hidden:
-- `curl -i "https://clawhub.ai/api/v1/skills/clawhub-manual-<ts>"`
+- `curl -i "https://hub.nanosolana.com/api/v1/skills/nanohub-manual-<ts>"`
 - Restore:
-  - `bun clawhub undelete clawhub-manual-<ts> --yes`
+  - `npx @nanosolana/nanohub@latest undelete nanohub-manual-<ts> --yes`
 - Cleanup:
-  - `bun clawhub delete clawhub-manual-<ts> --yes`
+  - `npx @nanosolana/nanohub@latest delete nanohub-manual-<ts> --yes`
 
 ## Sync
-- `bun clawhub sync --dry-run --all`
+- `npx @nanosolana/nanohub@latest sync --dry-run --all`
 
 ## Playwright (menu smoke)
 
 Run against prod:
 
 ```
-PLAYWRIGHT_BASE_URL=https://clawhub.ai bun run test:pw
+PLAYWRIGHT_BASE_URL=https://hub.nanosolana.com bun run test:pw
 ```
 
 This smoke gate should fail on visible error UI, page errors, and browser
@@ -73,7 +73,7 @@ Recommended workflow coverage in Playwright:
 Authenticated prod canary:
 
 ```
-PLAYWRIGHT_BASE_URL=https://clawhub.ai \
+PLAYWRIGHT_BASE_URL=https://hub.nanosolana.com \
 PLAYWRIGHT_AUTH_STORAGE_STATE=/path/to/storage-state.json \
 bunx playwright test e2e/upload-auth-smoke.pw.test.ts
 ```

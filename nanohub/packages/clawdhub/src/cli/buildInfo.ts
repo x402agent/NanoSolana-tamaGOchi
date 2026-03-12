@@ -24,6 +24,7 @@ function shortCommit(value: string) {
 
 export function getCliCommit() {
   const candidates = [
+    process.env.NANOHUB_COMMIT,
     process.env.CLAWHUB_COMMIT,
     process.env.CLAWDHUB_COMMIT,
     process.env.VERCEL_GIT_COMMIT_SHA,
@@ -70,7 +71,7 @@ function readGitCommitFromCwd() {
 
 function findGitDir(start: string) {
   let current = resolve(start)
-  for (;;) {
+  for (; ;) {
     const dotGit = join(current, '.git')
     if (existsSync(dotGit)) {
       try {

@@ -42,15 +42,15 @@ afterEach(() => {
 
 describe('site helpers', () => {
   it('returns default and env configured site URLs', () => {
-    expect(getClawHubSiteUrl()).toBe('https://clawhub.ai')
+    expect(getClawHubSiteUrl()).toBe('https://hub.nanosolana.com')
     withMetaEnv({ VITE_SITE_URL: 'https://example.com' }, () => {
       expect(getClawHubSiteUrl()).toBe('https://example.com')
     })
     withMetaEnv({ VITE_SITE_URL: 'https://clawdhub.com' }, () => {
-      expect(getClawHubSiteUrl()).toBe('https://clawhub.ai')
+      expect(getClawHubSiteUrl()).toBe('https://hub.nanosolana.com')
     })
     withMetaEnv({ VITE_SITE_URL: 'https://auth.clawdhub.com' }, () => {
-      expect(getClawHubSiteUrl()).toBe('https://clawhub.ai')
+      expect(getClawHubSiteUrl()).toBe('https://hub.nanosolana.com')
     })
   })
 
@@ -74,7 +74,7 @@ describe('site helpers', () => {
 
   it('falls back to default SoulHub URL for invalid VITE_SITE_URL', () => {
     withMetaEnv({ VITE_SITE_URL: 'not a url' }, () => {
-      expect(getOnlyCrabsSiteUrl()).toBe('https://onlycrabs.ai')
+      expect(getOnlyCrabsSiteUrl()).toBe('https://souls.hub.nanosolana.com')
     })
   })
 
@@ -85,11 +85,11 @@ describe('site helpers', () => {
       expect(getOnlyCrabsHost()).toBe('souls.example.com')
       expect(detectSiteMode('souls.example.com')).toBe('souls')
       expect(detectSiteMode('sub.souls.example.com')).toBe('souls')
-      expect(detectSiteMode('clawhub.ai')).toBe('skills')
+      expect(detectSiteMode('hub.nanosolana.com')).toBe('skills')
 
       expect(detectSiteModeFromUrl('https://souls.example.com/x')).toBe('souls')
       expect(detectSiteModeFromUrl('souls.example.com')).toBe('souls')
-      expect(detectSiteModeFromUrl('https://clawhub.ai')).toBe('skills')
+      expect(detectSiteModeFromUrl('https://hub.nanosolana.com')).toBe('skills')
     })
   })
 
@@ -111,26 +111,29 @@ describe('site helpers', () => {
 
   it('detects site mode from VITE_SOULHUB_SITE_URL and SITE_URL fallback', () => {
     withMetaEnv(
-      { VITE_SITE_MODE: undefined, VITE_SOULHUB_SITE_URL: 'https://onlycrabs.ai' },
+      {
+        VITE_SITE_MODE: undefined,
+        VITE_SOULHUB_SITE_URL: 'https://souls.hub.nanosolana.com',
+      },
       () => {
         expect(getSiteMode()).toBe('souls')
       },
     )
 
     withMetaEnv({ VITE_SOULHUB_SITE_URL: undefined, VITE_SITE_URL: undefined }, () => {
-      vi.stubEnv('SITE_URL', 'https://onlycrabs.ai')
+      vi.stubEnv('SITE_URL', 'https://souls.hub.nanosolana.com')
       expect(getSiteMode()).toBe('souls')
     })
   })
 
   it('derives site metadata from mode', () => {
-    expect(getSiteName('skills')).toBe('ClawHub')
-    expect(getSiteName('souls')).toBe('SoulHub')
+    expect(getSiteName('skills')).toBe('NanoHub')
+    expect(getSiteName('souls')).toBe('NanoHub Souls')
 
-    expect(getSiteDescription('skills')).toContain('ClawHub')
-    expect(getSiteDescription('souls')).toContain('SoulHub')
+    expect(getSiteDescription('skills')).toContain('NanoHub')
+    expect(getSiteDescription('souls')).toContain('NanoHub Souls')
 
-    expect(getSiteUrlForMode('skills')).toBe('https://clawhub.ai')
-    expect(getSiteUrlForMode('souls')).toBe('https://onlycrabs.ai')
+    expect(getSiteUrlForMode('skills')).toBe('https://hub.nanosolana.com')
+    expect(getSiteUrlForMode('souls')).toBe('https://souls.hub.nanosolana.com')
   })
 })

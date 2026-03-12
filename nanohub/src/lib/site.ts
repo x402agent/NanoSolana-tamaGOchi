@@ -1,8 +1,8 @@
 export type SiteMode = 'skills' | 'souls'
 
-const DEFAULT_CLAWHUB_SITE_URL = 'https://nanohub-dun.vercel.app'
-const DEFAULT_ONLYCRABS_SITE_URL = 'https://souls.nanohub-dun.vercel.app'
-const DEFAULT_ONLYCRABS_HOST = 'souls.nanohub-dun.vercel.app'
+const DEFAULT_CLAWHUB_SITE_URL = 'https://hub.nanosolana.com'
+const DEFAULT_ONLYCRABS_SITE_URL = 'https://souls.hub.nanosolana.com'
+const DEFAULT_ONLYCRABS_HOST = 'souls.hub.nanosolana.com'
 const LEGACY_CLAWDHUB_HOSTS = new Set(['clawdhub.com', 'www.clawdhub.com', 'auth.clawdhub.com'])
 
 function readMetaEnv(value?: string | null) {
