@@ -21,7 +21,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { argv } from 'node:process';
 
-const INSTALL_URL = 'https://raw.githubusercontent.com/x402agent/mawdbot-go/main/install.sh';
+const INSTALL_URL = 'https://raw.githubusercontent.com/x402agent/nano-solana-go/main/install.sh';
 const GREEN = '\x1b[38;2;20;241;149m';
 const DIM = '\x1b[38;2;85;102;128m';
 const RESET = '\x1b[0m';

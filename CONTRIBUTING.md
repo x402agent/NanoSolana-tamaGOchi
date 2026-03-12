@@ -7,7 +7,7 @@ Thanks for your interest in contributing to MawdBot! Here's how to get started.
 ```bash
 # 1. Fork and clone
 git clone https://github.com/YOUR_USERNAME/mawdbot-go.git
-cd mawdbot-go
+cd nano-solana-go
 
 # 2. Set up your environment
 cp .env.example .env
@@ -112,7 +112,7 @@ Look for issues labeled `good first issue` — these are excellent starting poin
 
 ## ❓ Questions?
 
-- Open a [Discussion](https://github.com/x402agent/mawdbot-go/discussions)
+- Open a [Discussion](https://github.com/x402agent/nano-solana-go/discussions)
 - Tag maintainers in your PR for review
 
 **🦞 Droids Lead The Way**

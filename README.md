@@ -91,10 +91,10 @@ The GoBot bridges **software intelligence** (LLM-powered OODA agent, RSI/EMA/ATR
 
 ```bash
 # Curl one-shot:
-curl -fsSL https://raw.githubusercontent.com/x402agent/mawdbot-go/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/x402agent/nano-solana-go/main/install.sh | bash
 
 # Include web console:
-curl -fsSL https://raw.githubusercontent.com/x402agent/mawdbot-go/main/install.sh | bash -s -- --with-web
+curl -fsSL https://raw.githubusercontent.com/x402agent/nano-solana-go/main/install.sh | bash -s -- --with-web
 
 # npm wrapper (local/dev form):
 npx -y ./npm/mawdbot-installer --with-web
@@ -114,8 +114,8 @@ This installs:
 ### 1. Clone & Build
 
 ```bash
-git clone https://github.com/x402agent/NanoSolana-tamaGOchi.git
-cd NanoSolana-tamaGOchi
+git clone https://github.com/x402agent/nano-solana-go.git
+cd nano-solana-go
 cp .env.example .env   # Edit with your API keys
 make build
 ```
@@ -187,7 +187,7 @@ brev shell nanosolana
 ## 📁 Project Structure
 
 ```
-NanoSolana-tamaGOchi/
+nano-solana-go/
 ├── main.go                    # CLI entry point (`nano` binary, cobra commands)
 ├── hardware.go                # Hardware CLI subcommands
 ├── go.mod / go.sum            # Go module + dependencies

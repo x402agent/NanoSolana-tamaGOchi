@@ -9,7 +9,7 @@ import https from 'node:https';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const localInstaller = resolve(__dirname, '..', '..', '..', 'install.sh');
 const defaultRef = 'main';
-const defaultRepo = 'x402agent/mawdbot-go';
+const defaultRepo = 'x402agent/nano-solana-go';
 
 const args = process.argv.slice(2);
 const ref = process.env.MAWDBOT_REF || extractRef(args) || defaultRef;

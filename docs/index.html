@@ -100,10 +100,10 @@ footer a:hover{color:var(--sol-green)}
       </div>
       <div class="install-body">
         <div><span class="comment"># One-shot install</span></div>
-        <div><span class="cmd">curl -fsSL https://raw.githubusercontent.com/x402agent/mawdbot-go/main/install.sh | bash</span></div>
+        <div><span class="cmd">curl -fsSL https://raw.githubusercontent.com/x402agent/nano-solana-go/main/install.sh | bash</span></div>
         <div></div>
         <div><span class="comment"># With web console</span></div>
-        <div><span class="cmd">curl -fsSL https://raw.githubusercontent.com/x402agent/mawdbot-go/main/install.sh | bash -s -- --with-web</span></div>
+        <div><span class="cmd">curl -fsSL https://raw.githubusercontent.com/x402agent/nano-solana-go/main/install.sh | bash -s -- --with-web</span></div>
       </div>
     </div>
   </div>
@@ -187,7 +187,7 @@ footer a:hover{color:var(--sol-green)}
     </p>
     <p style="color:var(--dim);font-size:0.9rem">
       Source code →
-      <a href="https://github.com/x402agent/mawdbot-go" target="_blank" rel="noopener">github.com/x402agent/mawdbot-go</a>
+      <a href="https://github.com/x402agent/nano-solana-go" target="_blank" rel="noopener">github.com/x402agent/nano-solana-go</a>
     </p>
   </div>
 </section>
@@ -207,7 +207,7 @@ footer a:hover{color:var(--sol-green)}
 
 <script>
 function copyInstall() {
-  const cmd = 'curl -fsSL https://raw.githubusercontent.com/x402agent/mawdbot-go/main/install.sh | bash';
+  const cmd = 'curl -fsSL https://raw.githubusercontent.com/x402agent/nano-solana-go/main/install.sh | bash';
   navigator.clipboard.writeText(cmd).then(() => {
     const btn = document.getElementById('copyBtn');
     btn.textContent = 'Copied!';

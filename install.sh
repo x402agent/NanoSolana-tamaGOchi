@@ -3,8 +3,8 @@
 # NanoSolana — One-Shot Installer
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/x402agent/mawdbot-go/main/install.sh | bash
-#   curl -fsSL https://raw.githubusercontent.com/x402agent/mawdbot-go/main/install.sh | bash -s -- --with-web
+#   curl -fsSL https://raw.githubusercontent.com/x402agent/nano-solana-go/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/x402agent/nano-solana-go/main/install.sh | bash -s -- --with-web
 #
 # What it does:
 #   1. Clones the repo (or updates if already present)
@@ -54,7 +54,7 @@ check_cmd go
 info "Go: $(go version | awk '{print $3}')"
 
 # ── Clone or update ──────────────────────────────────────────────
-REPO_URL="https://github.com/x402agent/mawdbot-go.git"
+REPO_URL="https://github.com/x402agent/nano-solana-go.git"
 
 if [ -d "$INSTALL_DIR/.git" ]; then
   info "Updating existing installation at $INSTALL_DIR"

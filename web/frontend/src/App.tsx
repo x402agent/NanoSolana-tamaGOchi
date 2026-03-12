@@ -240,7 +240,7 @@ const FEATURES = [
   { icon: '🔄', title: 'Jupiter Swaps', desc: 'Atomic DEX swaps via Jupiter Ultra API with slippage control, auto priority fees, and MEV protection. SOL↔SPL and SPL↔SPL.' },
   { icon: '🧠', title: 'OODA Trading Loop', desc: 'Autonomous Observe → Orient → Decide → Act cycle with RSI/EMA/ATR strategy, auto-optimizer, and on-chain execution wired to Helius RPC.' },
   { icon: '🐹', title: 'TamaGOchi Pet', desc: 'Virtual pet whose mood, XP, and evolution stage are driven by live on-chain trading performance. Egg → Larva → Juvenile → Adult → Alpha.' },
-  { icon: '🌐', title: 'Native Gateway', desc: 'Pure Go TCP bridge server with token auth and Tailscale mesh networking. Connects hardware nodes without OpenClaw or Node.js.' },
+  { icon: '🌐', title: 'Native Gateway', desc: 'Pure Go TCP bridge server with token auth and Tailscale mesh networking. Connects hardware nodes without external dependencies.' },
   { icon: '🎛️', title: 'Arduino Hardware', desc: 'Modulino® I2C sensor cluster — 8× RGB LEDs, buzzer, buttons, rotary knob, IMU, thermo, ToF — physically integrated with the OODA loop.' },
   { icon: '💰', title: 'x402 Protocol', desc: 'Multi-chain USDC payment gateway for monetizing agent APIs. Solana, Base, Polygon, Avalanche with auto-configured SVM signer.' },
   { icon: '🔑', title: 'Agentic Wallet', desc: 'Auto-generates a Solana keypair on first boot at ~/.nanosolana/wallet/. Standard keygen JSON format with 0600 permissions.' },
@@ -250,6 +250,7 @@ const FEATURES = [
 const CLI_COMMANDS = [
   { cmd: 'nanosolana solana health', desc: 'Helius RPC + priority fees' },
   { cmd: 'nanosolana solana balance', desc: 'SOL + SPL balances' },
+  { cmd: 'nanosolana solana register', desc: 'On-chain NFT registry (devnet)' },
   { cmd: 'nanosolana daemon', desc: 'Full trading daemon' },
   { cmd: 'nanosolana ooda --sim', desc: 'Simulated OODA loop' },
   { cmd: 'nanosolana gateway start', desc: 'TCP bridge server' },
@@ -470,13 +471,13 @@ export default function App() {
             <div className="code-header">
               <span>terminal</span>
               <button className="code-copy" onClick={() => navigator.clipboard.writeText(
-                'git clone https://github.com/x402agent/NanoSolana-tamaGOchi.git\ncd NanoSolana-tamaGOchi\ncp .env.example .env\nmake build\n./build/nanosolana daemon'
+                'git clone https://github.com/x402agent/nano-solana-go.git\ncd nano-solana-go\ncp .env.example .env\nmake build\n./build/nanosolana daemon'
               )}>Copy</button>
             </div>
             <div className="code-body">
               <div><span className="comment"># Clone & build</span></div>
-              <div><span className="cmd">git clone</span> https://github.com/x402agent/NanoSolana-tamaGOchi.git</div>
-              <div><span className="cmd">cd</span> NanoSolana-tamaGOchi</div>
+              <div><span className="cmd">git clone</span> https://github.com/x402agent/nano-solana-go.git</div>
+              <div><span className="cmd">cd</span> nano-solana-go</div>
               <div><span className="cmd">cp</span> .env.example .env   <span className="comment"># Add your Helius key</span></div>
               <div><span className="cmd">make build</span></div>
               <div></div>

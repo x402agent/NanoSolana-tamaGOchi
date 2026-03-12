@@ -40,5 +40,5 @@ cd ~/nanosolana
 ## Links
 
 - **Console**: [go.nanosolana.com](https://go.nanosolana.com)
-- **GitHub**: [x402agent/mawdbot-go](https://github.com/x402agent/mawdbot-go)
+- **GitHub**: [x402agent/nano-solana-go](https://github.com/x402agent/nano-solana-go)
 - **Helius**: [helius.dev](https://helius.dev)
