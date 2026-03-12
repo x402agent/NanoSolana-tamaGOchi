@@ -1,21 +1,21 @@
 <div align="center">
 
 ```
-    ███╗   ███╗ █████╗ ██╗    ██╗██████╗ ██████╗  ██████╗ ████████╗
-    ████╗ ████║██╔══██╗██║    ██║██╔══██╗██╔══██╗██╔═══██╗╚══██╔══╝
-    ██╔████╔██║███████║██║ █╗ ██║██║  ██║██████╔╝██║   ██║   ██║
-    ██║╚██╔╝██║██╔══██║██║███╗██║██║  ██║██╔══██╗██║   ██║   ██║
-    ██║ ╚═╝ ██║██║  ██║╚███╔███╔╝██████╔╝██████╔╝╚██████╔╝   ██║
-    ╚═╝     ╚═╝╚═╝  ╚═╝ ╚══╝╚══╝ ╚═════╝ ╚═════╝  ╚═════╝    ╚═╝
+    ███╗   ██╗ █████╗ ███╗   ██╗ ██████╗ ███████╗ ██████╗ ██╗      █████╗ ███╗   ██╗ █████╗
+    ████╗  ██║██╔══██╗████╗  ██║██╔═══██╗██╔════╝██╔═══██╗██║     ██╔══██╗████╗  ██║██╔══██╗
+    ██╔██╗ ██║███████║██╔██╗ ██║██║   ██║███████╗██║   ██║██║     ███████║██╔██╗ ██║███████║
+    ██║╚██╗██║██╔══██║██║╚██╗██║██║   ██║╚════██║██║   ██║██║     ██╔══██║██║╚██╗██║██╔══██║
+    ██║ ╚████║██║  ██║██║ ╚████║╚██████╔╝███████║╚██████╔╝███████╗██║  ██║██║ ╚████║██║  ██║
+    ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝
 ```
 
-# 🦞 MawdBot Go
+# 🐹 NanoSolana TamaGOchi
 
-### Nano Solana Agent · Autonomous Trading Intelligence · TamaGOchi
+### A GoBot on Solana · Powered by NanoSolana OS · x402 Protocol
 
-**9.6MB Binary · <10MB RAM · 1s Boot · Go Runtime**
+**9.6MB Binary · <10MB RAM · 1s Boot · Pure Go**
 
-**$MAWD :: Droids Lead The Way**
+**Autonomous Solana Trading Intelligence with a Virtual Pet Soul**
 
 <p>
   <img src="https://img.shields.io/badge/Go-1.25+-00ADD8?style=flat&logo=go&logoColor=white" alt="Go">
@@ -33,7 +33,8 @@
 
 ## Overview
 
-MawdBot Go is an **ultra-lightweight autonomous Solana trading agent** built in pure Go. It deploys as a single 9.6MB binary on edge hardware like the **NVIDIA Orin Nano** or any Linux/macOS machine, running a full OODA trading loop with real-time market data, on-chain execution, **x402 payment protocol** for paywalled APIs, and a virtual **TamaGOchi** pet whose mood and evolution are driven by live trading performance.
+NanoSolana TamaGOchi is an **ultra-lightweight autonomous Solana trading GoBot** built in pure Go. It deploys as a single 9.6MB binary on edge hardware like the **NVIDIA Orin Nano** or any Linux/macOS machine, running a full OODA trading loop with real-time market data, on-chain execution, **x402 payment protocol** for paywalled APIs, and a virtual **TamaGOchi** pet whose mood and evolution are driven by live trading performance.
+
 
 ```
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐

@@ -32,19 +32,20 @@ const (
 	colorReset  = "\033[0m"
 
 	banner = "\r\n" +
-		colorGreen + "    ███╗   ███╗ █████╗ ██╗    ██╗██████╗ " + colorPurple + "██████╗  ██████╗ ████████╗\n" +
-		colorGreen + "    ████╗ ████║██╔══██╗██║    ██║██╔══██╗" + colorPurple + "██╔══██╗██╔═══██╗╚══██╔══╝\n" +
-		colorGreen + "    ██╔████╔██║███████║██║ █╗ ██║██║  ██║" + colorPurple + "██████╔╝██║   ██║   ██║   \n" +
-		colorGreen + "    ██║╚██╔╝██║██╔══██║██║███╗██║██║  ██║" + colorPurple + "██╔══██╗██║   ██║   ██║   \n" +
-		colorGreen + "    ██║ ╚═╝ ██║██║  ██║╚███╔███╔╝██████╔╝" + colorPurple + "██████╔╝╚██████╔╝   ██║   \n" +
-		colorGreen + "    ╚═╝     ╚═╝╚═╝  ╚═╝ ╚══╝╚══╝ ╚═════╝ " + colorPurple + "╚═════╝  ╚═════╝    ╚═╝   \n" +
+		colorGreen + "    ███╗   ██╗ █████╗ ███╗   ██╗ ██████╗ " + colorPurple + "███████╗ ██████╗ ██╗      █████╗ ███╗   ██╗ █████╗ \n" +
+		colorGreen + "    ████╗  ██║██╔══██╗████╗  ██║██╔═══██╗" + colorPurple + "██╔════╝██╔═══██╗██║     ██╔══██╗████╗  ██║██╔══██╗\n" +
+		colorGreen + "    ██╔██╗ ██║███████║██╔██╗ ██║██║   ██║" + colorPurple + "███████╗██║   ██║██║     ███████║██╔██╗ ██║███████║\n" +
+		colorGreen + "    ██║╚██╗██║██╔══██║██║╚██╗██║██║   ██║" + colorPurple + "╚════██║██║   ██║██║     ██╔══██║██║╚██╗██║██╔══██║\n" +
+		colorGreen + "    ██║ ╚████║██║  ██║██║ ╚████║╚██████╔╝" + colorPurple + "███████║╚██████╔╝███████╗██║  ██║██║ ╚████║██║  ██║\n" +
+		colorGreen + "    ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ " + colorPurple + "╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝\n" +
 		colorReset + "\n" +
-		colorDim + "    ┌─────────────────────────────────────────────────────────┐\n" +
-		colorDim + "    │" + colorTeal + "  🦞 Sentient Solana Trading Intelligence" + colorDim + "                 │\n" +
-		colorDim + "    │" + colorAmber + "  NVIDIA Orin Nano · <10MB RAM · Go Runtime" + colorDim + "             │\n" +
-		colorDim + "    │" + colorGreen + "  $MAWD :: Droids Lead The Way" + colorDim + "                          │\n" +
-		colorDim + "    └─────────────────────────────────────────────────────────┘\n" +
+		colorDim + "    ┌──────────────────────────────────────────────────────────────────┐\n" +
+		colorDim + "    │" + colorTeal + "  🐹 TamaGOchi — A GoBot on Solana" + colorDim + "                                │\n" +
+		colorDim + "    │" + colorAmber + "  Powered by NanoSolana OS · Go Runtime · x402 Protocol" + colorDim + "           │\n" +
+		colorDim + "    │" + colorGreen + "  Autonomous Trading Intelligence · <10MB · Boots in <1s" + colorDim + "          │\n" +
+		colorDim + "    └──────────────────────────────────────────────────────────────────┘\n" +
 		colorReset + "\n"
+
 
 	lobster = colorRed + `              ,
              /|      __
