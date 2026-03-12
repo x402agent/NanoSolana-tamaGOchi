@@ -345,6 +345,191 @@ All keys are encrypted with AES-256-GCM in the local vault. Never stored in plai
 
 ---
 
+## 🗂 Complete Monorepo Map (Features, One by One)
+
+This repository is intentionally multi-surface: core runtime, mobile + desktop apps, browser relay, docs, web UI, and skill/plugin ecosystems.
+
+### 1) `/.github`
+
+- **`actionlint.yaml`** + **`actions/`**: CI automation and workflow quality checks.
+- **`ISSUE_TEMPLATE/`**: structured issue intake for bugs, feature requests, and triage quality.
+
+### 2) `/apps`
+
+#### `/apps/android`
+
+Android companion app (alpha) for agent operations.
+
+- Real-time trading and portfolio status
+- TamaGOchi pet state
+- Agent chat + Telegram bridge workflows
+- Biometric/auth hardening and encrypted local storage
+- QR/manual gateway pairing
+
+Key paths in Android app:
+
+- **`/apps/android/app/build.gradle.kts`**
+  - Android app namespace/build config
+  - Release signing guardrails via:
+    - `NANOSOLANA_ANDROID_STORE_FILE`
+    - `NANOSOLANA_ANDROID_STORE_PASSWORD`
+    - `NANOSOLANA_ANDROID_KEY_ALIAS`
+    - `NANOSOLANA_ANDROID_KEY_PASSWORD`
+  - Compose + Kotlin + lint/test dependencies
+  - Build artifact naming (`nanosolana-<version>-<buildType>.apk`)
+- **`/apps/android/app/proguard-rules.pro`**
+  - Release shrinking/obfuscation behavior
+- **`/apps/android/benchmark/build.gradle.kts`**
+  - Macrobenchmark module for performance instrumentation
+- **`/apps/android/gradle`**, **`gradlew`**, **`gradlew.bat`**
+  - Reproducible Gradle wrapper/toolchain
+- **`/apps/android/scripts`**
+  - Local Android build/dev helpers
+- **`/apps/android/THIRD_PARTY_LICENSES`**
+  - Dependency license disclosures
+- **`/apps/android/style.md`**
+  - Android coding/style conventions
+- **`/apps/android/README.md`**
+  - Quick build/run, gateway connection, and lint instructions
+
+Requested Android path-by-path index:
+
+- **`/apps/android/.gradle`**: local Gradle cache/state (machine-specific build cache)
+- **`/apps/android/app`**: Android application module
+- **`/apps/android/app/src`**: app source code/resources/Android manifests
+- **`/apps/android/app/build.gradle.kts`**: app module build/signing/dependency config
+- **`/apps/android/app/proguard-rules.pro`**: release shrink/obfuscation policy
+- **`/apps/android/benchmark`**: performance benchmarking module
+- **`/apps/android/benchmark/src`**: benchmark instrumentation sources
+- **`/apps/android/benchmark/build.gradle.kts`**: macrobenchmark config
+- **`/apps/android/gradle`**: Gradle wrapper metadata/version pinning
+- **`/apps/android/scripts`**: helper scripts for Android build/release flows
+- **`/apps/android/THIRD_PARTY_LICENSES`**: third-party attribution notices
+- **`/apps/android/.gitignore`**: Android-specific ignore rules
+- **`/apps/android/build.gradle.kts`**: project-level Android Gradle config
+- **`/apps/android/gradle.properties`**: Gradle/JVM build tuning and flags
+- **`/apps/android/gradlew`** / **`/apps/android/gradlew.bat`**: Unix/Windows wrapper entrypoints
+- **`/apps/android/settings.gradle.kts`**: module includes and build settings
+- **`/apps/android/style.md`**: Kotlin/Compose style conventions
+
+#### `/apps/macos`
+
+Native Swift macOS companion:
+
+- Menu bar status
+- Trading dashboard
+- Pet and chat surfaces
+- Keychain-secured credentials
+- Native notifications
+
+Key paths:
+
+- **`Package.swift` / `Package.resolved`**: SwiftPM manifests
+- **`Sources/`**: macOS app implementation
+- **`Tests/`**: app tests
+- **`README.md`**: run/package/signing guidance
+
+#### `/apps/shared`
+
+- **`OpenClawKit/`** shared cross-app primitives/components used by platform clients.
+
+### 3) `/assets`
+
+- Shared branding/media
+- **`/assets/chrome-extension`**: Manifest V3 NanoSolana browser relay extension
+  - Tab attach/detach relay
+  - Gateway config sync
+  - Wallet status/generate flows
+  - Chat + Telegram forwarding
+  - Manual trade submission
+
+### 4) `/extensions`
+
+Channel/integration plugin ecosystem (dozens of adapters), including:
+
+- Messaging: Telegram, Discord, Slack, Signal, WhatsApp, Matrix, Teams, etc.
+- Utility/infra connectors and shared extension primitives.
+
+### 5) `/nano-core`
+
+The main runtime/CLI engine for NanoSolana:
+
+- OODA trading loop
+- ClawVault memory engine
+- Secure wallet manager
+- Gateway (HTTP + WebSocket, authenticated)
+- On-chain scanning and identity tooling
+- Strategy engine and signal/execution lifecycle
+- Telegram persistence and channel bridges
+
+Important files:
+
+- **`/nano-core/.env.example`**: core env template
+- **`/nano-core/package.json`**: runtime scripts/deps
+- **`/nano-core/src/**`**: source modules
+
+### 6) `/nano-docs`
+
+Dedicated NanoSolana docs content tree:
+
+- `index.md`
+- `cli/`, `concepts/`, `extensions/`, `gateway/`, `security/`, `tools/`, `trading/`
+
+### 7) `/nanohub`
+
+Registry/distribution surface (ClawHub / onlycrabs ecosystem) for skills and SOUL definitions:
+
+- Publish/search/version skills (`SKILL.md` based)
+- Publish/search/version souls (`SOUL.md` based)
+- Convex-backed APIs + auth + vector search
+
+### 8) `/site`
+
+Landing-site surface (`site/index.html`):
+
+- One-command onboarding
+- Feature narrative (OODA, memory, mesh, extension)
+- Product/brand presentation and public conversion flow
+
+### 9) `/skills`
+
+Local skill library with many production-focused skills:
+
+- Productivity and platform integrations
+- API/data automation helpers
+- Media/tooling skills
+- Messaging and workflow skills
+
+### 10) `/ui`
+
+Standalone web UI package (`nanosolana-ui`):
+
+- Vite-powered frontend
+- Lit-based component architecture
+- Vitest + Playwright-enabled testing setup
+
+### 11) Root project files
+
+- **`/.env.example`**: global environment template
+- **`/.gitattributes`**: line-ending and git attributes policy
+- **`/.gitignore`**: repository ignore policy
+- **`/CONTRIBUTING.md`**: contribution workflow and standards
+- **`/LICENSE`**: MIT license
+- **`/README.md`**: project overview and onboarding
+- **`/SECURITY.md`**: vulnerability reporting and security scope
+
+Requested root file checklist (one-by-one):
+
+- **`/.env.example`**: bootstrap env template for local/runtime defaults
+- **`/.gitattributes`**: git normalization rules (line endings, merge behavior)
+- **`/.gitignore`**: ignore patterns for build outputs/secrets/local artifacts
+- **`/CONTRIBUTING.md`**: contribution workflow, code standards, and PR expectations
+- **`/LICENSE`**: MIT license text
+- **`/README.md`**: primary project overview and onboarding entrypoint
+- **`/SECURITY.md`**: private vulnerability reporting policy and security scope
+
+---
+
 ## 🤝 Contributing
 
 We welcome contributions from the community. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
