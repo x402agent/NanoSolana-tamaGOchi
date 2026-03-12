@@ -1,19 +1,34 @@
 {
   "manifest_version": 3,
-  "name": "NanoSolana Browser Relay",
-  "version": "0.1.0",
-  "description": "Attach NanoSolana to your existing Chrome tab via a local CDP relay server.",
+  "name": "NanoSolana Browser Agent Relay",
+  "version": "0.2.0",
+  "description": "Relay Chrome tabs to NanoSolana and manage wallet, chat, Telegram forwarding, and manual trades via your gateway.",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": ["debugger", "tabs", "activeTab", "storage", "alarms", "webNavigation"],
-  "host_permissions": ["http://127.0.0.1/*", "http://localhost/*"],
-  "background": { "service_worker": "background.js", "type": "module" },
+  "permissions": [
+    "debugger",
+    "tabs",
+    "activeTab",
+    "storage",
+    "alarms",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1/*",
+    "http://localhost/*",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
   "action": {
-    "default_title": "NanoSolana Browser Relay (click to attach/detach)",
+    "default_title": "NanoSolana Browser Agent Relay (click to attach/detach)",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
@@ -21,5 +36,8 @@
       "128": "icons/icon128.png"
     }
   },
-  "options_ui": { "page": "options.html", "open_in_tab": true }
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  }
 }

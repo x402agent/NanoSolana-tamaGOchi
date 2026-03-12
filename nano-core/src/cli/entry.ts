@@ -7,7 +7,7 @@
  * ║  By NanoSolana Labs                                               ║
  * ╚══════════════════════════════════════════════════════════════════════╝
  *
- * The `nano` command — one-shot interface for:
+ * The `nanosolana` command — one-shot interface for:
  *   - Birthing agents with Solana wallets + TamaGOchi pets
  *   - Starting the OODA trading engine (RSI + EMA + ATR)
  *   - Communicating with nano bots across Tailscale mesh
@@ -25,6 +25,7 @@ import { NanoGateway } from "../gateway/server.js";
 import { TamaGOchi, STAGE_EMOJI, MOOD_EMOJI } from "../pet/tamagochi.js";
 import { TailscaleDiscovery, TmuxManager, NanoNetworkClient } from "../network/mesh.js";
 import { getNanoKnowledgeSnapshot, getNanoKnowledgeSummary, searchNanoKnowledge } from "../docs/integration.js";
+import { playStartupAnimation, lobsterWalk, animateLobster, printLobster, startDvdScreensaver, createSpinner, runWithSpinner } from "./animations.js";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
@@ -88,7 +89,7 @@ function formatBytes(bytes: number): string {
 const program = new Command();
 
 program
-  .name("nano")
+  .name("nanosolana")
   .description("NanoSolana TamaGObot — Autonomous Solana trading intelligence with a virtual pet soul")
   .version("0.1.0");
 
@@ -143,7 +144,8 @@ NANO_LOG_LEVEL=info
       console.log(chalk.gray("  Created .env with non-sensitive defaults.\n"));
     }
 
-    console.log(chalk.white("  Run ") + chalk.cyan("nano birth") + chalk.white(" to create your agent.\n"));
+    console.log(chalk.white("  Run ") + chalk.cyan("nanosolana birth") + chalk.white(" to create your agent."));
+    console.log(chalk.white("  Or run ") + chalk.cyan("nanosolana go") + chalk.white(" to do everything at once.\n"));
   });
 
 // ── nano birth ────────────────────────────────────────────────
@@ -177,7 +179,7 @@ program
       console.log();
       console.log(chalk.gray("  Wallet saved to ~/.nanosolana/vault.enc (encrypted)"));
       console.log(chalk.gray("  Pet state saved to ~/.nanosolana/tamagochi.json\n"));
-      console.log(chalk.white("  Run ") + chalk.cyan("nano run") + chalk.white(" to start the agent.\n"));
+      console.log(chalk.white("  Run ") + chalk.cyan("nanosolana run") + chalk.white(" to start the agent.\n"));
     } catch (err) {
       console.error(chalk.red(`  ❌ Birth failed: ${(err as Error).message}\n`));
       process.exit(1);
@@ -478,7 +480,7 @@ program
       .description("Spawn a new nano bot in a tmux session")
       .argument("<name>", "Bot name")
       .action((name) => {
-        const ok = TmuxManager.createSession(name, `nano run --name ${name}`);
+        const ok = TmuxManager.createSession(name, `nanosolana run --name ${name}`);
         if (ok) {
           console.log(chalk.green(`\n  ✅ Spawned nano bot "${name}" in tmux session "nano-${name}"\n`));
         } else {
@@ -690,6 +692,205 @@ program
     } catch (err) {
       console.error(chalk.red(`  ❌ ${(err as Error).message}\n`));
       process.exit(1);
+    }
+  });
+
+// ── nanosolana go (one-shot everything) ──────────────────────
+
+program
+  .command("go")
+  .description("One-shot: init + birth + wallet + run — everything in one command")
+  .option("-n, --name <name>", "Agent name", "NanoSolana")
+  .option("--pet-name <petName>", "TamaGOchi pet name")
+  .option("--skip-init", "Skip API key prompts if already configured")
+  .action(async (opts) => {
+    printBanner();
+    await animateLobster(1800);
+    console.log();
+
+    try {
+      // Phase 1: Init (ensure home + check config)
+      await lobsterWalk("Phase 1 — Initialization");
+      ensureNanoHome();
+      const secrets = loadSecrets();
+      const needsInit = !opts.skipInit && (!secrets.HELIUS_RPC_URL || !secrets.AI_API_KEY);
+
+      if (needsInit) {
+        console.log(chalk.yellow("\n  First run detected — let's configure your API keys.\n"));
+        console.log(chalk.cyan("  ── Required Keys ────────────────────────────\n"));
+
+        if (!secrets.AI_API_KEY) {
+          secrets.AI_API_KEY = await promptSecret("OpenRouter API Key (sk-or-v1-...)");
+        }
+        if (!secrets.HELIUS_RPC_URL) {
+          secrets.HELIUS_RPC_URL = await promptSecret("Helius RPC URL");
+        }
+        if (!secrets.HELIUS_API_KEY) {
+          secrets.HELIUS_API_KEY = await promptSecret("Helius API Key");
+        }
+
+        console.log(chalk.cyan("\n  ── Optional Keys (press Enter to skip) ──────\n"));
+        if (!secrets.HELIUS_WSS_URL) {
+          const wss = await promptSecret("Helius WSS URL");
+          if (wss) secrets.HELIUS_WSS_URL = wss;
+        }
+        if (!secrets.BIRDEYE_API_KEY) {
+          const bk = await promptSecret("Birdeye API Key");
+          if (bk) secrets.BIRDEYE_API_KEY = bk;
+        }
+        if (!secrets.JUPITER_API_KEY) {
+          const jk = await promptSecret("Jupiter API Key");
+          if (jk) secrets.JUPITER_API_KEY = jk;
+        }
+
+        saveSecrets(secrets);
+        console.log(chalk.green("\n  ✓ Secrets encrypted → ~/.nanosolana/vault.enc\n"));
+      } else {
+        console.log(chalk.green("  ✓ Configuration found — skipping init\n"));
+      }
+
+      // Phase 2: Birth agent + wallet
+      await lobsterWalk("Phase 2 — Birthing Agent");
+      console.log();
+      await playStartupAnimation();
+
+      const config = loadConfig();
+      const wallet = new NanoWallet(opts.name);
+      const walletInfo = await wallet.birth();
+      wallet.startHeartbeat(config.agent.heartbeatMs);
+
+      console.log();
+      console.log(chalk.green("  ✓ Wallet created"));
+      console.log(chalk.white("    Public Key: ") + chalk.cyan(walletInfo.publicKey));
+      console.log(chalk.white("    Balance:    ") + chalk.yellow(`${walletInfo.balance} SOL`));
+
+      // Phase 3: TamaGOchi pet
+      const petName = opts.petName ?? opts.name;
+      const pet = new TamaGOchi(petName);
+      pet.recordWalletCreated(walletInfo.balance);
+      pet.startLifecycle();
+      const petState = pet.getState();
+      console.log(
+        chalk.green("  ✓ TamaGOchi hatched: ") +
+          chalk.cyan(`${STAGE_EMOJI[petState.stage]} ${petName} ${MOOD_EMOJI[petState.mood]}`),
+      );
+
+      // Phase 4: Memory
+      const vault = new ClawVault();
+      vault.startAutonomous();
+      const stats = vault.getStats();
+      console.log(chalk.green("  ✓ ClawVault online: ") + chalk.gray(`${stats.known}K/${stats.learned}L/${stats.inferred}I`));
+
+      // Phase 5: Trading
+      const trading = new TradingEngine(config, wallet);
+      await trading.start();
+      console.log(chalk.green("  ✓ OODA trading loop active"));
+
+      // Wire events
+      trading.on("signal", (signal) => {
+        vault.storeKnown({
+          content: `Signal: ${signal.type} ${signal.symbol} (${(signal.confidence * 100).toFixed(0)}%)`,
+          source: "birdeye",
+          tags: [signal.type, signal.symbol],
+        });
+      });
+
+      // Phase 6: Gateway
+      const { MemoryEngine } = await import("../memory/engine.js");
+      const legacyMemory = new MemoryEngine(config.memory.temporalDecayHours);
+      const gateway = new NanoGateway(config, wallet, trading, legacyMemory);
+      await gateway.start();
+      console.log(chalk.green(`  ✓ Gateway: ws://${config.gateway.host}:${config.gateway.port}`));
+
+      // Success banner
+      console.log();
+      console.log(chalk.hex("#14F195").bold("  ══════════════════════════════════════════════════════"));
+      console.log(chalk.hex("#14F195").bold(`  🦞 ${petName} is LIVE. All systems operational.`));
+      console.log(chalk.hex("#14F195").bold("  ══════════════════════════════════════════════════════"));
+      console.log();
+      console.log(chalk.gray("  Commands while running:"));
+      console.log(chalk.gray("    Ctrl+C          — graceful shutdown"));
+      console.log(chalk.gray("    nanosolana status  — check agent in another terminal"));
+      console.log(chalk.gray("    nanosolana pet     — see your TamaGOchi"));
+      console.log();
+
+      // Live events
+      wallet.on("heartbeat", (info) => {
+        const time = new Date().toLocaleTimeString();
+        const mood = MOOD_EMOJI[pet.getState().mood];
+        process.stdout.write(chalk.gray(`  [${time}] 💓 ${info.balance.toFixed(4)} SOL ${mood}\r`));
+      });
+
+      wallet.on("balanceChange", ({ oldBalance, newBalance }) => {
+        const delta = newBalance - oldBalance;
+        const color = delta > 0 ? chalk.green : chalk.red;
+        console.log(color(`\n  💰 ${delta > 0 ? "+" : ""}${delta.toFixed(6)} SOL`));
+        if (delta > 0) pet.feed(delta);
+      });
+
+      trading.on("signal", (signal) => {
+        const icon = signal.type === "buy" ? "🟢" : signal.type === "sell" ? "🔴" : "⚪";
+        console.log(`  ${icon} ${signal.type.toUpperCase()} ${signal.symbol} (${(signal.confidence * 100).toFixed(0)}%)`);
+      });
+
+      vault.on("lessonLearned", (lesson) => {
+        console.log(chalk.magenta(`  📖 ${lesson.pattern} → ${lesson.outcome}`));
+      });
+
+      pet.on("evolved", (from, to) => {
+        console.log(chalk.yellow(`\n  🦞 EVOLUTION! ${STAGE_EMOJI[from]} → ${STAGE_EMOJI[to]} ${to}`));
+      });
+
+      // Graceful shutdown
+      const shutdown = async () => {
+        console.log(chalk.yellow("\n\n  ⏹  Shutting down..."));
+        wallet.stopHeartbeat();
+        trading.stop();
+        vault.stopAutonomous();
+        pet.stopLifecycle();
+        console.log(chalk.green("  ✓ Agent stopped cleanly.\n"));
+        process.exit(0);
+      };
+
+      process.on("SIGINT", shutdown);
+      process.on("SIGTERM", shutdown);
+
+      await new Promise(() => {});
+    } catch (err) {
+      console.error(chalk.red(`\n  ✗ Failed: ${(err as Error).message}\n`));
+      process.exit(1);
+    }
+  });
+
+// ── nanosolana dvd (screensaver) ────────────────────────────
+
+program
+  .command("dvd")
+  .description("Floating DVD-style NanoSolana screensaver in the terminal")
+  .action(() => {
+    const dvd = startDvdScreensaver();
+
+    process.on("SIGINT", () => {
+      dvd.stop();
+      process.exit(0);
+    });
+    process.on("SIGTERM", () => {
+      dvd.stop();
+      process.exit(0);
+    });
+  });
+
+// ── nanosolana lobster (show mascot) ────────────────────────
+
+program
+  .command("lobster")
+  .description("Show the animated NanoSolana lobster mascot")
+  .option("--static", "Show static version")
+  .action(async (opts) => {
+    if (opts.static) {
+      printLobster();
+    } else {
+      await animateLobster(5000);
     }
   });
 

@@ -68,21 +68,28 @@ Or via npm:
 npx nanosolana init
 ```
 
-### Then:
+### Then — one command does everything:
 
 ```bash
-# 1. Initialize (API keys are encrypted at rest)
-nanosolana init
-
-# 2. Birth your agent (creates Solana wallet + mints Birth Certificate NFT)
-nanosolana birth
-
-# 3. Start the OODA trading loop
-nanosolana run
+nanosolana go
 ```
 
-That's it. Your TamaGObot agent is now observing markets, learning from outcomes, and
-evolving its virtual pet based on performance.
+That's it. `nanosolana go` handles init → wallet → birth certificate NFT → OODA trading loop → gateway — all in one shot.
+
+Or if you prefer step-by-step:
+
+```bash
+nanosolana init      # Configure API keys (encrypted at rest)
+nanosolana birth     # Create Solana wallet + mint Birth Certificate NFT
+nanosolana run       # Start the OODA trading loop
+```
+
+### Fun stuff:
+
+```bash
+nanosolana dvd       # Floating DVD screensaver in your terminal
+nanosolana lobster   # Animated Unicode lobster mascot
+```
 
 ---
 
@@ -254,9 +261,12 @@ Connect your agent to any communication surface:
 
 | Command | Description |
 |---------|-------------|
+| `nanosolana go` | **One-shot: init + birth + wallet + trade** |
 | `nanosolana init` | Configure + encrypt API keys |
 | `nanosolana birth` | Create wallet + mint Birth Certificate NFT |
 | `nanosolana run` | Start OODA trading loop |
+| `nanosolana dvd` | Floating DVD screensaver 🦞 |
+| `nanosolana lobster` | Animated Unicode lobster mascot |
 | `nanosolana status` | Agent + wallet + pet status |
 | `nanosolana trade status` | P&L, signals, strategy state |
 | `nanosolana trade signals` | Recent signals with confidence scores |
