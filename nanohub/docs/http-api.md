@@ -338,7 +338,7 @@ See `DEPRECATIONS.md` for removal plan.
 The CLI can discover registry/auth settings from the site:
 
 - `/.well-known/clawhub.json` (JSON, preferred)
-- `/.well-known/clawdhub.json` (legacy)
+- `/.well-known/nanohub.json` (legacy)
 
 Schema:
 
@@ -346,4 +346,4 @@ Schema:
 { "apiBase": "https://clawhub.ai", "authBase": "https://clawhub.ai", "minCliVersion": "0.0.5" }
 ```
 
-If you self-host, serve this file (or set `CLAWHUB_REGISTRY` explicitly; legacy `CLAWDHUB_REGISTRY`).
+If you self-host, serve this file (or set `CLAWHUB_REGISTRY` explicitly; legacy `NANOHUB_REGISTRY`).

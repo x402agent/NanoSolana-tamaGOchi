@@ -1,4 +1,4 @@
-import OpenClawProtocol
+import NanoSolanaProtocol
 
-public typealias AnyCodable = OpenClawProtocol.AnyCodable
+public typealias AnyCodable = NanoSolanaProtocol.AnyCodable
 

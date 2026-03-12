@@ -1,4 +1,4 @@
-package ai.openclaw.app.voice
+package ai.nanosolana.app.voice
 
 import java.io.File
 import kotlinx.serialization.SerialName

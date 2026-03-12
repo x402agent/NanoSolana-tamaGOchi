@@ -339,12 +339,12 @@ export declare const NixPluginSpecSchema: import("arktype/internal/variants/obje
     systems?: string[] | undefined;
 }, {}>;
 export type NixPluginSpec = (typeof NixPluginSpecSchema)[inferred];
-export declare const ClawdbotConfigSpecSchema: import("arktype/internal/variants/object.ts").ObjectType<{
+export declare const TamaGObotConfigSpecSchema: import("arktype/internal/variants/object.ts").ObjectType<{
     requiredEnv?: string[] | undefined;
     stateDirs?: string[] | undefined;
     example?: string | undefined;
 }, {}>;
-export type ClawdbotConfigSpec = (typeof ClawdbotConfigSpecSchema)[inferred];
+export type TamaGObotConfigSpec = (typeof TamaGObotConfigSpecSchema)[inferred];
 export declare const ClawdisRequiresSchema: import("arktype/internal/variants/object.ts").ObjectType<{
     bins?: string[] | undefined;
     anyBins?: string[] | undefined;
@@ -437,7 +437,7 @@ export type ClawdisSkillMetadata = {
     requires?: ClawdisRequires;
     install?: SkillInstallSpec[];
     nix?: NixPluginSpec;
-    config?: ClawdbotConfigSpec;
+    config?: TamaGObotConfigSpec;
     envVars?: EnvVarDeclaration[];
     dependencies?: DependencyDeclaration[];
     author?: string;

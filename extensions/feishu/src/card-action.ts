@@ -1,4 +1,4 @@
-import type { ClawdbotConfig, RuntimeEnv } from "openclaw/plugin-sdk/feishu";
+import type { TamaGObotConfig, RuntimeEnv } from "nanosolana/plugin-sdk/feishu";
 import { resolveFeishuAccount } from "./accounts.js";
 import { handleFeishuMessage, type FeishuMessageEvent } from "./bot.js";
 
@@ -21,7 +21,7 @@ export type FeishuCardActionEvent = {
 };
 
 export async function handleFeishuCardAction(params: {
-  cfg: ClawdbotConfig;
+  cfg: TamaGObotConfig;
   event: FeishuCardActionEvent;
   botOpenId?: string;
   runtime?: RuntimeEnv;

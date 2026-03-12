@@ -1,4 +1,4 @@
-package ai.openclaw.app.node
+package ai.nanosolana.app.node
 
 import kotlin.math.max
 import kotlin.math.min

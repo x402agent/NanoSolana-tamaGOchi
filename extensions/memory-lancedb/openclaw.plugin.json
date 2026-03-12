@@ -27,7 +27,7 @@
     },
     "dbPath": {
       "label": "Database Path",
-      "placeholder": "~/.openclaw/memory/lancedb",
+      "placeholder": "~/.nanosolana/memory/lancedb",
       "advanced": true
     },
     "autoCapture": {

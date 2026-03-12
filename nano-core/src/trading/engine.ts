@@ -71,6 +71,14 @@ export interface TradingEngineEvents {
   error: (err: Error) => void;
 }
 
+export interface ManualTradeInput {
+  type: "buy" | "sell" | "hold";
+  mint: string;
+  symbol?: string;
+  confidence?: number;
+  reasoning?: string;
+}
+
 // ── Constants ────────────────────────────────────────────────
 
 const SOL_MINT = "So11111111111111111111111111111111111111112";
@@ -497,6 +505,41 @@ export class TradingEngine extends EventEmitter<TradingEngineEvents> {
    */
   getExecutions(): TradeExecution[] {
     return [...this.executions];
+  }
+
+  /**
+   * Execute a manual trade request (for gateway/UI-driven actions).
+   */
+  async executeManualTrade(input: ManualTradeInput): Promise<{
+    signal: TradeSignal;
+    execution: TradeExecution | null;
+  }> {
+    const mint = String(input.mint || "").trim() || SOL_MINT;
+    const symbol = String(input.symbol || "").trim() || `${mint.slice(0, 4)}...${mint.slice(-4)}`;
+    const confidence = Number.isFinite(input.confidence)
+      ? Math.min(1, Math.max(0, Number(input.confidence)))
+      : 0.8;
+
+    const signal: TradeSignal = {
+      id: `manual-${Date.now()}-${mint.slice(0, 6)}`,
+      type: input.type,
+      confidence,
+      mint,
+      symbol,
+      reasoning: String(input.reasoning || "Manual trade submitted from NanoSolana UI"),
+      timestamp: Date.now(),
+      source: "ai",
+    };
+
+    this.signals.push(signal);
+    this.emit("signal", signal);
+
+    if (signal.type === "hold") {
+      return { signal, execution: null };
+    }
+
+    const execution = await this.act(signal);
+    return { signal, execution };
   }
 
   /**

@@ -1,12 +1,12 @@
 import AppKit
 import Foundation
-import OpenClawProtocol
+import NanoSolanaProtocol
 import Testing
-@testable import OpenClaw
+@testable import NanoSolana
 
 @Suite(.serialized)
 struct LowCoverageHelperTests {
-    private typealias ProtoAnyCodable = OpenClawProtocol.AnyCodable
+    private typealias ProtoAnyCodable = NanoSolanaProtocol.AnyCodable
 
     @Test func `any codable helper accessors`() throws {
         let payload: [String: ProtoAnyCodable] = [

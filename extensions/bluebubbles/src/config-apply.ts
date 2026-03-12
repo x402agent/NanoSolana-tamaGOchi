@@ -1,4 +1,4 @@
-import { DEFAULT_ACCOUNT_ID, type OpenClawConfig } from "openclaw/plugin-sdk/bluebubbles";
+import { DEFAULT_ACCOUNT_ID, type NanoSolanaConfig } from "nanosolana/plugin-sdk/bluebubbles";
 
 type BlueBubblesConfigPatch = {
   serverUrl?: string;
@@ -29,12 +29,12 @@ function normalizePatch(
 }
 
 export function applyBlueBubblesConnectionConfig(params: {
-  cfg: OpenClawConfig;
+  cfg: NanoSolanaConfig;
   accountId: string;
   patch: BlueBubblesConfigPatch;
   onlyDefinedFields?: boolean;
   accountEnabled?: AccountEnabledMode;
-}): OpenClawConfig {
+}): NanoSolanaConfig {
   const patch = normalizePatch(params.patch, params.onlyDefinedFields === true);
   if (params.accountId === DEFAULT_ACCOUNT_ID) {
     return {

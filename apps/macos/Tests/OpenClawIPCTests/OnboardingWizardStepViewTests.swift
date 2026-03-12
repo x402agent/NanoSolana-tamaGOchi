@@ -1,9 +1,9 @@
-import OpenClawProtocol
+import NanoSolanaProtocol
 import SwiftUI
 import Testing
-@testable import OpenClaw
+@testable import NanoSolana
 
-private typealias ProtoAnyCodable = OpenClawProtocol.AnyCodable
+private typealias ProtoAnyCodable = NanoSolanaProtocol.AnyCodable
 
 @Suite(.serialized)
 @MainActor

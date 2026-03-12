@@ -468,7 +468,7 @@ describe('skills.checkSlugAvailability', () => {
       reason: 'taken',
       message:
         'This slug is locked to a deleted or banned account. ' +
-        'If you believe you are the rightful owner, please contact security@openclaw.ai to reclaim it.',
+        'If you believe you are the rightful owner, please contact security@nanosolana.ai to reclaim it.',
       url: null,
     })
   })
@@ -506,7 +506,7 @@ describe('skills.checkSlugAvailability', () => {
       reason: 'taken',
       message:
         'This slug is locked to a deleted or banned account. ' +
-        'If you believe you are the rightful owner, please contact security@openclaw.ai to reclaim it.',
+        'If you believe you are the rightful owner, please contact security@nanosolana.ai to reclaim it.',
       url: null,
     })
   })

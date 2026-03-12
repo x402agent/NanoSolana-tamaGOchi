@@ -1,6 +1,6 @@
-package ai.openclaw.app.gateway
+package ai.nanosolana.app.gateway
 
-import ai.openclaw.app.SecurePrefs
+import ai.nanosolana.app.SecurePrefs
 
 interface DeviceAuthTokenStore {
   fun loadToken(deviceId: String, role: String): String?

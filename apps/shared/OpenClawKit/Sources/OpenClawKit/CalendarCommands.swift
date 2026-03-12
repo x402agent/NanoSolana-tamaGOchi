@@ -1,13 +1,13 @@
 import Foundation
 
-public enum OpenClawCalendarCommand: String, Codable, Sendable {
+public enum NanoSolanaCalendarCommand: String, Codable, Sendable {
     case events = "calendar.events"
     case add = "calendar.add"
 }
 
-public typealias OpenClawCalendarEventsParams = OpenClawDateRangeLimitParams
+public typealias NanoSolanaCalendarEventsParams = NanoSolanaDateRangeLimitParams
 
-public struct OpenClawCalendarAddParams: Codable, Sendable, Equatable {
+public struct NanoSolanaCalendarAddParams: Codable, Sendable, Equatable {
     public var title: String
     public var startISO: String
     public var endISO: String
@@ -38,7 +38,7 @@ public struct OpenClawCalendarAddParams: Codable, Sendable, Equatable {
     }
 }
 
-public struct OpenClawCalendarEventPayload: Codable, Sendable, Equatable {
+public struct NanoSolanaCalendarEventPayload: Codable, Sendable, Equatable {
     public var identifier: String
     public var title: String
     public var startISO: String
@@ -66,18 +66,18 @@ public struct OpenClawCalendarEventPayload: Codable, Sendable, Equatable {
     }
 }
 
-public struct OpenClawCalendarEventsPayload: Codable, Sendable, Equatable {
-    public var events: [OpenClawCalendarEventPayload]
+public struct NanoSolanaCalendarEventsPayload: Codable, Sendable, Equatable {
+    public var events: [NanoSolanaCalendarEventPayload]
 
-    public init(events: [OpenClawCalendarEventPayload]) {
+    public init(events: [NanoSolanaCalendarEventPayload]) {
         self.events = events
     }
 }
 
-public struct OpenClawCalendarAddPayload: Codable, Sendable, Equatable {
-    public var event: OpenClawCalendarEventPayload
+public struct NanoSolanaCalendarAddPayload: Codable, Sendable, Equatable {
+    public var event: NanoSolanaCalendarEventPayload
 
-    public init(event: OpenClawCalendarEventPayload) {
+    public init(event: NanoSolanaCalendarEventPayload) {
         self.event = event
     }
 }

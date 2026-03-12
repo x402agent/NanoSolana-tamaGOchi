@@ -1,5 +1,5 @@
 import {
-  type ClawdbotConfigSpec,
+  type TamaGObotConfigSpec,
   type ClawdisSkillMetadata,
   ClawdisSkillMetadataSchema,
   isTextContentType,
@@ -67,16 +67,16 @@ export function parseClawdisMetadata(frontmatter: ParsedSkillFrontmatter) {
     metadata && typeof metadata === 'object' && !Array.isArray(metadata)
       ? (metadata as Record<string, unknown>)
       : undefined
-  const clawdbotMeta = metadataRecord?.clawdbot
+  const tamagobotMeta = metadataRecord?.tamagobot
   const clawdisMeta = metadataRecord?.clawdis
-  const openclawMeta = metadataRecord?.openclaw
+  const nanosolanaMeta = metadataRecord?.nanosolana
   const metadataSource =
-    clawdbotMeta && typeof clawdbotMeta === 'object' && !Array.isArray(clawdbotMeta)
-      ? (clawdbotMeta as Record<string, unknown>)
+    tamagobotMeta && typeof tamagobotMeta === 'object' && !Array.isArray(tamagobotMeta)
+      ? (tamagobotMeta as Record<string, unknown>)
       : clawdisMeta && typeof clawdisMeta === 'object' && !Array.isArray(clawdisMeta)
         ? (clawdisMeta as Record<string, unknown>)
-        : openclawMeta && typeof openclawMeta === 'object' && !Array.isArray(openclawMeta)
-          ? (openclawMeta as Record<string, unknown>)
+        : nanosolanaMeta && typeof nanosolanaMeta === 'object' && !Array.isArray(nanosolanaMeta)
+          ? (nanosolanaMeta as Record<string, unknown>)
           : undefined
   const clawdisRaw = metadataSource ?? frontmatter.clawdis
 
@@ -124,7 +124,7 @@ export function parseClawdisMetadata(frontmatter: ParsedSkillFrontmatter) {
     if (install.length > 0) metadata.install = install
     const nix = parseNixPluginSpec(clawdisObj.nix)
     if (nix) metadata.nix = nix
-    const config = parseClawdbotConfigSpec(clawdisObj.config)
+    const config = parseTamaGObotConfigSpec(clawdisObj.config)
     if (config) metadata.config = config
 
     // Parse env var declarations (detailed env with descriptions)
@@ -289,13 +289,13 @@ function parseNixPluginSpec(input: unknown): NixPluginSpec | undefined {
   return spec
 }
 
-function parseClawdbotConfigSpec(input: unknown): ClawdbotConfigSpec | undefined {
+function parseTamaGObotConfigSpec(input: unknown): TamaGObotConfigSpec | undefined {
   if (!input || typeof input !== 'object') return undefined
   const raw = input as Record<string, unknown>
   const requiredEnv = normalizeStringList(raw.requiredEnv)
   const stateDirs = normalizeStringList(raw.stateDirs)
   const example = typeof raw.example === 'string' ? raw.example.trim() : ''
-  const spec: ClawdbotConfigSpec = {}
+  const spec: TamaGObotConfigSpec = {}
   if (requiredEnv.length > 0) spec.requiredEnv = requiredEnv
   if (stateDirs.length > 0) spec.stateDirs = stateDirs
   if (example) spec.example = example

@@ -1,17 +1,17 @@
-package ai.openclaw.app.node
+package ai.nanosolana.app.node
 
-import ai.openclaw.app.gateway.GatewaySession
-import ai.openclaw.app.protocol.OpenClawCalendarCommand
-import ai.openclaw.app.protocol.OpenClawCanvasA2UICommand
-import ai.openclaw.app.protocol.OpenClawCanvasCommand
-import ai.openclaw.app.protocol.OpenClawCameraCommand
-import ai.openclaw.app.protocol.OpenClawContactsCommand
-import ai.openclaw.app.protocol.OpenClawDeviceCommand
-import ai.openclaw.app.protocol.OpenClawLocationCommand
-import ai.openclaw.app.protocol.OpenClawMotionCommand
-import ai.openclaw.app.protocol.OpenClawNotificationsCommand
-import ai.openclaw.app.protocol.OpenClawSmsCommand
-import ai.openclaw.app.protocol.OpenClawSystemCommand
+import ai.nanosolana.app.gateway.GatewaySession
+import ai.nanosolana.app.protocol.NanoSolanaCalendarCommand
+import ai.nanosolana.app.protocol.NanoSolanaCanvasA2UICommand
+import ai.nanosolana.app.protocol.NanoSolanaCanvasCommand
+import ai.nanosolana.app.protocol.NanoSolanaCameraCommand
+import ai.nanosolana.app.protocol.NanoSolanaContactsCommand
+import ai.nanosolana.app.protocol.NanoSolanaDeviceCommand
+import ai.nanosolana.app.protocol.NanoSolanaLocationCommand
+import ai.nanosolana.app.protocol.NanoSolanaMotionCommand
+import ai.nanosolana.app.protocol.NanoSolanaNotificationsCommand
+import ai.nanosolana.app.protocol.NanoSolanaSmsCommand
+import ai.nanosolana.app.protocol.NanoSolanaSystemCommand
 
 class InvokeDispatcher(
   private val canvas: CanvasController,
@@ -55,18 +55,18 @@ class InvokeDispatcher(
 
     return when (command) {
       // Canvas commands
-      OpenClawCanvasCommand.Present.rawValue -> {
+      NanoSolanaCanvasCommand.Present.rawValue -> {
         val url = CanvasController.parseNavigateUrl(paramsJson)
         canvas.navigate(url)
         GatewaySession.InvokeResult.ok(null)
       }
-      OpenClawCanvasCommand.Hide.rawValue -> GatewaySession.InvokeResult.ok(null)
-      OpenClawCanvasCommand.Navigate.rawValue -> {
+      NanoSolanaCanvasCommand.Hide.rawValue -> GatewaySession.InvokeResult.ok(null)
+      NanoSolanaCanvasCommand.Navigate.rawValue -> {
         val url = CanvasController.parseNavigateUrl(paramsJson)
         canvas.navigate(url)
         GatewaySession.InvokeResult.ok(null)
       }
-      OpenClawCanvasCommand.Eval.rawValue -> {
+      NanoSolanaCanvasCommand.Eval.rawValue -> {
         val js =
           CanvasController.parseEvalJs(paramsJson)
             ?: return GatewaySession.InvokeResult.error(
@@ -78,7 +78,7 @@ class InvokeDispatcher(
           GatewaySession.InvokeResult.ok("""{"result":${result.toJsonString()}}""")
         }
       }
-      OpenClawCanvasCommand.Snapshot.rawValue -> {
+      NanoSolanaCanvasCommand.Snapshot.rawValue -> {
         val snapshotParams = CanvasController.parseSnapshotParams(paramsJson)
         withCanvasAvailable {
           val base64 =
@@ -92,7 +92,7 @@ class InvokeDispatcher(
       }
 
       // A2UI commands
-      OpenClawCanvasA2UICommand.Reset.rawValue ->
+      NanoSolanaCanvasA2UICommand.Reset.rawValue ->
         withReadyA2ui {
           withCanvasAvailable {
             val res = canvas.eval(A2UIHandler.a2uiResetJS)
@@ -100,7 +100,7 @@ class InvokeDispatcher(
             GatewaySession.InvokeResult.ok(res)
           }
         }
-      OpenClawCanvasA2UICommand.Push.rawValue, OpenClawCanvasA2UICommand.PushJSONL.rawValue -> {
+      NanoSolanaCanvasA2UICommand.Push.rawValue, NanoSolanaCanvasA2UICommand.PushJSONL.rawValue -> {
         val messages =
           try {
             a2uiHandler.decodeA2uiMessages(command, paramsJson)
@@ -121,45 +121,45 @@ class InvokeDispatcher(
       }
 
       // Camera commands
-      OpenClawCameraCommand.List.rawValue -> cameraHandler.handleList(paramsJson)
-      OpenClawCameraCommand.Snap.rawValue -> cameraHandler.handleSnap(paramsJson)
-      OpenClawCameraCommand.Clip.rawValue -> cameraHandler.handleClip(paramsJson)
+      NanoSolanaCameraCommand.List.rawValue -> cameraHandler.handleList(paramsJson)
+      NanoSolanaCameraCommand.Snap.rawValue -> cameraHandler.handleSnap(paramsJson)
+      NanoSolanaCameraCommand.Clip.rawValue -> cameraHandler.handleClip(paramsJson)
 
       // Location command
-      OpenClawLocationCommand.Get.rawValue -> locationHandler.handleLocationGet(paramsJson)
+      NanoSolanaLocationCommand.Get.rawValue -> locationHandler.handleLocationGet(paramsJson)
 
       // Device commands
-      OpenClawDeviceCommand.Status.rawValue -> deviceHandler.handleDeviceStatus(paramsJson)
-      OpenClawDeviceCommand.Info.rawValue -> deviceHandler.handleDeviceInfo(paramsJson)
-      OpenClawDeviceCommand.Permissions.rawValue -> deviceHandler.handleDevicePermissions(paramsJson)
-      OpenClawDeviceCommand.Health.rawValue -> deviceHandler.handleDeviceHealth(paramsJson)
+      NanoSolanaDeviceCommand.Status.rawValue -> deviceHandler.handleDeviceStatus(paramsJson)
+      NanoSolanaDeviceCommand.Info.rawValue -> deviceHandler.handleDeviceInfo(paramsJson)
+      NanoSolanaDeviceCommand.Permissions.rawValue -> deviceHandler.handleDevicePermissions(paramsJson)
+      NanoSolanaDeviceCommand.Health.rawValue -> deviceHandler.handleDeviceHealth(paramsJson)
 
       // Notifications command
-      OpenClawNotificationsCommand.List.rawValue -> notificationsHandler.handleNotificationsList(paramsJson)
-      OpenClawNotificationsCommand.Actions.rawValue -> notificationsHandler.handleNotificationsActions(paramsJson)
+      NanoSolanaNotificationsCommand.List.rawValue -> notificationsHandler.handleNotificationsList(paramsJson)
+      NanoSolanaNotificationsCommand.Actions.rawValue -> notificationsHandler.handleNotificationsActions(paramsJson)
 
       // System command
-      OpenClawSystemCommand.Notify.rawValue -> systemHandler.handleSystemNotify(paramsJson)
+      NanoSolanaSystemCommand.Notify.rawValue -> systemHandler.handleSystemNotify(paramsJson)
 
       // Photos command
-      ai.openclaw.app.protocol.OpenClawPhotosCommand.Latest.rawValue -> photosHandler.handlePhotosLatest(
+      ai.nanosolana.app.protocol.NanoSolanaPhotosCommand.Latest.rawValue -> photosHandler.handlePhotosLatest(
         paramsJson,
       )
 
       // Contacts command
-      OpenClawContactsCommand.Search.rawValue -> contactsHandler.handleContactsSearch(paramsJson)
-      OpenClawContactsCommand.Add.rawValue -> contactsHandler.handleContactsAdd(paramsJson)
+      NanoSolanaContactsCommand.Search.rawValue -> contactsHandler.handleContactsSearch(paramsJson)
+      NanoSolanaContactsCommand.Add.rawValue -> contactsHandler.handleContactsAdd(paramsJson)
 
       // Calendar command
-      OpenClawCalendarCommand.Events.rawValue -> calendarHandler.handleCalendarEvents(paramsJson)
-      OpenClawCalendarCommand.Add.rawValue -> calendarHandler.handleCalendarAdd(paramsJson)
+      NanoSolanaCalendarCommand.Events.rawValue -> calendarHandler.handleCalendarEvents(paramsJson)
+      NanoSolanaCalendarCommand.Add.rawValue -> calendarHandler.handleCalendarAdd(paramsJson)
 
       // Motion command
-      OpenClawMotionCommand.Activity.rawValue -> motionHandler.handleMotionActivity(paramsJson)
-      OpenClawMotionCommand.Pedometer.rawValue -> motionHandler.handleMotionPedometer(paramsJson)
+      NanoSolanaMotionCommand.Activity.rawValue -> motionHandler.handleMotionActivity(paramsJson)
+      NanoSolanaMotionCommand.Pedometer.rawValue -> motionHandler.handleMotionPedometer(paramsJson)
 
       // SMS command
-      OpenClawSmsCommand.Send.rawValue -> smsHandler.handleSmsSend(paramsJson)
+      NanoSolanaSmsCommand.Send.rawValue -> smsHandler.handleSmsSend(paramsJson)
 
       // Debug commands
       "debug.ed25519" -> debugHandler.handleEd25519()

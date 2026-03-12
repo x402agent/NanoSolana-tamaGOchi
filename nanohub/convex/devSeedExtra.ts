@@ -66,7 +66,7 @@ Use this skill to ${summary.toLowerCase()}.
     summary,
     version: '0.1.0',
     metadata: {
-      clawdbot: {
+      tamagobot: {
         nix: {
           plugin: `github:example/${slug}`,
           systems: ['aarch64-darwin', 'x86_64-linux'],

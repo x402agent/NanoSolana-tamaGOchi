@@ -1,5 +1,5 @@
 import XCTest
-@testable import OpenClawKit
+@testable import NanoSolanaKit
 
 final class TalkPromptBuilderTests: XCTestCase {
     func testBuildIncludesTranscript() {

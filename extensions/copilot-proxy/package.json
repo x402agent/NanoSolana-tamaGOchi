@@ -1,10 +1,10 @@
 {
-  "name": "@openclaw/copilot-proxy",
+  "name": "@nanosolana/copilot-proxy",
   "version": "2026.3.11",
   "private": true,
-  "description": "OpenClaw Copilot Proxy provider plugin",
+  "description": "NanoSolana Copilot Proxy provider plugin",
   "type": "module",
-  "openclaw": {
+  "nanosolana": {
     "extensions": [
       "./index.ts"
     ]

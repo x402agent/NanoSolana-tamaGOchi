@@ -7,7 +7,7 @@ read_when:
 
 # CLI
 
-CLI package: `packages/clawdhub/` (published as `clawhub`, bin: `clawhub`).
+CLI package: `packages/nanohub/` (published as `clawhub`, bin: `clawhub`).
 
 From this repo you can run it via the wrapper script:
 
@@ -17,7 +17,7 @@ bun clawhub --help
 
 ## Global flags
 
-- `--workdir <dir>`: working directory (default: cwd; falls back to Clawdbot workspace if configured)
+- `--workdir <dir>`: working directory (default: cwd; falls back to TamaGObot workspace if configured)
 - `--dir <dir>`: install dir under workdir (default: `skills`)
 - `--site <url>`: base URL for browser login (default: `https://clawhub.ai`)
 - `--registry <url>`: API base URL (default: discovered, else `https://clawhub.ai`)
@@ -25,9 +25,9 @@ bun clawhub --help
 
 Env equivalents:
 
-- `CLAWHUB_SITE` (legacy `CLAWDHUB_SITE`)
-- `CLAWHUB_REGISTRY` (legacy `CLAWDHUB_REGISTRY`)
-- `CLAWHUB_WORKDIR` (legacy `CLAWDHUB_WORKDIR`)
+- `CLAWHUB_SITE` (legacy `NANOHUB_SITE`)
+- `CLAWHUB_REGISTRY` (legacy `NANOHUB_REGISTRY`)
+- `CLAWHUB_WORKDIR` (legacy `NANOHUB_WORKDIR`)
 
 ### HTTP proxy
 
@@ -62,7 +62,7 @@ When no proxy variable is set, behavior is unchanged (direct connections).
 Stores your API token + cached registry URL.
 
 - macOS: `~/Library/Application Support/clawhub/config.json`
-- override: `CLAWHUB_CONFIG_PATH` (legacy `CLAWDHUB_CONFIG_PATH`)
+- override: `CLAWHUB_CONFIG_PATH` (legacy `NANOHUB_CONFIG_PATH`)
 
 ## Commands
 
@@ -111,8 +111,8 @@ Stores your API token + cached registry URL.
 - Downloads zip via `/api/v1/download`.
 - Extracts into `<workdir>/<dir>/<slug>`.
 - Writes:
-  - `<workdir>/.clawhub/lock.json` (legacy `.clawdhub`)
-  - `<skill>/.clawhub/origin.json` (legacy `.clawdhub`)
+  - `<workdir>/.clawhub/lock.json` (legacy `.nanohub`)
+  - `<skill>/.clawhub/origin.json` (legacy `.nanohub`)
 
 ### `uninstall <slug>`
 
@@ -122,7 +122,7 @@ Stores your API token + cached registry URL.
 
 ### `list`
 
-- Reads `<workdir>/.clawhub/lock.json` (legacy `.clawdhub`).
+- Reads `<workdir>/.clawhub/lock.json` (legacy `.nanohub`).
 
 ### `update [slug]` / `update --all`
 
@@ -199,12 +199,12 @@ Stores your API token + cached registry URL.
 
 - Scans for local skill folders and publishes new/changed ones.
 - Roots can be any folder: a skills directory or a single skill folder with `SKILL.md`.
-- Auto-adds Clawdbot skill roots when `~/.clawdbot/clawdbot.json` is present:
+- Auto-adds TamaGObot skill roots when `~/.tamagobot/tamagobot.json` is present:
   - `agent.workspace/skills` (main agent)
   - `routing.agents.*.workspace/skills` (per-agent)
-  - `~/.clawdbot/skills` (shared)
+  - `~/.tamagobot/skills` (shared)
   - `skills.load.extraDirs` (shared packs)
-- Respects `CLAWDBOT_CONFIG_PATH` / `CLAWDBOT_STATE_DIR` and `OPENCLAW_CONFIG_PATH` / `OPENCLAW_STATE_DIR`.
+- Respects `TAMAGOBOT_CONFIG_PATH` / `TAMAGOBOT_STATE_DIR` and `NANOSOLANA_CONFIG_PATH` / `NANOSOLANA_STATE_DIR`.
 - Flags:
   - `--root <dir...>` extra scan roots
   - `--all` upload without prompting
@@ -216,5 +216,5 @@ Stores your API token + cached registry URL.
 
 Telemetry:
 
-- Sent during `sync` when logged in, unless `CLAWHUB_DISABLE_TELEMETRY=1` (legacy `CLAWDHUB_DISABLE_TELEMETRY=1`).
+- Sent during `sync` when logged in, unless `CLAWHUB_DISABLE_TELEMETRY=1` (legacy `NANOHUB_DISABLE_TELEMETRY=1`).
 - Details: `docs/telemetry.md`.

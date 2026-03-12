@@ -1,4 +1,4 @@
-package ai.openclaw.app.ui.chat
+package ai.nanosolana.app.ui.chat
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -25,24 +25,24 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ai.openclaw.app.chat.ChatMessage
-import ai.openclaw.app.chat.ChatMessageContent
-import ai.openclaw.app.chat.ChatPendingToolCall
-import ai.openclaw.app.tools.ToolDisplayRegistry
-import ai.openclaw.app.ui.mobileAccent
-import ai.openclaw.app.ui.mobileAccentSoft
-import ai.openclaw.app.ui.mobileBorder
-import ai.openclaw.app.ui.mobileBorderStrong
-import ai.openclaw.app.ui.mobileCallout
-import ai.openclaw.app.ui.mobileCaption1
-import ai.openclaw.app.ui.mobileCaption2
-import ai.openclaw.app.ui.mobileCodeBg
-import ai.openclaw.app.ui.mobileCodeText
-import ai.openclaw.app.ui.mobileHeadline
-import ai.openclaw.app.ui.mobileText
-import ai.openclaw.app.ui.mobileTextSecondary
-import ai.openclaw.app.ui.mobileWarning
-import ai.openclaw.app.ui.mobileWarningSoft
+import ai.nanosolana.app.chat.ChatMessage
+import ai.nanosolana.app.chat.ChatMessageContent
+import ai.nanosolana.app.chat.ChatPendingToolCall
+import ai.nanosolana.app.tools.ToolDisplayRegistry
+import ai.nanosolana.app.ui.mobileAccent
+import ai.nanosolana.app.ui.mobileAccentSoft
+import ai.nanosolana.app.ui.mobileBorder
+import ai.nanosolana.app.ui.mobileBorderStrong
+import ai.nanosolana.app.ui.mobileCallout
+import ai.nanosolana.app.ui.mobileCaption1
+import ai.nanosolana.app.ui.mobileCaption2
+import ai.nanosolana.app.ui.mobileCodeBg
+import ai.nanosolana.app.ui.mobileCodeText
+import ai.nanosolana.app.ui.mobileHeadline
+import ai.nanosolana.app.ui.mobileText
+import ai.nanosolana.app.ui.mobileTextSecondary
+import ai.nanosolana.app.ui.mobileWarning
+import ai.nanosolana.app.ui.mobileWarningSoft
 import java.util.Locale
 
 private data class ChatBubbleStyle(

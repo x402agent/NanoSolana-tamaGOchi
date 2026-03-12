@@ -32,7 +32,7 @@ const SEED_SKILLS: SeedSkillSpec[] = [
     summary: 'Check padel court availability and manage bookings via Playtomic.',
     version: '0.1.0',
     metadata: {
-      clawdbot: {
+      tamagobot: {
         nix: {
           plugin: 'github:joshp123/padel-cli',
           systems: ['aarch64-darwin', 'x86_64-linux'],
@@ -74,7 +74,7 @@ description: Check padel court availability and manage bookings via the padel CL
 ## CLI
 
 \`\`\`bash
-padel  # On PATH (clawdbot plugin bundle)
+padel  # On PATH (tamagobot plugin bundle)
 \`\`\`
 
 ## Venues
@@ -110,7 +110,7 @@ Only the authorized booker can confirm bookings. If the requester is not authori
     summary: 'Operate GoHome via gRPC discovery, metrics, and Grafana dashboards.',
     version: '0.1.0',
     metadata: {
-      clawdbot: {
+      tamagobot: {
         nix: {
           plugin: 'github:joshp123/gohome',
           systems: ['x86_64-linux', 'aarch64-linux'],
@@ -141,7 +141,7 @@ Flags:
     },
     rawSkillMd: `---
 name: gohome
-description: Use when Clawdbot needs to test or operate GoHome via gRPC discovery, metrics, and Grafana.
+description: Use when TamaGObot needs to test or operate GoHome via gRPC discovery, metrics, and Grafana.
 ---
 
 # GoHome Skill
@@ -183,7 +183,7 @@ Only call write RPCs after explicit user approval.
     summary: 'Teach Mandarin with the xuezh engine for review, speaking, and audits.',
     version: '0.1.0',
     metadata: {
-      clawdbot: {
+      tamagobot: {
         nix: {
           plugin: 'github:joshp123/xuezh',
           systems: ['aarch64-darwin', 'x86_64-linux'],

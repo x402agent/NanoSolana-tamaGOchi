@@ -1,7 +1,7 @@
 import AppKit
 import Foundation
-import OpenClawIPC
-import OpenClawKit
+import NanoSolanaIPC
+import NanoSolanaKit
 
 actor MacNodeRuntime {
     private let cameraCapture = CameraCaptureService()
@@ -39,41 +39,41 @@ actor MacNodeRuntime {
             return BridgeInvokeResponse(
                 id: req.id,
                 ok: false,
-                error: OpenClawNodeError(
+                error: NanoSolanaNodeError(
                     code: .unavailable,
                     message: "CANVAS_DISABLED: enable Canvas in Settings"))
         }
         do {
             switch command {
-            case OpenClawCanvasCommand.present.rawValue,
-                 OpenClawCanvasCommand.hide.rawValue,
-                 OpenClawCanvasCommand.navigate.rawValue,
-                 OpenClawCanvasCommand.evalJS.rawValue,
-                 OpenClawCanvasCommand.snapshot.rawValue:
+            case NanoSolanaCanvasCommand.present.rawValue,
+                 NanoSolanaCanvasCommand.hide.rawValue,
+                 NanoSolanaCanvasCommand.navigate.rawValue,
+                 NanoSolanaCanvasCommand.evalJS.rawValue,
+                 NanoSolanaCanvasCommand.snapshot.rawValue:
                 return try await self.handleCanvasInvoke(req)
-            case OpenClawCanvasA2UICommand.reset.rawValue,
-                 OpenClawCanvasA2UICommand.push.rawValue,
-                 OpenClawCanvasA2UICommand.pushJSONL.rawValue:
+            case NanoSolanaCanvasA2UICommand.reset.rawValue,
+                 NanoSolanaCanvasA2UICommand.push.rawValue,
+                 NanoSolanaCanvasA2UICommand.pushJSONL.rawValue:
                 return try await self.handleA2UIInvoke(req)
-            case OpenClawBrowserCommand.proxy.rawValue:
+            case NanoSolanaBrowserCommand.proxy.rawValue:
                 return try await self.handleBrowserProxyInvoke(req)
-            case OpenClawCameraCommand.snap.rawValue,
-                 OpenClawCameraCommand.clip.rawValue,
-                 OpenClawCameraCommand.list.rawValue:
+            case NanoSolanaCameraCommand.snap.rawValue,
+                 NanoSolanaCameraCommand.clip.rawValue,
+                 NanoSolanaCameraCommand.list.rawValue:
                 return try await self.handleCameraInvoke(req)
-            case OpenClawLocationCommand.get.rawValue:
+            case NanoSolanaLocationCommand.get.rawValue:
                 return try await self.handleLocationInvoke(req)
             case MacNodeScreenCommand.record.rawValue:
                 return try await self.handleScreenRecordInvoke(req)
-            case OpenClawSystemCommand.run.rawValue:
+            case NanoSolanaSystemCommand.run.rawValue:
                 return try await self.handleSystemRun(req)
-            case OpenClawSystemCommand.which.rawValue:
+            case NanoSolanaSystemCommand.which.rawValue:
                 return try await self.handleSystemWhich(req)
-            case OpenClawSystemCommand.notify.rawValue:
+            case NanoSolanaSystemCommand.notify.rawValue:
                 return try await self.handleSystemNotify(req)
-            case OpenClawSystemCommand.execApprovalsGet.rawValue:
+            case NanoSolanaSystemCommand.execApprovalsGet.rawValue:
                 return try await self.handleSystemExecApprovalsGet(req)
-            case OpenClawSystemCommand.execApprovalsSet.rawValue:
+            case NanoSolanaSystemCommand.execApprovalsSet.rawValue:
                 return try await self.handleSystemExecApprovalsSet(req)
             default:
                 return Self.errorResponse(req, code: .invalidRequest, message: "INVALID_REQUEST: unknown command")
@@ -89,9 +89,9 @@ actor MacNodeRuntime {
 
     private func handleCanvasInvoke(_ req: BridgeInvokeRequest) async throws -> BridgeInvokeResponse {
         switch req.command {
-        case OpenClawCanvasCommand.present.rawValue:
-            let params = (try? Self.decodeParams(OpenClawCanvasPresentParams.self, from: req.paramsJSON)) ??
-                OpenClawCanvasPresentParams()
+        case NanoSolanaCanvasCommand.present.rawValue:
+            let params = (try? Self.decodeParams(NanoSolanaCanvasPresentParams.self, from: req.paramsJSON)) ??
+                NanoSolanaCanvasPresentParams()
             let urlTrimmed = params.url?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
             let url = urlTrimmed.isEmpty ? nil : urlTrimmed
             let placement = params.placement.map {
@@ -105,29 +105,29 @@ actor MacNodeRuntime {
                     placement: placement)
             }
             return BridgeInvokeResponse(id: req.id, ok: true)
-        case OpenClawCanvasCommand.hide.rawValue:
+        case NanoSolanaCanvasCommand.hide.rawValue:
             let sessionKey = self.mainSessionKey
             await MainActor.run {
                 CanvasManager.shared.hide(sessionKey: sessionKey)
             }
             return BridgeInvokeResponse(id: req.id, ok: true)
-        case OpenClawCanvasCommand.navigate.rawValue:
-            let params = try Self.decodeParams(OpenClawCanvasNavigateParams.self, from: req.paramsJSON)
+        case NanoSolanaCanvasCommand.navigate.rawValue:
+            let params = try Self.decodeParams(NanoSolanaCanvasNavigateParams.self, from: req.paramsJSON)
             let sessionKey = self.mainSessionKey
             try await MainActor.run {
                 _ = try CanvasManager.shared.show(sessionKey: sessionKey, path: params.url)
             }
             return BridgeInvokeResponse(id: req.id, ok: true)
-        case OpenClawCanvasCommand.evalJS.rawValue:
-            let params = try Self.decodeParams(OpenClawCanvasEvalParams.self, from: req.paramsJSON)
+        case NanoSolanaCanvasCommand.evalJS.rawValue:
+            let params = try Self.decodeParams(NanoSolanaCanvasEvalParams.self, from: req.paramsJSON)
             let sessionKey = self.mainSessionKey
             let result = try await CanvasManager.shared.eval(
                 sessionKey: sessionKey,
                 javaScript: params.javaScript)
             let payload = try Self.encodePayload(["result": result] as [String: String])
             return BridgeInvokeResponse(id: req.id, ok: true, payloadJSON: payload)
-        case OpenClawCanvasCommand.snapshot.rawValue:
-            let params = try? Self.decodeParams(OpenClawCanvasSnapshotParams.self, from: req.paramsJSON)
+        case NanoSolanaCanvasCommand.snapshot.rawValue:
+            let params = try? Self.decodeParams(NanoSolanaCanvasSnapshotParams.self, from: req.paramsJSON)
             let format = params?.format ?? .jpeg
             let maxWidth: Int? = {
                 if let raw = params?.maxWidth, raw > 0 { return raw }
@@ -162,10 +162,10 @@ actor MacNodeRuntime {
 
     private func handleA2UIInvoke(_ req: BridgeInvokeRequest) async throws -> BridgeInvokeResponse {
         switch req.command {
-        case OpenClawCanvasA2UICommand.reset.rawValue:
+        case NanoSolanaCanvasA2UICommand.reset.rawValue:
             try await self.handleA2UIReset(req)
-        case OpenClawCanvasA2UICommand.push.rawValue,
-             OpenClawCanvasA2UICommand.pushJSONL.rawValue:
+        case NanoSolanaCanvasA2UICommand.push.rawValue,
+             NanoSolanaCanvasA2UICommand.pushJSONL.rawValue:
             try await self.handleA2UIPush(req)
         default:
             Self.errorResponse(req, code: .invalidRequest, message: "INVALID_REQUEST: unknown command")
@@ -173,11 +173,11 @@ actor MacNodeRuntime {
     }
 
     private func handleBrowserProxyInvoke(_ req: BridgeInvokeRequest) async throws -> BridgeInvokeResponse {
-        guard OpenClawConfigFile.browserControlEnabled() else {
+        guard NanoSolanaConfigFile.browserControlEnabled() else {
             return BridgeInvokeResponse(
                 id: req.id,
                 ok: false,
-                error: OpenClawNodeError(
+                error: NanoSolanaNodeError(
                     code: .unavailable,
                     message: "BROWSER_DISABLED: enable Browser in Settings"))
         }
@@ -190,14 +190,14 @@ actor MacNodeRuntime {
             return BridgeInvokeResponse(
                 id: req.id,
                 ok: false,
-                error: OpenClawNodeError(
+                error: NanoSolanaNodeError(
                     code: .unavailable,
                     message: "CAMERA_DISABLED: enable Camera in Settings"))
         }
         switch req.command {
-        case OpenClawCameraCommand.snap.rawValue:
-            let params = (try? Self.decodeParams(OpenClawCameraSnapParams.self, from: req.paramsJSON)) ??
-                OpenClawCameraSnapParams()
+        case NanoSolanaCameraCommand.snap.rawValue:
+            let params = (try? Self.decodeParams(NanoSolanaCameraSnapParams.self, from: req.paramsJSON)) ??
+                NanoSolanaCameraSnapParams()
             let delayMs = min(10000, max(0, params.delayMs ?? 2000))
             let res = try await self.cameraCapture.snap(
                 facing: CameraFacing(rawValue: params.facing?.rawValue ?? "") ?? .front,
@@ -217,9 +217,9 @@ actor MacNodeRuntime {
                 width: Int(res.size.width),
                 height: Int(res.size.height)))
             return BridgeInvokeResponse(id: req.id, ok: true, payloadJSON: payload)
-        case OpenClawCameraCommand.clip.rawValue:
-            let params = (try? Self.decodeParams(OpenClawCameraClipParams.self, from: req.paramsJSON)) ??
-                OpenClawCameraClipParams()
+        case NanoSolanaCameraCommand.clip.rawValue:
+            let params = (try? Self.decodeParams(NanoSolanaCameraClipParams.self, from: req.paramsJSON)) ??
+                NanoSolanaCameraClipParams()
             let res = try await self.cameraCapture.clip(
                 facing: CameraFacing(rawValue: params.facing?.rawValue ?? "") ?? .front,
                 durationMs: params.durationMs,
@@ -240,7 +240,7 @@ actor MacNodeRuntime {
                 durationMs: res.durationMs,
                 hasAudio: res.hasAudio))
             return BridgeInvokeResponse(id: req.id, ok: true, payloadJSON: payload)
-        case OpenClawCameraCommand.list.rawValue:
+        case NanoSolanaCameraCommand.list.rawValue:
             let devices = await self.cameraCapture.listDevices()
             let payload = try Self.encodePayload(["devices": devices])
             return BridgeInvokeResponse(id: req.id, ok: true, payloadJSON: payload)
@@ -255,12 +255,12 @@ actor MacNodeRuntime {
             return BridgeInvokeResponse(
                 id: req.id,
                 ok: false,
-                error: OpenClawNodeError(
+                error: NanoSolanaNodeError(
                     code: .unavailable,
                     message: "LOCATION_DISABLED: enable Location in Settings"))
         }
-        let params = (try? Self.decodeParams(OpenClawLocationGetParams.self, from: req.paramsJSON)) ??
-            OpenClawLocationGetParams()
+        let params = (try? Self.decodeParams(NanoSolanaLocationGetParams.self, from: req.paramsJSON)) ??
+            NanoSolanaLocationGetParams()
         let desired = params.desiredAccuracy ??
             (Self.locationPreciseEnabled() ? .precise : .balanced)
         let services = await self.mainActorServices()
@@ -277,7 +277,7 @@ actor MacNodeRuntime {
             return BridgeInvokeResponse(
                 id: req.id,
                 ok: false,
-                error: OpenClawNodeError(
+                error: NanoSolanaNodeError(
                     code: .unavailable,
                     message: "LOCATION_PERMISSION_REQUIRED: grant Location permission"))
         }
@@ -287,7 +287,7 @@ actor MacNodeRuntime {
                 maxAgeMs: params.maxAgeMs,
                 timeoutMs: params.timeoutMs)
             let isPrecise = await services.locationAccuracyAuthorization() == .fullAccuracy
-            let payload = OpenClawLocationPayload(
+            let payload = NanoSolanaLocationPayload(
                 lat: location.coordinate.latitude,
                 lon: location.coordinate.longitude,
                 accuracyMeters: location.horizontalAccuracy,
@@ -303,14 +303,14 @@ actor MacNodeRuntime {
             return BridgeInvokeResponse(
                 id: req.id,
                 ok: false,
-                error: OpenClawNodeError(
+                error: NanoSolanaNodeError(
                     code: .unavailable,
                     message: "LOCATION_TIMEOUT: no fix in time"))
         } catch {
             return BridgeInvokeResponse(
                 id: req.id,
                 ok: false,
-                error: OpenClawNodeError(
+                error: NanoSolanaNodeError(
                     code: .unavailable,
                     message: "LOCATION_UNAVAILABLE: \(error.localizedDescription)"))
         }
@@ -365,8 +365,8 @@ actor MacNodeRuntime {
         let sessionKey = self.mainSessionKey
         let json = try await CanvasManager.shared.eval(sessionKey: sessionKey, javaScript: """
         (() => {
-          const host = globalThis.openclawA2UI;
-          if (!host) return JSON.stringify({ ok: false, error: "missing openclawA2UI" });
+          const host = globalThis.nanosolanaA2UI;
+          if (!host) return JSON.stringify({ ok: false, error: "missing nanosolanaA2UI" });
           return JSON.stringify(host.reset());
         })()
         """)
@@ -375,28 +375,28 @@ actor MacNodeRuntime {
 
     private func handleA2UIPush(_ req: BridgeInvokeRequest) async throws -> BridgeInvokeResponse {
         let command = req.command
-        let messages: [OpenClawKit.AnyCodable]
-        if command == OpenClawCanvasA2UICommand.pushJSONL.rawValue {
-            let params = try Self.decodeParams(OpenClawCanvasA2UIPushJSONLParams.self, from: req.paramsJSON)
-            messages = try OpenClawCanvasA2UIJSONL.decodeMessagesFromJSONL(params.jsonl)
+        let messages: [NanoSolanaKit.AnyCodable]
+        if command == NanoSolanaCanvasA2UICommand.pushJSONL.rawValue {
+            let params = try Self.decodeParams(NanoSolanaCanvasA2UIPushJSONLParams.self, from: req.paramsJSON)
+            messages = try NanoSolanaCanvasA2UIJSONL.decodeMessagesFromJSONL(params.jsonl)
         } else {
             do {
-                let params = try Self.decodeParams(OpenClawCanvasA2UIPushParams.self, from: req.paramsJSON)
+                let params = try Self.decodeParams(NanoSolanaCanvasA2UIPushParams.self, from: req.paramsJSON)
                 messages = params.messages
             } catch {
-                let params = try Self.decodeParams(OpenClawCanvasA2UIPushJSONLParams.self, from: req.paramsJSON)
-                messages = try OpenClawCanvasA2UIJSONL.decodeMessagesFromJSONL(params.jsonl)
+                let params = try Self.decodeParams(NanoSolanaCanvasA2UIPushJSONLParams.self, from: req.paramsJSON)
+                messages = try NanoSolanaCanvasA2UIJSONL.decodeMessagesFromJSONL(params.jsonl)
             }
         }
 
         try await self.ensureA2UIHost()
 
-        let messagesJSON = try OpenClawCanvasA2UIJSONL.encodeMessagesJSONArray(messages)
+        let messagesJSON = try NanoSolanaCanvasA2UIJSONL.encodeMessagesJSONArray(messages)
         let js = """
         (() => {
           try {
-            const host = globalThis.openclawA2UI;
-            if (!host) return JSON.stringify({ ok: false, error: "missing openclawA2UI" });
+            const host = globalThis.nanosolanaA2UI;
+            if (!host) return JSON.stringify({ ok: false, error: "missing nanosolanaA2UI" });
             const messages = \(messagesJSON);
             return JSON.stringify(host.applyMessages(messages));
           } catch (e) {
@@ -430,7 +430,7 @@ actor MacNodeRuntime {
         guard let raw = await GatewayConnection.shared.canvasHostUrl() else { return nil }
         let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, let baseUrl = URL(string: trimmed) else { return nil }
-        return baseUrl.appendingPathComponent("__openclaw__/a2ui/").absoluteString + "?platform=macos"
+        return baseUrl.appendingPathComponent("__nanosolana__/a2ui/").absoluteString + "?platform=macos"
     }
 
     private func isA2UIReady(poll: Bool = false) async -> Bool {
@@ -440,7 +440,7 @@ actor MacNodeRuntime {
                 let sessionKey = self.mainSessionKey
                 let ready = try await CanvasManager.shared.eval(sessionKey: sessionKey, javaScript: """
                 (() => {
-                  const host = globalThis.openclawA2UI;
+                  const host = globalThis.nanosolanaA2UI;
                   return String(Boolean(host));
                 })()
                 """)
@@ -456,7 +456,7 @@ actor MacNodeRuntime {
     }
 
     private func handleSystemRun(_ req: BridgeInvokeRequest) async throws -> BridgeInvokeResponse {
-        let params = try Self.decodeParams(OpenClawSystemRunParams.self, from: req.paramsJSON)
+        let params = try Self.decodeParams(NanoSolanaSystemRunParams.self, from: req.paramsJSON)
         let command = params.command
         guard !command.isEmpty else {
             return Self.errorResponse(req, code: .invalidRequest, message: "INVALID_REQUEST: command required")
@@ -554,7 +554,7 @@ actor MacNodeRuntime {
     }
 
     private func handleSystemWhich(_ req: BridgeInvokeRequest) async throws -> BridgeInvokeResponse {
-        let params = try Self.decodeParams(OpenClawSystemWhichParams.self, from: req.paramsJSON)
+        let params = try Self.decodeParams(NanoSolanaSystemWhichParams.self, from: req.paramsJSON)
         let bins = params.bins
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
@@ -600,7 +600,7 @@ actor MacNodeRuntime {
 
     private func resolveSystemRunApproval(
         req: BridgeInvokeRequest,
-        params: OpenClawSystemRunParams,
+        params: NanoSolanaSystemRunParams,
         context: ExecRunContext) async -> ExecApprovalOutcome
     {
         let requiresAsk = ExecApprovalHelpers.requiresAsk(
@@ -751,7 +751,7 @@ actor MacNodeRuntime {
     }
 
     private func handleSystemNotify(_ req: BridgeInvokeRequest) async throws -> BridgeInvokeResponse {
-        let params = try Self.decodeParams(OpenClawSystemNotifyParams.self, from: req.paramsJSON)
+        let params = try Self.decodeParams(NanoSolanaSystemNotifyParams.self, from: req.paramsJSON)
         let title = params.title.trimmingCharacters(in: .whitespacesAndNewlines)
         let body = params.body.trimmingCharacters(in: .whitespacesAndNewlines)
         if title.isEmpty, body.isEmpty {
@@ -862,7 +862,7 @@ extension MacNodeRuntime {
 
     private func executeSystemRun(
         req: BridgeInvokeRequest,
-        params: OpenClawSystemRunParams,
+        params: NanoSolanaSystemRunParams,
         command: [String],
         env: [String: String],
         sessionKey: String,
@@ -944,9 +944,9 @@ extension MacNodeRuntime {
         UserDefaults.standard.object(forKey: cameraEnabledKey) as? Bool ?? false
     }
 
-    private nonisolated static func locationMode() -> OpenClawLocationMode {
+    private nonisolated static func locationMode() -> NanoSolanaLocationMode {
         let raw = UserDefaults.standard.string(forKey: locationModeKey) ?? "off"
-        return OpenClawLocationMode(rawValue: raw) ?? .off
+        return NanoSolanaLocationMode(rawValue: raw) ?? .off
     }
 
     private nonisolated static func locationPreciseEnabled() -> Bool {
@@ -956,18 +956,18 @@ extension MacNodeRuntime {
 
     private static func errorResponse(
         _ req: BridgeInvokeRequest,
-        code: OpenClawNodeErrorCode,
+        code: NanoSolanaNodeErrorCode,
         message: String) -> BridgeInvokeResponse
     {
         BridgeInvokeResponse(
             id: req.id,
             ok: false,
-            error: OpenClawNodeError(code: code, message: message))
+            error: NanoSolanaNodeError(code: code, message: message))
     }
 
     private static func encodeCanvasSnapshot(
         image: NSImage,
-        format: OpenClawCanvasSnapshotFormat,
+        format: NanoSolanaCanvasSnapshotFormat,
         maxWidth: Int?,
         quality: Double) throws -> Data
     {

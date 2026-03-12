@@ -2,7 +2,7 @@ import {
   buildAccountScopedDmSecurityPolicy,
   createAccountStatusSink,
   mapAllowFromEntries,
-} from "openclaw/plugin-sdk/compat";
+} from "nanosolana/plugin-sdk/compat";
 import type {
   ChannelAccountSnapshot,
   ChannelDirectoryEntry,
@@ -10,9 +10,9 @@ import type {
   ChannelGroupContext,
   ChannelMessageActionAdapter,
   ChannelPlugin,
-  OpenClawConfig,
+  NanoSolanaConfig,
   GroupToolPolicyConfig,
-} from "openclaw/plugin-sdk/zalouser";
+} from "nanosolana/plugin-sdk/zalouser";
 import {
   applyAccountNameToChannelSection,
   applySetupAccountConfigPatch,
@@ -27,7 +27,7 @@ import {
   normalizeAccountId,
   sendPayloadWithChunkedTextAndMedia,
   setAccountEnabledInConfigSection,
-} from "openclaw/plugin-sdk/zalouser";
+} from "nanosolana/plugin-sdk/zalouser";
 import {
   listZalouserAccountIds,
   resolveDefaultZalouserAccountId,
@@ -166,11 +166,11 @@ function resolveZalouserQrProfile(accountId?: string | null): string {
   return normalized;
 }
 
-function resolveZalouserOutboundChunkMode(cfg: OpenClawConfig, accountId?: string) {
+function resolveZalouserOutboundChunkMode(cfg: NanoSolanaConfig, accountId?: string) {
   return getZalouserRuntime().channel.text.resolveChunkMode(cfg, "zalouser", accountId);
 }
 
-function resolveZalouserOutboundTextChunkLimit(cfg: OpenClawConfig, accountId?: string) {
+function resolveZalouserOutboundTextChunkLimit(cfg: NanoSolanaConfig, accountId?: string) {
   return getZalouserRuntime().channel.text.resolveTextChunkLimit(cfg, "zalouser", accountId, {
     fallbackLimit: zalouserDock.outbound?.textChunkLimit ?? 2000,
   });

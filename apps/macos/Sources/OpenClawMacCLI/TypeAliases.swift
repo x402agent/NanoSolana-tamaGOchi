@@ -1,5 +1,5 @@
-import OpenClawKit
-import OpenClawProtocol
+import NanoSolanaKit
+import NanoSolanaProtocol
 
-typealias ProtoAnyCodable = OpenClawProtocol.AnyCodable
-typealias KitAnyCodable = OpenClawKit.AnyCodable
+typealias ProtoAnyCodable = NanoSolanaProtocol.AnyCodable
+typealias KitAnyCodable = NanoSolanaKit.AnyCodable

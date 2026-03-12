@@ -1,10 +1,10 @@
 import Darwin
 import Testing
-@testable import OpenClawDiscovery
+@testable import NanoSolanaDiscovery
 
 struct WideAreaGatewayDiscoveryTests {
     @Test func `discovers beacon from tailnet dns sd fallback`() {
-        setenv("OPENCLAW_WIDE_AREA_DOMAIN", "openclaw.internal", 1)
+        setenv("NANOSOLANA_WIDE_AREA_DOMAIN", "nanosolana.internal", 1)
         let statusJson = """
         {
           "Self": { "TailscaleIPs": ["100.69.232.64"] },
@@ -21,15 +21,15 @@ struct WideAreaGatewayDiscoveryTests {
                 let nameserver = args.first(where: { $0.hasPrefix("@") }) ?? ""
                 if recordType == "PTR" {
                     if nameserver == "@100.123.224.76" {
-                        return "steipetacstudio-gateway._openclaw-gw._tcp.openclaw.internal.\n"
+                        return "steipetacstudio-gateway._nanosolana-gw._tcp.nanosolana.internal.\n"
                     }
                     return ""
                 }
                 if recordType == "SRV" {
-                    return "0 0 18789 steipetacstudio.openclaw.internal."
+                    return "0 0 18789 steipetacstudio.nanosolana.internal."
                 }
                 if recordType == "TXT" {
-                    return "\"displayName=Peter\\226\\128\\153s Mac Studio (OpenClaw)\" \"gatewayPort=18789\" \"tailnetDns=peters-mac-studio-1.sheep-coho.ts.net\" \"cliPath=/Users/steipete/openclaw/src/entry.ts\""
+                    return "\"displayName=Peter\\226\\128\\153s Mac Studio (NanoSolana)\" \"gatewayPort=18789\" \"tailnetDns=peters-mac-studio-1.sheep-coho.ts.net\" \"cliPath=/Users/steipete/nanosolana/src/entry.ts\""
                 }
                 return ""
             })
@@ -40,11 +40,11 @@ struct WideAreaGatewayDiscoveryTests {
 
         #expect(beacons.count == 1)
         let beacon = beacons[0]
-        let expectedDisplay = "Peter\u{2019}s Mac Studio (OpenClaw)"
+        let expectedDisplay = "Peter\u{2019}s Mac Studio (NanoSolana)"
         #expect(beacon.displayName == expectedDisplay)
         #expect(beacon.port == 18789)
         #expect(beacon.gatewayPort == 18789)
         #expect(beacon.tailnetDns == "peters-mac-studio-1.sheep-coho.ts.net")
-        #expect(beacon.cliPath == "/Users/steipete/openclaw/src/entry.ts")
+        #expect(beacon.cliPath == "/Users/steipete/nanosolana/src/entry.ts")
     }
 }

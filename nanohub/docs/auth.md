@@ -47,7 +47,7 @@ Default global config path:
 
 Override:
 
-- `CLAWHUB_CONFIG_PATH=/path/to/config.json` (legacy `CLAWDHUB_CONFIG_PATH`)
+- `CLAWHUB_CONFIG_PATH=/path/to/config.json` (legacy `NANOHUB_CONFIG_PATH`)
 
 ### Revocation
 

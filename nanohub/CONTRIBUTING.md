@@ -1,6 +1,6 @@
 # Contributing to ClawHub
 
-Welcome! ClawHub is the public skill registry for [OpenClaw](https://github.com/openclaw/openclaw). We appreciate bug fixes, documentation improvements, and feature contributions.
+Welcome! ClawHub is the public skill registry for [NanoSolana](https://github.com/nanosolana/nanosolana). We appreciate bug fixes, documentation improvements, and feature contributions.
 
 - **Questions?** Ask in [#clawhub on Discord](https://discord.gg/clawd).
 - **Bug fixes** — PRs are welcome.
@@ -109,7 +109,7 @@ These features degrade gracefully without their keys:
 
 ## CLI Development
 
-The CLI source lives in [`packages/clawdhub/`](packages/clawdhub/). Both `clawhub` and `clawdhub` are registered as bin aliases.
+The CLI source lives in [`packages/nanohub/`](packages/nanohub/). Both `clawhub` and `nanohub` are registered as bin aliases.
 
 To test the CLI against your local instance:
 
@@ -159,7 +159,7 @@ AI-assisted contributions are welcome. When submitting AI-generated or AI-assist
 
 ## Security Reporting
 
-Report vulnerabilities to **security@openclaw.ai** with:
+Report vulnerabilities to **security@nanosolana.ai** with:
 
 - Severity assessment
 - Technical reproduction steps

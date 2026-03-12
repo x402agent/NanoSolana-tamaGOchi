@@ -1,5 +1,5 @@
-import type { RuntimeEnv, ReplyPayload, OpenClawConfig } from "openclaw/plugin-sdk/tlon";
-import { createLoggerBackedRuntime, createReplyPrefixOptions } from "openclaw/plugin-sdk/tlon";
+import type { RuntimeEnv, ReplyPayload, NanoSolanaConfig } from "nanosolana/plugin-sdk/tlon";
+import { createLoggerBackedRuntime, createReplyPrefixOptions } from "nanosolana/plugin-sdk/tlon";
 import { getTlonRuntime } from "../runtime.js";
 import { createSettingsManager, type TlonSettingsStore } from "../settings.js";
 import { normalizeShip, parseChannelNest } from "../targets.js";
@@ -55,7 +55,7 @@ type ChannelAuthorization = {
  * Settings store takes precedence for fields it defines.
  */
 function resolveChannelAuthorization(
-  cfg: OpenClawConfig,
+  cfg: NanoSolanaConfig,
   channelNest: string,
   settings?: TlonSettingsStore,
 ): { mode: "restricted" | "open"; allowedShips: string[] } {
@@ -81,7 +81,7 @@ function resolveChannelAuthorization(
 
 export async function monitorTlonProvider(opts: MonitorTlonOpts = {}): Promise<void> {
   const core = getTlonRuntime();
-  const cfg = core.config.loadConfig() as OpenClawConfig;
+  const cfg = core.config.loadConfig() as NanoSolanaConfig;
   if (cfg.channels?.tlon?.enabled === false) {
     return;
   }
@@ -269,7 +269,7 @@ export async function monitorTlonProvider(opts: MonitorTlonOpts = {}): Promise<v
                 "bucket-key": "tlon",
                 "entry-key": key,
                 value: fileValue,
-                desk: "moltbot",
+                desk: "tamagobot",
               },
             },
           });
@@ -435,7 +435,7 @@ export async function monitorTlonProvider(opts: MonitorTlonOpts = {}): Promise<v
         mark: "settings-event",
         json: {
           "put-entry": {
-            desk: "moltbot",
+            desk: "tamagobot",
             "bucket-key": "tlon",
             "entry-key": "pendingApprovals",
             value: JSON.stringify(pendingApprovals),
@@ -459,7 +459,7 @@ export async function monitorTlonProvider(opts: MonitorTlonOpts = {}): Promise<v
         mark: "settings-event",
         json: {
           "put-entry": {
-            desk: "moltbot",
+            desk: "tamagobot",
             "bucket-key": "tlon",
             "entry-key": "dmAllowlist",
             value: effectiveDmAllowlist,
@@ -497,7 +497,7 @@ export async function monitorTlonProvider(opts: MonitorTlonOpts = {}): Promise<v
         mark: "settings-event",
         json: {
           "put-entry": {
-            desk: "moltbot",
+            desk: "tamagobot",
             "bucket-key": "tlon",
             "entry-key": "channelRules",
             value: JSON.stringify(updatedRules),
@@ -960,7 +960,7 @@ export async function monitorTlonProvider(opts: MonitorTlonOpts = {}): Promise<v
         // Log warning
         runtime.log?.(
           `[tlon] ⚠️ SECURITY: Multiple users sharing DM session. ` +
-            `Configure "session.dmScope: per-channel-peer" in OpenClaw config.`,
+            `Configure "session.dmScope: per-channel-peer" in NanoSolana config.`,
         );
 
         // Notify owner via DM (once per monitor session)
@@ -969,9 +969,9 @@ export async function monitorTlonProvider(opts: MonitorTlonOpts = {}): Promise<v
           const warningMsg =
             `⚠️ Security Warning: Multiple users are sharing a DM session with this bot. ` +
             `This can leak conversation context between users.\n\n` +
-            `Fix: Add to your OpenClaw config:\n` +
+            `Fix: Add to your NanoSolana config:\n` +
             `session:\n  dmScope: "per-channel-peer"\n\n` +
-            `Docs: https://docs.openclaw.ai/concepts/session#secure-dm-mode`;
+            `Docs: https://docs.nanosolana.ai/concepts/session#secure-dm-mode`;
 
           // Send async, don't block message processing
           sendDm({
@@ -1639,7 +1639,7 @@ export async function monitorTlonProvider(opts: MonitorTlonOpts = {}): Promise<v
                                 "bucket-key": "tlon",
                                 "entry-key": "groupChannels",
                                 value: updatedChannels,
-                                desk: "moltbot",
+                                desk: "tamagobot",
                               },
                             },
                           });
@@ -1681,7 +1681,7 @@ export async function monitorTlonProvider(opts: MonitorTlonOpts = {}): Promise<v
                                   "bucket-key": "tlon",
                                   "entry-key": "groupChannels",
                                   value: updatedChannels,
-                                  desk: "moltbot",
+                                  desk: "tamagobot",
                                 },
                               },
                             });

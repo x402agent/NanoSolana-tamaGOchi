@@ -1,5 +1,5 @@
-import type { OpenClawConfig, PluginRuntime, ReplyPayload } from "openclaw/plugin-sdk/mattermost";
-import { getAgentScopedMediaLocalRoots } from "openclaw/plugin-sdk/mattermost";
+import type { NanoSolanaConfig, PluginRuntime, ReplyPayload } from "nanosolana/plugin-sdk/mattermost";
+import { getAgentScopedMediaLocalRoots } from "nanosolana/plugin-sdk/mattermost";
 
 type MarkdownTableMode = Parameters<PluginRuntime["channel"]["text"]["convertMarkdownTables"]>[1];
 
@@ -16,7 +16,7 @@ type SendMattermostMessage = (
 
 export async function deliverMattermostReplyPayload(params: {
   core: PluginRuntime;
-  cfg: OpenClawConfig;
+  cfg: NanoSolanaConfig;
   payload: ReplyPayload;
   to: string;
   accountId: string;

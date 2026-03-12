@@ -1,13 +1,13 @@
 import Foundation
 
-public enum OpenClawMotionCommand: String, Codable, Sendable {
+public enum NanoSolanaMotionCommand: String, Codable, Sendable {
     case activity = "motion.activity"
     case pedometer = "motion.pedometer"
 }
 
-public typealias OpenClawMotionActivityParams = OpenClawDateRangeLimitParams
+public typealias NanoSolanaMotionActivityParams = NanoSolanaDateRangeLimitParams
 
-public struct OpenClawMotionActivityEntry: Codable, Sendable, Equatable {
+public struct NanoSolanaMotionActivityEntry: Codable, Sendable, Equatable {
     public var startISO: String
     public var endISO: String
     public var confidence: String
@@ -41,15 +41,15 @@ public struct OpenClawMotionActivityEntry: Codable, Sendable, Equatable {
     }
 }
 
-public struct OpenClawMotionActivityPayload: Codable, Sendable, Equatable {
-    public var activities: [OpenClawMotionActivityEntry]
+public struct NanoSolanaMotionActivityPayload: Codable, Sendable, Equatable {
+    public var activities: [NanoSolanaMotionActivityEntry]
 
-    public init(activities: [OpenClawMotionActivityEntry]) {
+    public init(activities: [NanoSolanaMotionActivityEntry]) {
         self.activities = activities
     }
 }
 
-public struct OpenClawPedometerParams: Codable, Sendable, Equatable {
+public struct NanoSolanaPedometerParams: Codable, Sendable, Equatable {
     public var startISO: String?
     public var endISO: String?
 
@@ -59,7 +59,7 @@ public struct OpenClawPedometerParams: Codable, Sendable, Equatable {
     }
 }
 
-public struct OpenClawPedometerPayload: Codable, Sendable, Equatable {
+public struct NanoSolanaPedometerPayload: Codable, Sendable, Equatable {
     public var startISO: String
     public var endISO: String
     public var steps: Int?

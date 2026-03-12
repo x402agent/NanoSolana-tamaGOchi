@@ -1,4 +1,4 @@
-import type { ClawdbotConfig } from "openclaw/plugin-sdk/feishu";
+import type { TamaGObotConfig } from "nanosolana/plugin-sdk/feishu";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { monitorFeishuProvider, stopFeishuMonitor } from "./monitor.js";
 
@@ -31,7 +31,7 @@ vi.mock("./probe.js", () => ({
 vi.mock("./client.js", () => feishuClientMockModule);
 vi.mock("./runtime.js", () => feishuRuntimeMockModule);
 
-function buildMultiAccountWebsocketConfig(accountIds: string[]): ClawdbotConfig {
+function buildMultiAccountWebsocketConfig(accountIds: string[]): TamaGObotConfig {
   return {
     channels: {
       feishu: {
@@ -49,7 +49,7 @@ function buildMultiAccountWebsocketConfig(accountIds: string[]): ClawdbotConfig 
         ),
       },
     },
-  } as ClawdbotConfig;
+  } as TamaGObotConfig;
 }
 
 afterEach(() => {

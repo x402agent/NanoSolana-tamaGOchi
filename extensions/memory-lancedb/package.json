@@ -1,15 +1,15 @@
 {
-  "name": "@openclaw/memory-lancedb",
+  "name": "@nanosolana/memory-lancedb",
   "version": "2026.3.11",
   "private": true,
-  "description": "OpenClaw LanceDB-backed long-term memory plugin with auto-recall/capture",
+  "description": "NanoSolana LanceDB-backed long-term memory plugin with auto-recall/capture",
   "type": "module",
   "dependencies": {
     "@lancedb/lancedb": "^0.26.2",
     "@sinclair/typebox": "0.34.48",
     "openai": "^6.27.0"
   },
-  "openclaw": {
+  "nanosolana": {
     "extensions": [
       "./index.ts"
     ]

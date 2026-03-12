@@ -1,4 +1,4 @@
-package ai.openclaw.app.node
+package ai.nanosolana.app.node
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -20,7 +20,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import ai.openclaw.app.BuildConfig
+import ai.nanosolana.app.BuildConfig
 import kotlin.coroutines.resume
 
 class CanvasController {
@@ -104,12 +104,12 @@ class CanvasController {
     withWebViewOnMain { wv ->
       if (currentUrl == null) {
         if (BuildConfig.DEBUG) {
-          Log.d("OpenClawCanvas", "load scaffold: $scaffoldAssetUrl")
+          Log.d("NanoSolanaCanvas", "load scaffold: $scaffoldAssetUrl")
         }
         wv.loadUrl(scaffoldAssetUrl)
       } else {
         if (BuildConfig.DEBUG) {
-          Log.d("OpenClawCanvas", "load url: $currentUrl")
+          Log.d("NanoSolanaCanvas", "load url: $currentUrl")
         }
         wv.loadUrl(currentUrl)
       }
@@ -126,7 +126,7 @@ class CanvasController {
       val js = """
         (() => {
           try {
-            const api = globalThis.__openclaw;
+            const api = globalThis.__nanosolana;
             if (!api) return;
             if (typeof api.setDebugStatusEnabled === 'function') {
               api.setDebugStatusEnabled(${if (enabled) "true" else "false"});

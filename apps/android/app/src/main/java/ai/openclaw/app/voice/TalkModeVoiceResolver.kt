@@ -1,4 +1,4 @@
-package ai.openclaw.app.voice
+package ai.nanosolana.app.voice
 
 import java.net.HttpURLConnection
 import java.net.URL

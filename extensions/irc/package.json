@@ -1,12 +1,12 @@
 {
-  "name": "@openclaw/irc",
+  "name": "@nanosolana/irc",
   "version": "2026.3.11",
-  "description": "OpenClaw IRC channel plugin",
+  "description": "NanoSolana IRC channel plugin",
   "type": "module",
   "dependencies": {
     "zod": "^4.3.6"
   },
-  "openclaw": {
+  "nanosolana": {
     "extensions": [
       "./index.ts"
     ]

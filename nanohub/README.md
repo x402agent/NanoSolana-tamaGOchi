@@ -5,12 +5,12 @@
 <h1 align="center">ClawHub</h1>
 
 <p align="center">
-  <a href="https://github.com/openclaw/clawhub/actions/workflows/ci.yml?branch=main"><img src="https://img.shields.io/github/actions/workflow/status/openclaw/clawhub/ci.yml?branch=main&style=for-the-badge" alt="CI status"></a>
+  <a href="https://github.com/nanosolana/clawhub/actions/workflows/ci.yml?branch=main"><img src="https://img.shields.io/github/actions/workflow/status/nanosolana/clawhub/ci.yml?branch=main&style=for-the-badge" alt="CI status"></a>
   <a href="https://discord.gg/clawd"><img src="https://img.shields.io/discord/1456350064065904867?label=Discord&logo=discord&logoColor=white&color=5865F2&style=for-the-badge" alt="Discord"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="MIT License"></a>
 </p>
 
-ClawHub is the **public skill registry for Clawdbot**: publish, version, and search text-based agent skills (a `SKILL.md` plus supporting files).
+ClawHub is the **public skill registry for TamaGObot**: publish, version, and search text-based agent skills (a `SKILL.md` plus supporting files).
 It's designed for fast browsing + a CLI-friendly API, with moderation hooks and vector search.
 
 onlycrabs.ai is the **SOUL.md registry**: publish and share system lore the same way you publish skills.
@@ -122,7 +122,7 @@ For full setup instructions (env vars, GitHub OAuth, JWT keys, database seeding)
 
 ## Nix plugins (nixmode skills)
 
-ClawHub can store a nix-clawdbot plugin pointer in SKILL frontmatter so the registry knows which
+ClawHub can store a nix-tamagobot plugin pointer in SKILL frontmatter so the registry knows which
 Nix package bundle to install. A nix plugin is different from a regular skill pack: it bundles the
 skill pack, the CLI binary, and its config flags/requirements together.
 
@@ -132,15 +132,15 @@ Add this to `SKILL.md`:
 ---
 name: peekaboo
 description: Capture and automate macOS UI with the Peekaboo CLI.
-metadata: {"clawdbot":{"nix":{"plugin":"github:clawdbot/nix-steipete-tools?dir=tools/peekaboo","systems":["aarch64-darwin"]}}}
+metadata: {"tamagobot":{"nix":{"plugin":"github:tamagobot/nix-steipete-tools?dir=tools/peekaboo","systems":["aarch64-darwin"]}}}
 ---
 ```
 
-Install via nix-clawdbot:
+Install via nix-tamagobot:
 
 ```nix
-programs.clawdbot.plugins = [
-  { source = "github:clawdbot/nix-steipete-tools?dir=tools/peekaboo"; }
+programs.tamagobot.plugins = [
+  { source = "github:tamagobot/nix-steipete-tools?dir=tools/peekaboo"; }
 ];
 ```
 
@@ -150,7 +150,7 @@ You can also declare config requirements + an example snippet:
 ---
 name: padel
 description: Check padel court availability and manage bookings via Playtomic.
-metadata: {"clawdbot":{"config":{"requiredEnv":["PADEL_AUTH_FILE"],"stateDirs":[".config/padel"],"example":"config = { env = { PADEL_AUTH_FILE = \\\"/run/agenix/padel-auth\\\"; }; };"}}}
+metadata: {"tamagobot":{"config":{"requiredEnv":["PADEL_AUTH_FILE"],"stateDirs":[".config/padel"],"example":"config = { env = { PADEL_AUTH_FILE = \\\"/run/agenix/padel-auth\\\"; }; };"}}}
 ---
 ```
 
@@ -160,11 +160,11 @@ To show CLI help (recommended for nix plugins), include the `cli --help` output:
 ---
 name: padel
 description: Check padel court availability and manage bookings via Playtomic.
-metadata: {"clawdbot":{"cliHelp":"padel --help\\nUsage: padel [command]\\n"}}
+metadata: {"tamagobot":{"cliHelp":"padel --help\\nUsage: padel [command]\\n"}}
 ---
 ```
 
-`metadata.clawdbot` is preferred, but `metadata.clawdis` and `metadata.openclaw` are accepted as aliases.
+`metadata.tamagobot` is preferred, but `metadata.clawdis` and `metadata.nanosolana` are accepted as aliases.
 
 ## Skill metadata
 
@@ -179,7 +179,7 @@ Quick example:
 name: my-skill
 description: Does a thing with an API.
 metadata:
-  openclaw:
+  nanosolana:
     requires:
       env:
         - MY_API_KEY

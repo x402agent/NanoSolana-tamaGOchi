@@ -57,7 +57,7 @@ bun clawhub whoami
 bun clawhub search gif --limit 5
 ```
 
-Install a skill into `./skills/<slug>` (if Clawdbot is configured, installs into that workspace instead):
+Install a skill into `./skills/<slug>` (if TamaGObot is configured, installs into that workspace instead):
 
 ```bash
 bun clawhub install <slug>

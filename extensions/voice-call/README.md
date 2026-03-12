@@ -1,6 +1,6 @@
-# @openclaw/voice-call
+# @nanosolana/voice-call
 
-Official Voice Call plugin for **OpenClaw**.
+Official Voice Call plugin for **NanoSolana**.
 
 Providers:
 
@@ -9,15 +9,15 @@ Providers:
 - **Plivo** (Voice API + XML transfer + GetInput speech)
 - **Mock** (dev/no network)
 
-Docs: `https://docs.openclaw.ai/plugins/voice-call`
-Plugin system: `https://docs.openclaw.ai/plugin`
+Docs: `https://docs.nanosolana.ai/plugins/voice-call`
+Plugin system: `https://docs.nanosolana.ai/plugin`
 
 ## Install (local dev)
 
-### Option A: install via OpenClaw (recommended)
+### Option A: install via NanoSolana (recommended)
 
 ```bash
-openclaw plugins install @openclaw/voice-call
+nanosolana plugins install @nanosolana/voice-call
 ```
 
 Restart the Gateway afterwards.
@@ -25,9 +25,9 @@ Restart the Gateway afterwards.
 ### Option B: copy into your global extensions folder (dev)
 
 ```bash
-mkdir -p ~/.openclaw/extensions
-cp -R extensions/voice-call ~/.openclaw/extensions/voice-call
-cd ~/.openclaw/extensions/voice-call && pnpm install
+mkdir -p ~/.nanosolana/extensions
+cp -R extensions/voice-call ~/.nanosolana/extensions/voice-call
+cd ~/.nanosolana/extensions/voice-call && pnpm install
 ```
 
 ## Config
@@ -143,13 +143,13 @@ Notes:
 ## CLI
 
 ```bash
-openclaw voicecall call --to "+15555550123" --message "Hello from OpenClaw"
-openclaw voicecall continue --call-id <id> --message "Any questions?"
-openclaw voicecall speak --call-id <id> --message "One moment"
-openclaw voicecall end --call-id <id>
-openclaw voicecall status --call-id <id>
-openclaw voicecall tail
-openclaw voicecall expose --mode funnel
+nanosolana voicecall call --to "+15555550123" --message "Hello from NanoSolana"
+nanosolana voicecall continue --call-id <id> --message "Any questions?"
+nanosolana voicecall speak --call-id <id> --message "One moment"
+nanosolana voicecall end --call-id <id>
+nanosolana voicecall status --call-id <id>
+nanosolana voicecall tail
+nanosolana voicecall expose --mode funnel
 ```
 
 ## Tool

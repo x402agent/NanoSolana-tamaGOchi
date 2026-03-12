@@ -1,5 +1,5 @@
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/bluebubbles";
-import { emptyPluginConfigSchema } from "openclaw/plugin-sdk/bluebubbles";
+import type { NanoSolanaPluginApi } from "nanosolana/plugin-sdk/bluebubbles";
+import { emptyPluginConfigSchema } from "nanosolana/plugin-sdk/bluebubbles";
 import { bluebubblesPlugin } from "./src/channel.js";
 import { setBlueBubblesRuntime } from "./src/runtime.js";
 
@@ -8,7 +8,7 @@ const plugin = {
   name: "BlueBubbles",
   description: "BlueBubbles channel plugin (macOS app)",
   configSchema: emptyPluginConfigSchema(),
-  register(api: OpenClawPluginApi) {
+  register(api: NanoSolanaPluginApi) {
     setBlueBubblesRuntime(api.runtime);
     api.registerChannel({ plugin: bluebubblesPlugin });
   },

@@ -1,4 +1,4 @@
-import OpenClawKit
+import NanoSolanaKit
 import Foundation
 
 enum ChatPayloadDecoding {

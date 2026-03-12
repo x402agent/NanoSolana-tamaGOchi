@@ -1,10 +1,10 @@
-import OpenClawKit
+import NanoSolanaKit
 import Foundation
 import Testing
 
 @Suite struct ToolDisplayRegistryTests {
     @Test func loadsToolDisplayConfigFromBundle() {
-        let url = OpenClawKitResources.bundle.url(forResource: "tool-display", withExtension: "json")
+        let url = NanoSolanaKitResources.bundle.url(forResource: "tool-display", withExtension: "json")
         #expect(url != nil)
     }
 

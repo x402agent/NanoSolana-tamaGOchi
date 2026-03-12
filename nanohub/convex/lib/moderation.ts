@@ -40,7 +40,7 @@ export function deriveModerationFlags({
     skill.summary ?? '',
     JSON.stringify(parsed?.frontmatter ?? {}),
     JSON.stringify(parsed?.metadata ?? {}),
-    JSON.stringify((parsed as { moltbot?: unknown } | undefined)?.moltbot ?? {}),
+    JSON.stringify((parsed as { tamagobot?: unknown } | undefined)?.tamagobot ?? {}),
     ...files.map((file) => file.path),
   ]
     .filter(Boolean)

@@ -1,4 +1,4 @@
-package ai.openclaw.app
+package ai.nanosolana.app
 
 import android.app.Application
 import android.os.StrictMode

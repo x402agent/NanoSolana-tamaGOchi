@@ -13,7 +13,7 @@ import {
 import { unzipSync } from 'fflate'
 import { Agent, setGlobalDispatcher } from 'undici'
 import { describe, expect, it } from 'vitest'
-import { readGlobalConfig } from '../packages/clawdhub/src/config'
+import { readGlobalConfig } from '../packages/nanohub/src/config'
 
 const REQUEST_TIMEOUT_MS = 15_000
 
@@ -28,7 +28,7 @@ try {
 }
 
 function mustGetToken() {
-  const fromEnv = process.env.CLAWHUB_E2E_TOKEN?.trim() || process.env.CLAWDHUB_E2E_TOKEN?.trim()
+  const fromEnv = process.env.CLAWHUB_E2E_TOKEN?.trim() || process.env.NANOHUB_E2E_TOKEN?.trim()
   if (fromEnv) return fromEnv
   return null
 }
@@ -36,14 +36,14 @@ function mustGetToken() {
 function getRegistry() {
   return (
     process.env.CLAWHUB_REGISTRY?.trim() ||
-    process.env.CLAWDHUB_REGISTRY?.trim() ||
+    process.env.NANOHUB_REGISTRY?.trim() ||
     'https://clawhub.ai'
   )
 }
 
 function getSite() {
   return (
-    process.env.CLAWHUB_SITE?.trim() || process.env.CLAWDHUB_SITE?.trim() || 'https://clawhub.ai'
+    process.env.CLAWHUB_SITE?.trim() || process.env.NANOHUB_SITE?.trim() || 'https://clawhub.ai'
   )
 }
 
@@ -213,7 +213,7 @@ describe('clawhub e2e', () => {
     }
   })
 
-  it('sync dry-run finds skills from clawdbot.json roots', async () => {
+  it('sync dry-run finds skills from tamagobot.json roots', async () => {
     const registry = getRegistry()
     const site = getSite()
     const token = mustGetToken() ?? (await readGlobalConfig())?.token ?? null
@@ -222,9 +222,9 @@ describe('clawhub e2e', () => {
     }
 
     const cfg = await makeTempConfig(registry, token)
-    const root = await mkdtemp(join(tmpdir(), 'clawhub-e2e-clawdbot-'))
+    const root = await mkdtemp(join(tmpdir(), 'clawhub-e2e-tamagobot-'))
     const stateDir = join(root, 'state')
-    const configPath = join(root, 'clawdbot.json')
+    const configPath = join(root, 'tamagobot.json')
     const workspace = join(root, 'clawd-work')
     const skillsRoot = join(workspace, 'skills')
     const skillDir = join(skillsRoot, 'auto-skill')
@@ -252,8 +252,8 @@ describe('clawhub e2e', () => {
             ...process.env,
             CLAWHUB_CONFIG_PATH: cfg.path,
             CLAWHUB_DISABLE_TELEMETRY: '1',
-            CLAWDBOT_CONFIG_PATH: configPath,
-            CLAWDBOT_STATE_DIR: stateDir,
+            TAMAGOBOT_CONFIG_PATH: configPath,
+            TAMAGOBOT_STATE_DIR: stateDir,
           },
           encoding: 'utf8',
         },
@@ -506,22 +506,22 @@ describe('clawhub e2e', () => {
   }, 180_000)
 
   it('delete returns proper error for non-existent skill', async () => {
-    const registry = process.env.CLAWDHUB_REGISTRY?.trim() || 'https://clawdhub.com'
-    const site = process.env.CLAWDHUB_SITE?.trim() || 'https://clawdhub.com'
+    const registry = process.env.NANOHUB_REGISTRY?.trim() || 'https://nanohub.com'
+    const site = process.env.NANOHUB_SITE?.trim() || 'https://nanohub.com'
     const token = mustGetToken() ?? (await readGlobalConfig())?.token ?? null
     if (!token) {
-      throw new Error('Missing token. Set CLAWDHUB_E2E_TOKEN or run: bun clawdhub auth login')
+      throw new Error('Missing token. Set NANOHUB_E2E_TOKEN or run: bun nanohub auth login')
     }
 
     const cfg = await makeTempConfig(registry, token)
-    const workdir = await mkdtemp(join(tmpdir(), 'clawdhub-e2e-delete-'))
+    const workdir = await mkdtemp(join(tmpdir(), 'nanohub-e2e-delete-'))
     const nonExistentSlug = `non-existent-skill-${Date.now()}`
 
     try {
       const del = spawnSync(
         'bun',
         [
-          'clawdhub',
+          'nanohub',
           'delete',
           nonExistentSlug,
           '--yes',
@@ -534,7 +534,7 @@ describe('clawhub e2e', () => {
         ],
         {
           cwd: process.cwd(),
-          env: { ...process.env, CLAWDHUB_CONFIG_PATH: cfg.path, CLAWDHUB_DISABLE_TELEMETRY: '1' },
+          env: { ...process.env, NANOHUB_CONFIG_PATH: cfg.path, NANOHUB_DISABLE_TELEMETRY: '1' },
           encoding: 'utf8',
         },
       )

@@ -1,4 +1,4 @@
-package ai.openclaw.app.node
+package ai.nanosolana.app.node
 
 import android.Manifest
 import android.content.Context
@@ -11,7 +11,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.encodeToString
-import ai.openclaw.app.PermissionRequester
+import ai.nanosolana.app.PermissionRequester
 
 /**
  * Sends SMS messages via the Android SMS API.

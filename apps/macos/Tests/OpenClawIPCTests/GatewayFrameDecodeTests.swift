@@ -1,5 +1,5 @@
 import Foundation
-import OpenClawProtocol
+import NanoSolanaProtocol
 import Testing
 
 struct GatewayFrameDecodeTests {

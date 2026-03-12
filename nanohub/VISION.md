@@ -1,15 +1,15 @@
-## OpenClaw Vision
+## NanoSolana Vision
 
-OpenClaw is the AI that actually does things.
+NanoSolana is the AI that actually does things.
 It runs on your devices, in your channels, with your rules.
 
 This document explains the current state and direction of the project.
 We are still early, so iteration is fast.
 Project overview and developer docs: [`README.md`](README.md)
 
-OpenClaw started as my personal playground to learn AI and build something genuinely useful:
+NanoSolana started as my personal playground to learn AI and build something genuinely useful:
 an assistant that can run real tasks on my computer.
-It evolved through several names and shells: Warelay -> Clawdbot -> Moltbot -> OpenClaw.
+It evolved through several names and shells: Warelay -> TamaGObot -> TamaGObot -> NanoSolana.
 
 The goal? A personal assistant that's easy to use, supports a wide range of platforms, and respects your privacy and security.
 
@@ -30,17 +30,17 @@ Next priorities:
 
 ## Security
 
-Security in OpenClaw is a deliberate tradeoff: strong defaults without killing capability.
+Security in NanoSolana is a deliberate tradeoff: strong defaults without killing capability.
 The goal is to stay powerful for real work while making risky paths explicit and operator-controlled.
 
 Canonical security policy and reporting:
-- https://github.com/openclaw/openclaw/blob/main/SECURITY.md
+- https://github.com/nanosolana/nanosolana/blob/main/SECURITY.md
 
 We prioritize secure defaults, but we also expose clear knobs for trusted high-power workflows.
 
 ## Plugins & Memory
 
-OpenClaw has an extensive plugin API.
+NanoSolana has an extensive plugin API.
 Core stays lean; optional capability should usually ship as plugins.
 
 Preferred plugin path is npm package distribution plus local extension loading for development.
@@ -58,7 +58,7 @@ Core skill additions should be rare and require a strong product or security rea
 
 ### MCP Support
 
-OpenClaw supports MCP through `mcporter`: https://github.com/steipete/mcporter
+NanoSolana supports MCP through `mcporter`: https://github.com/steipete/mcporter
 
 This keeps MCP integration flexible and decoupled from core runtime:
 - add or change MCP servers without restarting the gateway
@@ -70,7 +70,7 @@ If there is an MCP server or feature `mcporter` does not support yet, please ope
 
 ### Setup
 
-OpenClaw is currently terminal-first by design.
+NanoSolana is currently terminal-first by design.
 This keeps setup explicit: users see docs, auth, permissions, and security posture up front.
 
 Long term, we want easier onboarding flows as hardening matures.
@@ -78,8 +78,8 @@ We do not want convenience wrappers that hide critical security decisions from u
 
 ### Why TypeScript?
 
-OpenClaw is primarily an orchestration system: prompts, tools, protocols, and integrations.
-TypeScript was chosen to keep OpenClaw hackable by default.
+NanoSolana is primarily an orchestration system: prompts, tools, protocols, and integrations.
+TypeScript was chosen to keep NanoSolana hackable by default.
 It is widely known, fast to iterate in, and easy to read, modify, and extend.
 
 ## What We Will Not Merge (For Now)

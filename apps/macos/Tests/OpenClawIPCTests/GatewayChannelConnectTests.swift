@@ -1,7 +1,7 @@
 import Foundation
-import OpenClawKit
+import NanoSolanaKit
 import Testing
-@testable import OpenClaw
+@testable import NanoSolana
 
 struct GatewayChannelConnectTests {
     private enum FakeResponse {

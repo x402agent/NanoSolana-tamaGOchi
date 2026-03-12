@@ -1,9 +1,9 @@
 {
-  "name": "@openclaw/discord",
+  "name": "@nanosolana/discord",
   "version": "2026.3.11",
-  "description": "OpenClaw Discord channel plugin",
+  "description": "NanoSolana Discord channel plugin",
   "type": "module",
-  "openclaw": {
+  "nanosolana": {
     "extensions": [
       "./index.ts"
     ]

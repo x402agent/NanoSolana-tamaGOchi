@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 export type ThemeMode = 'system' | 'light' | 'dark'
 
 const THEME_KEY = 'clawhub-theme'
-const LEGACY_THEME_KEY = 'clawdhub-theme'
+const LEGACY_THEME_KEY = 'nanohub-theme'
 
 export function getStoredTheme(): ThemeMode {
   if (typeof window === 'undefined') return 'system'

@@ -3844,7 +3844,7 @@ html.theme-transition::view-transition-new(theme) {
   font-style: italic;
 }
 
-/* OpenClaw confidence label */
+/* NanoSolana confidence label */
 .scan-result-confidence {
   font-size: 0.72rem;
   font-weight: 600;

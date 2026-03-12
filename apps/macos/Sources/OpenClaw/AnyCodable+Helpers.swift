@@ -1,6 +1,6 @@
 import Foundation
-import OpenClawKit
+import NanoSolanaKit
 
-// Prefer the OpenClawKit wrapper to keep gateway request payloads consistent.
-typealias AnyCodable = OpenClawKit.AnyCodable
-typealias InstanceIdentity = OpenClawKit.InstanceIdentity
+// Prefer the NanoSolanaKit wrapper to keep gateway request payloads consistent.
+typealias AnyCodable = NanoSolanaKit.AnyCodable
+typealias InstanceIdentity = NanoSolanaKit.InstanceIdentity

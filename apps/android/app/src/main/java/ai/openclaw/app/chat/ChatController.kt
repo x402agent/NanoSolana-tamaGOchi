@@ -1,6 +1,6 @@
-package ai.openclaw.app.chat
+package ai.nanosolana.app.chat
 
-import ai.openclaw.app.gateway.GatewaySession
+import ai.nanosolana.app.gateway.GatewaySession
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.CoroutineScope

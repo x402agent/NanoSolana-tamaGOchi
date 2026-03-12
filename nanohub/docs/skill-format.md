@@ -18,16 +18,16 @@ Required:
 Optional:
 
 - any supporting *text-based* files (see “Allowed files”)
-- `.clawhubignore` (ignore patterns for publish/sync, legacy `.clawdhubignore`)
+- `.clawhubignore` (ignore patterns for publish/sync, legacy `.nanohubignore`)
 - `.gitignore` (also honored)
 
 Local install metadata (written by the CLI):
 
-- `<skill>/.clawhub/origin.json` (legacy `.clawdhub`)
+- `<skill>/.clawhub/origin.json` (legacy `.nanohub`)
 
 Workdir install state (written by the CLI):
 
-- `<workdir>/.clawhub/lock.json` (legacy `.clawdhub`)
+- `<workdir>/.clawhub/lock.json` (legacy `.nanohub`)
 
 ## `SKILL.md`
 
@@ -49,16 +49,16 @@ version: 1.0.0
 ---
 ```
 
-### Runtime metadata (`metadata.openclaw`)
+### Runtime metadata (`metadata.nanosolana`)
 
-Declare your skill's runtime requirements under `metadata.openclaw` (aliases: `metadata.clawdbot`, `metadata.clawdis`).
+Declare your skill's runtime requirements under `metadata.nanosolana` (aliases: `metadata.tamagobot`, `metadata.clawdis`).
 
 ```yaml
 ---
 name: my-skill
 description: Manage tasks via the Todoist API.
 metadata:
-  openclaw:
+  nanosolana:
     requires:
       env:
         - TODOIST_API_KEY
@@ -84,7 +84,7 @@ metadata:
 | `os` | `string[]` | OS restrictions (e.g. `["macos"]`, `["linux"]`). |
 | `install` | `array` | Install specs for dependencies (see below). |
 | `nix` | `object` | Nix plugin spec (see README). |
-| `config` | `object` | Clawdbot config spec (see README). |
+| `config` | `object` | TamaGObot config spec (see README). |
 
 ### Install specs
 
@@ -92,7 +92,7 @@ If your skill needs dependencies installed, declare them in the `install` array:
 
 ```yaml
 metadata:
-  openclaw:
+  nanosolana:
     install:
       - kind: brew
         formula: jq
@@ -116,7 +116,7 @@ name: todoist-cli
 description: Manage Todoist tasks, projects, and labels from the command line.
 version: 1.2.0
 metadata:
-  openclaw:
+  nanosolana:
     requires:
       env:
         - TODOIST_API_KEY

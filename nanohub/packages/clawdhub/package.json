@@ -5,8 +5,8 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "clawhub": "bin/clawdhub.js",
-    "clawdhub": "bin/clawdhub.js"
+    "clawhub": "bin/nanohub.js",
+    "nanohub": "bin/nanohub.js"
   },
   "files": [
     "bin",

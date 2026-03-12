@@ -1,10 +1,10 @@
 {
-  "name": "@openclaw/whatsapp",
+  "name": "@nanosolana/whatsapp",
   "version": "2026.3.11",
   "private": true,
-  "description": "OpenClaw WhatsApp channel plugin",
+  "description": "NanoSolana WhatsApp channel plugin",
   "type": "module",
-  "openclaw": {
+  "nanosolana": {
     "extensions": [
       "./index.ts"
     ]

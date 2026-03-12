@@ -5,7 +5,7 @@ import type { Id } from '../_generated/dataModel'
 import type { ActionCtx } from '../_generated/server'
 
 const GITHUB_API = 'https://api.github.com'
-const DEFAULT_REPO = 'clawdbot/souls'
+const DEFAULT_REPO = 'tamagobot/souls'
 const DEFAULT_ROOT = 'souls'
 const META_FILENAME = '_meta.json'
 const USER_AGENT = 'clawhub/souls-backup'

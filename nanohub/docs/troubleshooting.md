@@ -63,7 +63,7 @@ The CLI respects `HTTPS_PROXY`, `HTTP_PROXY`, `https_proxy`, and `http_proxy`.
 - `sync` looks for folders containing `SKILL.md` (or `skill.md`).
 - It scans:
   - workdir first
-  - then fallback roots (legacy `~/clawdis/skills`, `~/clawdbot/skills`, etc.)
+  - then fallback roots (legacy `~/clawdis/skills`, `~/tamagobot/skills`, etc.)
 - Provide explicit roots:
 
 ```bash

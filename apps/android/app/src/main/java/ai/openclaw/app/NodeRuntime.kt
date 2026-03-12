@@ -1,4 +1,4 @@
-package ai.openclaw.app
+package ai.nanosolana.app
 
 import android.Manifest
 import android.content.Context
@@ -6,22 +6,22 @@ import android.content.pm.PackageManager
 import android.os.SystemClock
 import android.util.Log
 import androidx.core.content.ContextCompat
-import ai.openclaw.app.chat.ChatController
-import ai.openclaw.app.chat.ChatMessage
-import ai.openclaw.app.chat.ChatPendingToolCall
-import ai.openclaw.app.chat.ChatSessionEntry
-import ai.openclaw.app.chat.OutgoingAttachment
-import ai.openclaw.app.gateway.DeviceAuthStore
-import ai.openclaw.app.gateway.DeviceIdentityStore
-import ai.openclaw.app.gateway.GatewayDiscovery
-import ai.openclaw.app.gateway.GatewayEndpoint
-import ai.openclaw.app.gateway.GatewaySession
-import ai.openclaw.app.gateway.probeGatewayTlsFingerprint
-import ai.openclaw.app.node.*
-import ai.openclaw.app.protocol.OpenClawCanvasA2UIAction
-import ai.openclaw.app.voice.MicCaptureManager
-import ai.openclaw.app.voice.TalkModeManager
-import ai.openclaw.app.voice.VoiceConversationEntry
+import ai.nanosolana.app.chat.ChatController
+import ai.nanosolana.app.chat.ChatMessage
+import ai.nanosolana.app.chat.ChatPendingToolCall
+import ai.nanosolana.app.chat.ChatSessionEntry
+import ai.nanosolana.app.chat.OutgoingAttachment
+import ai.nanosolana.app.gateway.DeviceAuthStore
+import ai.nanosolana.app.gateway.DeviceIdentityStore
+import ai.nanosolana.app.gateway.GatewayDiscovery
+import ai.nanosolana.app.gateway.GatewayEndpoint
+import ai.nanosolana.app.gateway.GatewaySession
+import ai.nanosolana.app.gateway.probeGatewayTlsFingerprint
+import ai.nanosolana.app.node.*
+import ai.nanosolana.app.protocol.NanoSolanaCanvasA2UIAction
+import ai.nanosolana.app.voice.MicCaptureManager
+import ai.nanosolana.app.voice.TalkModeManager
+import ai.nanosolana.app.voice.VoiceConversationEntry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -476,7 +476,7 @@ class NodeRuntime(context: Context) {
           _canvasRehydratePending.value = false
           _canvasRehydrateErrorText.value = "Failed to request restore. Tap to retry."
         }
-        Log.w("OpenClawCanvas", "canvas rehydrate request failed ($source): transport unavailable")
+        Log.w("NanoSolanaCanvas", "canvas rehydrate request failed ($source): transport unavailable")
         return@launch
       }
       scope.launch {
@@ -783,7 +783,7 @@ class NodeRuntime(context: Context) {
       val actionId = (userActionObj["id"] as? JsonPrimitive)?.content?.trim().orEmpty().ifEmpty {
         java.util.UUID.randomUUID().toString()
       }
-      val name = OpenClawCanvasA2UIAction.extractActionName(userActionObj) ?: return@launch
+      val name = NanoSolanaCanvasA2UIAction.extractActionName(userActionObj) ?: return@launch
 
       val surfaceId =
         (userActionObj["surfaceId"] as? JsonPrimitive)?.content?.trim().orEmpty().ifEmpty { "main" }
@@ -793,7 +793,7 @@ class NodeRuntime(context: Context) {
 
       val sessionKey = resolveMainSessionKey()
       val message =
-        OpenClawCanvasA2UIAction.formatAgentMessage(
+        NanoSolanaCanvasA2UIAction.formatAgentMessage(
           actionName = name,
           sessionKey = sessionKey,
           surfaceId = surfaceId,
@@ -827,7 +827,7 @@ class NodeRuntime(context: Context) {
 
       try {
         canvas.eval(
-          OpenClawCanvasA2UIAction.jsDispatchA2UIActionStatus(
+          NanoSolanaCanvasA2UIAction.jsDispatchA2UIActionStatus(
             actionId = actionId,
             ok = connected && error == null,
             error = error,

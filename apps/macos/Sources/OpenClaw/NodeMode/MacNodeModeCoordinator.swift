@@ -1,12 +1,12 @@
 import Foundation
-import OpenClawKit
+import NanoSolanaKit
 import OSLog
 
 @MainActor
 final class MacNodeModeCoordinator {
     static let shared = MacNodeModeCoordinator()
 
-    private let logger = Logger(subsystem: "ai.openclaw", category: "mac-node")
+    private let logger = Logger(subsystem: "ai.nanosolana", category: "mac-node")
     private var task: Task<Void, Never>?
     private let runtime = MacNodeRuntime()
     private let session = GatewayNodeSession()
@@ -49,7 +49,7 @@ final class MacNodeModeCoordinator {
                 await self.session.disconnect()
                 try? await Task.sleep(nanoseconds: 200_000_000)
             }
-            let browserControlEnabled = OpenClawConfigFile.browserControlEnabled()
+            let browserControlEnabled = NanoSolanaConfigFile.browserControlEnabled()
             if lastBrowserControlEnabled == nil {
                 lastBrowserControlEnabled = browserControlEnabled
             } else if lastBrowserControlEnabled != browserControlEnabled {
@@ -69,7 +69,7 @@ final class MacNodeModeCoordinator {
                     caps: caps,
                     commands: commands,
                     permissions: permissions,
-                    clientId: "openclaw-macos",
+                    clientId: "nanosolana-macos",
                     clientMode: "node",
                     clientDisplayName: InstanceIdentity.displayName)
                 let sessionBox = self.buildSessionBox(url: config.url)
@@ -100,7 +100,7 @@ final class MacNodeModeCoordinator {
                             return BridgeInvokeResponse(
                                 id: req.id,
                                 ok: false,
-                                error: OpenClawNodeError(code: .unavailable, message: "UNAVAILABLE: node not ready"))
+                                error: NanoSolanaNodeError(code: .unavailable, message: "UNAVAILABLE: node not ready"))
                         }
                         return await self.runtime.handleInvoke(req)
                     })
@@ -116,16 +116,16 @@ final class MacNodeModeCoordinator {
     }
 
     private func currentCaps() -> [String] {
-        var caps: [String] = [OpenClawCapability.canvas.rawValue, OpenClawCapability.screen.rawValue]
-        if OpenClawConfigFile.browserControlEnabled() {
-            caps.append(OpenClawCapability.browser.rawValue)
+        var caps: [String] = [NanoSolanaCapability.canvas.rawValue, NanoSolanaCapability.screen.rawValue]
+        if NanoSolanaConfigFile.browserControlEnabled() {
+            caps.append(NanoSolanaCapability.browser.rawValue)
         }
         if UserDefaults.standard.object(forKey: cameraEnabledKey) as? Bool ?? false {
-            caps.append(OpenClawCapability.camera.rawValue)
+            caps.append(NanoSolanaCapability.camera.rawValue)
         }
         let rawLocationMode = UserDefaults.standard.string(forKey: locationModeKey) ?? "off"
-        if OpenClawLocationMode(rawValue: rawLocationMode) != .off {
-            caps.append(OpenClawCapability.location.rawValue)
+        if NanoSolanaLocationMode(rawValue: rawLocationMode) != .off {
+            caps.append(NanoSolanaCapability.location.rawValue)
         }
         return caps
     }
@@ -137,33 +137,33 @@ final class MacNodeModeCoordinator {
 
     private func currentCommands(caps: [String]) -> [String] {
         var commands: [String] = [
-            OpenClawCanvasCommand.present.rawValue,
-            OpenClawCanvasCommand.hide.rawValue,
-            OpenClawCanvasCommand.navigate.rawValue,
-            OpenClawCanvasCommand.evalJS.rawValue,
-            OpenClawCanvasCommand.snapshot.rawValue,
-            OpenClawCanvasA2UICommand.push.rawValue,
-            OpenClawCanvasA2UICommand.pushJSONL.rawValue,
-            OpenClawCanvasA2UICommand.reset.rawValue,
+            NanoSolanaCanvasCommand.present.rawValue,
+            NanoSolanaCanvasCommand.hide.rawValue,
+            NanoSolanaCanvasCommand.navigate.rawValue,
+            NanoSolanaCanvasCommand.evalJS.rawValue,
+            NanoSolanaCanvasCommand.snapshot.rawValue,
+            NanoSolanaCanvasA2UICommand.push.rawValue,
+            NanoSolanaCanvasA2UICommand.pushJSONL.rawValue,
+            NanoSolanaCanvasA2UICommand.reset.rawValue,
             MacNodeScreenCommand.record.rawValue,
-            OpenClawSystemCommand.notify.rawValue,
-            OpenClawSystemCommand.which.rawValue,
-            OpenClawSystemCommand.run.rawValue,
-            OpenClawSystemCommand.execApprovalsGet.rawValue,
-            OpenClawSystemCommand.execApprovalsSet.rawValue,
+            NanoSolanaSystemCommand.notify.rawValue,
+            NanoSolanaSystemCommand.which.rawValue,
+            NanoSolanaSystemCommand.run.rawValue,
+            NanoSolanaSystemCommand.execApprovalsGet.rawValue,
+            NanoSolanaSystemCommand.execApprovalsSet.rawValue,
         ]
 
         let capsSet = Set(caps)
-        if capsSet.contains(OpenClawCapability.browser.rawValue) {
-            commands.append(OpenClawBrowserCommand.proxy.rawValue)
+        if capsSet.contains(NanoSolanaCapability.browser.rawValue) {
+            commands.append(NanoSolanaBrowserCommand.proxy.rawValue)
         }
-        if capsSet.contains(OpenClawCapability.camera.rawValue) {
-            commands.append(OpenClawCameraCommand.list.rawValue)
-            commands.append(OpenClawCameraCommand.snap.rawValue)
-            commands.append(OpenClawCameraCommand.clip.rawValue)
+        if capsSet.contains(NanoSolanaCapability.camera.rawValue) {
+            commands.append(NanoSolanaCameraCommand.list.rawValue)
+            commands.append(NanoSolanaCameraCommand.snap.rawValue)
+            commands.append(NanoSolanaCameraCommand.clip.rawValue)
         }
-        if capsSet.contains(OpenClawCapability.location.rawValue) {
-            commands.append(OpenClawLocationCommand.get.rawValue)
+        if capsSet.contains(NanoSolanaCapability.location.rawValue) {
+            commands.append(NanoSolanaLocationCommand.get.rawValue)
         }
 
         return commands

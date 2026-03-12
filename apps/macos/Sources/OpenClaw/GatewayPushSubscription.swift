@@ -1,4 +1,4 @@
-import OpenClawKit
+import NanoSolanaKit
 
 enum GatewayPushSubscription {
     @MainActor

@@ -1,4 +1,4 @@
-import OpenClawProtocol
+import NanoSolanaProtocol
 import Foundation
 
 public enum GatewayPayloadDecoding {

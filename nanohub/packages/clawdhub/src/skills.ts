@@ -7,9 +7,9 @@ import mime from 'mime'
 import { type Lockfile, LockfileSchema, parseArk, TEXT_FILE_EXTENSION_SET } from './schema/index.js'
 
 const DOT_DIR = '.clawhub'
-const LEGACY_DOT_DIR = '.clawdhub'
+const LEGACY_DOT_DIR = '.nanohub'
 const DOT_IGNORE = '.clawhubignore'
-const LEGACY_DOT_IGNORE = '.clawdhubignore'
+const LEGACY_DOT_IGNORE = '.nanohubignore'
 
 export type SkillOrigin = {
   version: 1

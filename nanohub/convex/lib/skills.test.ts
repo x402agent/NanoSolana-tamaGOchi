@@ -108,18 +108,18 @@ describe('skills utils', () => {
     expect(clawdis?.requires?.anyBins).toEqual(['rg', 'fd'])
   })
 
-  it('parses clawdbot metadata with nix plugin pointer', () => {
+  it('parses tamagobot metadata with nix plugin pointer', () => {
     const frontmatter = parseFrontmatter(
-      `---\nmetadata: {"clawdbot":{"nix":{"plugin":"github:clawdbot/nix-steipete-tools?dir=tools/peekaboo","systems":["aarch64-darwin"]}}}\n---\nBody`,
+      `---\nmetadata: {"tamagobot":{"nix":{"plugin":"github:tamagobot/nix-steipete-tools?dir=tools/peekaboo","systems":["aarch64-darwin"]}}}\n---\nBody`,
     )
     const clawdis = parseClawdisMetadata(frontmatter)
-    expect(clawdis?.nix?.plugin).toBe('github:clawdbot/nix-steipete-tools?dir=tools/peekaboo')
+    expect(clawdis?.nix?.plugin).toBe('github:tamagobot/nix-steipete-tools?dir=tools/peekaboo')
     expect(clawdis?.nix?.systems).toEqual(['aarch64-darwin'])
   })
 
-  it('parses clawdbot config requirements with example', () => {
+  it('parses tamagobot config requirements with example', () => {
     const frontmatter = parseFrontmatter(
-      `---\nmetadata: {"clawdbot":{"config":{"requiredEnv":["PADEL_AUTH_FILE"],"stateDirs":[".config/padel"],"example":"config = { env = { PADEL_AUTH_FILE = \\"/run/agenix/padel-auth\\"; }; };"}}}\n---\nBody`,
+      `---\nmetadata: {"tamagobot":{"config":{"requiredEnv":["PADEL_AUTH_FILE"],"stateDirs":[".config/padel"],"example":"config = { env = { PADEL_AUTH_FILE = \\"/run/agenix/padel-auth\\"; }; };"}}}\n---\nBody`,
     )
     const clawdis = parseClawdisMetadata(frontmatter)
     expect(clawdis?.config?.requiredEnv).toEqual(['PADEL_AUTH_FILE'])
@@ -131,7 +131,7 @@ describe('skills utils', () => {
 
   it('parses cli help output', () => {
     const frontmatter = parseFrontmatter(
-      `---\nmetadata: {"clawdbot":{"cliHelp":"padel --help\\nUsage: padel [command]\\n"}}\n---\nBody`,
+      `---\nmetadata: {"tamagobot":{"cliHelp":"padel --help\\nUsage: padel [command]\\n"}}\n---\nBody`,
     )
     const clawdis = parseClawdisMetadata(frontmatter)
     expect(clawdis?.cliHelp).toBe('padel --help\nUsage: padel [command]')

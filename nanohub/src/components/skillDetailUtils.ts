@@ -161,6 +161,6 @@ export function formatBytes(bytes: number) {
 }
 
 export function formatNixInstallSnippet(plugin: string) {
-  const snippet = `programs.clawdbot.plugins = [ { source = "${plugin}"; } ];`
+  const snippet = `programs.tamagobot.plugins = [ { source = "${plugin}"; } ];`
   return formatConfigSnippet(snippet)
 }

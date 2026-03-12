@@ -1,4 +1,4 @@
-import OpenClawProtocol
+import NanoSolanaProtocol
 
 /// Server-push messages from the gateway websocket.
 ///

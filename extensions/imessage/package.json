@@ -1,10 +1,10 @@
 {
-  "name": "@openclaw/imessage",
+  "name": "@nanosolana/imessage",
   "version": "2026.3.11",
   "private": true,
-  "description": "OpenClaw iMessage channel plugin",
+  "description": "NanoSolana iMessage channel plugin",
   "type": "module",
-  "openclaw": {
+  "nanosolana": {
     "extensions": [
       "./index.ts"
     ]

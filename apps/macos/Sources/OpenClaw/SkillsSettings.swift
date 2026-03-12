@@ -1,5 +1,5 @@
 import Observation
-import OpenClawProtocol
+import NanoSolanaProtocol
 import SwiftUI
 
 struct SkillsSettings: View {
@@ -225,15 +225,15 @@ private struct SkillRow: View {
 
     private var sourceLabel: String {
         switch self.skill.source {
-        case "openclaw-bundled":
+        case "nanosolana-bundled":
             "Bundled"
-        case "openclaw-managed":
+        case "nanosolana-managed":
             "Managed"
-        case "openclaw-workspace":
+        case "nanosolana-workspace":
             "Workspace"
-        case "openclaw-extra":
+        case "nanosolana-extra":
             "Extra"
-        case "openclaw-plugin":
+        case "nanosolana-plugin":
             "Plugin"
         default:
             self.skill.source
@@ -573,7 +573,7 @@ extension SkillsSettings {
         let skill = SkillStatus(
             name: "Test Skill",
             description: "Test description",
-            source: "openclaw-bundled",
+            source: "nanosolana-bundled",
             filePath: "/tmp/skills/test",
             baseDir: "/tmp/skills",
             skillKey: "test",

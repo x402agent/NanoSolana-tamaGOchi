@@ -1,5 +1,5 @@
 import Foundation
-import OpenClawIPC
+import NanoSolanaIPC
 import Testing
 
 struct CanvasIPCTests {

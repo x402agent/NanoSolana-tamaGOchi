@@ -2,15 +2,15 @@ import {
   collectAllowlistProviderRestrictSendersWarnings,
   formatAllowFromLowercase,
   mapAllowFromEntries,
-} from "openclaw/plugin-sdk/compat";
-import type { ChannelMeta, ChannelPlugin, ClawdbotConfig } from "openclaw/plugin-sdk/feishu";
+} from "nanosolana/plugin-sdk/compat";
+import type { ChannelMeta, ChannelPlugin, TamaGObotConfig } from "nanosolana/plugin-sdk/feishu";
 import {
   buildProbeChannelStatusSummary,
   buildRuntimeAccountStatusSnapshot,
   createDefaultChannelRuntimeState,
   DEFAULT_ACCOUNT_ID,
   PAIRING_APPROVED_MESSAGE,
-} from "openclaw/plugin-sdk/feishu";
+} from "nanosolana/plugin-sdk/feishu";
 import {
   resolveFeishuAccount,
   resolveFeishuCredentials,
@@ -59,10 +59,10 @@ const secretInputJsonSchema = {
 } as const;
 
 function setFeishuNamedAccountEnabled(
-  cfg: ClawdbotConfig,
+  cfg: TamaGObotConfig,
   accountId: string,
   enabled: boolean,
-): ClawdbotConfig {
+): TamaGObotConfig {
   const feishuCfg = cfg.channels?.feishu as FeishuConfig | undefined;
   return {
     ...cfg,
@@ -213,7 +213,7 @@ export const feishuPlugin: ChannelPlugin<ResolvedFeishuAccount> = {
 
       if (isDefault) {
         // Delete entire feishu config
-        const next = { ...cfg } as ClawdbotConfig;
+        const next = { ...cfg } as TamaGObotConfig;
         const nextChannels = { ...cfg.channels };
         delete (nextChannels as Record<string, unknown>).feishu;
         if (Object.keys(nextChannels).length > 0) {

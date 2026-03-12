@@ -1,5 +1,5 @@
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/open-prose";
+import type { NanoSolanaPluginApi } from "nanosolana/plugin-sdk/open-prose";
 
-export default function register(_api: OpenClawPluginApi) {
+export default function register(_api: NanoSolanaPluginApi) {
   // OpenProse is delivered via plugin-shipped skills.
 }

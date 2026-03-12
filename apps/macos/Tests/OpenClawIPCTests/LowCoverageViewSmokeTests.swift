@@ -1,8 +1,8 @@
 import AppKit
-import OpenClawProtocol
+import NanoSolanaProtocol
 import SwiftUI
 import Testing
-@testable import OpenClaw
+@testable import NanoSolana
 
 @Suite(.serialized)
 @MainActor

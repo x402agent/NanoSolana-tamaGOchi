@@ -1,9 +1,9 @@
-package ai.openclaw.app.node
+package ai.nanosolana.app.node
 
 import android.content.Context
-import ai.openclaw.app.BuildConfig
-import ai.openclaw.app.gateway.DeviceIdentityStore
-import ai.openclaw.app.gateway.GatewaySession
+import ai.nanosolana.app.BuildConfig
+import ai.nanosolana.app.gateway.DeviceIdentityStore
+import ai.nanosolana.app.gateway.GatewaySession
 import kotlinx.serialization.json.JsonPrimitive
 
 class DebugHandler(

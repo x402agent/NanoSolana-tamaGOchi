@@ -353,12 +353,12 @@ export const NixPluginSpecSchema = type({
 })
 export type NixPluginSpec = (typeof NixPluginSpecSchema)[inferred]
 
-export const ClawdbotConfigSpecSchema = type({
+export const TamaGObotConfigSpecSchema = type({
   requiredEnv: 'string[]?',
   stateDirs: 'string[]?',
   example: 'string?',
 })
-export type ClawdbotConfigSpec = (typeof ClawdbotConfigSpecSchema)[inferred]
+export type TamaGObotConfigSpec = (typeof TamaGObotConfigSpecSchema)[inferred]
 
 export const ClawdisRequiresSchema = type({
   bins: 'string[]?',
@@ -403,7 +403,7 @@ export const ClawdisSkillMetadataSchema = type({
   requires: ClawdisRequiresSchema.optional(),
   install: SkillInstallSpecSchema.array().optional(),
   nix: NixPluginSpecSchema.optional(),
-  config: ClawdbotConfigSpecSchema.optional(),
+  config: TamaGObotConfigSpecSchema.optional(),
   envVars: EnvVarDeclarationSchema.array().optional(),
   dependencies: DependencyDeclarationSchema.array().optional(),
   author: 'string?',
@@ -422,7 +422,7 @@ export type ClawdisSkillMetadata = {
   requires?: ClawdisRequires
   install?: SkillInstallSpec[]
   nix?: NixPluginSpec
-  config?: ClawdbotConfigSpec
+  config?: TamaGObotConfigSpec
   envVars?: EnvVarDeclaration[]
   dependencies?: DependencyDeclaration[]
   author?: string

@@ -1,6 +1,6 @@
-import OpenClawKit
+import NanoSolanaKit
 import Testing
-@testable import OpenClaw
+@testable import NanoSolana
 
 struct DeepLinkAgentPolicyTests {
     @Test func `validate message for handle rejects too long when unkeyed`() {

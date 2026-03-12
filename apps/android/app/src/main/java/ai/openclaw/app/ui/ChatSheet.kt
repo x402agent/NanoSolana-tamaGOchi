@@ -1,8 +1,8 @@
-package ai.openclaw.app.ui
+package ai.nanosolana.app.ui
 
 import androidx.compose.runtime.Composable
-import ai.openclaw.app.MainViewModel
-import ai.openclaw.app.ui.chat.ChatSheetContent
+import ai.nanosolana.app.MainViewModel
+import ai.nanosolana.app.ui.chat.ChatSheetContent
 
 @Composable
 fun ChatSheet(viewModel: MainViewModel) {

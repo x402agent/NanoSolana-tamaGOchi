@@ -12,7 +12,7 @@ read_when:
 - onlycrabs.ai mode for sharing `SOUL.md` bundles (host-based entry point).
 - Minimal, fast SPA for browsing and publishing agent skills.
 - Skills stored in Convex (files + metadata + versions + stats).
-- GitHub OAuth login; GitHub App backs up skills to `clawdbot/skills`.
+- GitHub OAuth login; GitHub App backs up skills to `tamagobot/skills`.
 - Vector-based search over skill text + metadata.
 - Versioning, tags (`latest` + user tags), changelog, rollback (tag movement).
 - Public read access; upload requires auth.
@@ -68,7 +68,7 @@ From SKILL.md frontmatter + AgentSkills + Clawdis extensions:
 - `metadata.clawdis`: `always`, `skillKey`, `primaryEnv`, `emoji`, `homepage`, `os`,
   `requires` (`bins`, `anyBins`, `env`, `config`), `install[]`, `nix` (`plugin`, `systems`),
   `config` (`requiredEnv`, `stateDirs`, `example`), `cliHelp` (string; `cli --help` output)
-- `metadata.clawdbot`: alias of `metadata.clawdis` (preferred for nix-clawdbot plugin pointers)
+- `metadata.tamagobot`: alias of `metadata.clawdis` (preferred for nix-tamagobot plugin pointers)
   - Nix plugins are different from regular skills; they bundle the skill pack, the CLI binary, and config flags/requirements together.
   - `metadata` in frontmatter is YAML (object) preferred; legacy JSON-string accepted.
 

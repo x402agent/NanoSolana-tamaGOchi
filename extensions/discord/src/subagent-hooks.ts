@@ -1,10 +1,10 @@
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/discord";
+import type { NanoSolanaPluginApi } from "nanosolana/plugin-sdk/discord";
 import {
   autoBindSpawnedDiscordSubagent,
   listThreadBindingsBySessionKey,
   resolveDiscordAccount,
   unbindThreadBindingsBySessionKey,
-} from "openclaw/plugin-sdk/discord";
+} from "nanosolana/plugin-sdk/discord";
 
 function summarizeError(err: unknown): string {
   if (err instanceof Error) {
@@ -16,7 +16,7 @@ function summarizeError(err: unknown): string {
   return "error";
 }
 
-export function registerDiscordSubagentHooks(api: OpenClawPluginApi) {
+export function registerDiscordSubagentHooks(api: NanoSolanaPluginApi) {
   const resolveThreadBindingFlags = (accountId?: string) => {
     const account = resolveDiscordAccount({
       cfg: api.config,

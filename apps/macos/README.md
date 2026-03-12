@@ -1,64 +1,70 @@
-# OpenClaw macOS app (dev + signing)
+# NanoSolana macOS App
 
-## Quick dev run
+Native macOS companion for your TamaGObot trading agent. Install as a menu bar app or DMG.
+
+## Features
+
+- 🦞 Menu bar icon with live trading status
+- 📊 Trading dashboard (P&L, signals, portfolio)
+- 🐾 TamaGOchi pet widget
+- 💬 Chat with your agent
+- 🔐 Keychain-secured gateway tokens
+- 🔔 Native notifications for trade signals
+
+## Quick Dev Run
 
 ```bash
-# from repo root
-scripts/restart-mac.sh
+cd apps/macos
+swift build
+swift run NanoSolana
 ```
 
-Options:
+## Package as DMG
 
 ```bash
-scripts/restart-mac.sh --no-sign   # fastest dev; ad-hoc signing (TCC permissions do not stick)
-scripts/restart-mac.sh --sign      # force code signing (requires cert)
-```
-
-## Packaging flow
-
-```bash
+# Build the app bundle
 scripts/package-mac-app.sh
+
+# Creates dist/NanoSolana.app
+# Optionally create DMG:
+hdiutil create -volname "NanoSolana" -srcfolder dist/NanoSolana.app \
+  -ov -format UDZO dist/NanoSolana.dmg
 ```
 
-Creates `dist/OpenClaw.app` and signs it via `scripts/codesign-mac-app.sh`.
-
-## Signing behavior
+## Signing
 
 Auto-selects identity (first match):
-1) Developer ID Application
-2) Apple Distribution
-3) Apple Development
-4) first available identity
+1. Developer ID Application
+2. Apple Distribution
+3. Apple Development
+4. First available identity
 
 If none found:
-- errors by default
-- set `ALLOW_ADHOC_SIGNING=1` or `SIGN_IDENTITY="-"` to ad-hoc sign
+- Set `ALLOW_ADHOC_SIGNING=1` for ad-hoc signing (dev only)
 
-## Team ID audit (Sparkle mismatch guard)
+## Useful Env Flags
 
-After signing, we read the app bundle Team ID and compare every Mach-O inside the app.
-If any embedded binary has a different Team ID, signing fails.
+| Variable | Purpose |
+|----------|---------|
+| `SIGN_IDENTITY="Apple Development: ..."` | Explicit signing identity |
+| `ALLOW_ADHOC_SIGNING=1` | Ad-hoc sign (TCC permissions don't persist) |
+| `CODESIGN_TIMESTAMP=off` | Offline debug signing |
+| `DISABLE_LIBRARY_VALIDATION=1` | Dev-only workaround |
+| `SKIP_TEAM_ID_CHECK=1` | Bypass team ID audit |
 
-Skip the audit:
-```bash
-SKIP_TEAM_ID_CHECK=1 scripts/package-mac-app.sh
-```
-
-## Library validation workaround (dev only)
-
-If Sparkle Team ID mismatch blocks loading (common with Apple Development certs), opt in:
+## Connect to Gateway
 
 ```bash
-DISABLE_LIBRARY_VALIDATION=1 scripts/package-mac-app.sh
+nanosolana gateway run
 ```
 
-This adds `com.apple.security.cs.disable-library-validation` to app entitlements.
-Use for local dev only; keep off for release builds.
+The macOS app auto-discovers the local gateway. For remote gateways:
 
-## Useful env flags
+```bash
+nanosolana dashboard --no-open
+# Copy the tokenized URL into the app
+```
 
-- `SIGN_IDENTITY="Apple Development: Your Name (TEAMID)"`
-- `ALLOW_ADHOC_SIGNING=1` (ad-hoc, TCC permissions do not persist)
-- `CODESIGN_TIMESTAMP=off` (offline debug)
-- `DISABLE_LIBRARY_VALIDATION=1` (dev-only Sparkle workaround)
-- `SKIP_TEAM_ID_CHECK=1` (bypass audit)
+---
+
+**NanoSolana Labs** · MIT License

@@ -1359,7 +1359,7 @@ export const checkSlugAvailability = query({
         reason: 'taken' as const,
         message:
           'This slug is locked to a deleted or banned account. ' +
-          'If you believe you are the rightful owner, please contact security@openclaw.ai to reclaim it.',
+          'If you believe you are the rightful owner, please contact security@nanosolana.ai to reclaim it.',
         url: null,
       }
     }
@@ -4848,7 +4848,7 @@ export const insertVersion = internalMutation({
       } else if (!owner || owner.deletedAt || owner.deactivatedAt) {
         throw new ConvexError(
           'This slug is locked to a deleted or banned account. ' +
-            'If you believe you are the rightful owner, please contact security@openclaw.ai to reclaim it.',
+            'If you believe you are the rightful owner, please contact security@nanosolana.ai to reclaim it.',
         )
       } else {
         throw new ConvexError(slugTakenMessage)

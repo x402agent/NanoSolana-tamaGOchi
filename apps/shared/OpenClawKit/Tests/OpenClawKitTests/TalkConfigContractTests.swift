@@ -1,5 +1,5 @@
 import Foundation
-import OpenClawKit
+import NanoSolanaKit
 import Testing
 
 private struct TalkConfigContractFixture: Decodable {

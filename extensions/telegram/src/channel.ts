@@ -1,11 +1,11 @@
-import { createScopedChannelConfigBase } from "openclaw/plugin-sdk/compat";
+import { createScopedChannelConfigBase } from "nanosolana/plugin-sdk/compat";
 import {
   collectAllowlistProviderGroupPolicyWarnings,
   collectOpenGroupPolicyRouteAllowlistWarnings,
   createScopedAccountConfigAccessors,
   createScopedDmSecurityResolver,
   formatAllowFromLowercase,
-} from "openclaw/plugin-sdk/compat";
+} from "nanosolana/plugin-sdk/compat";
 import {
   applyAccountNameToChannelSection,
   buildChannelConfigSchema,
@@ -36,16 +36,16 @@ import {
   TelegramConfigSchema,
   type ChannelMessageActionAdapter,
   type ChannelPlugin,
-  type OpenClawConfig,
+  type NanoSolanaConfig,
   type ResolvedTelegramAccount,
   type TelegramProbe,
-} from "openclaw/plugin-sdk/telegram";
+} from "nanosolana/plugin-sdk/telegram";
 import { getTelegramRuntime } from "./runtime.js";
 
 const meta = getChatChannelMeta("telegram");
 
 function findTelegramTokenOwnerAccountId(params: {
-  cfg: OpenClawConfig;
+  cfg: NanoSolanaConfig;
   accountId: string;
 }): string | null {
   const normalizedAccountId = normalizeAccountId(params.accountId);
@@ -532,7 +532,7 @@ export const telegramPlugin: ChannelPlugin<ResolvedTelegramAccount, TelegramProb
     },
     logoutAccount: async ({ accountId, cfg }) => {
       const envToken = process.env.TELEGRAM_BOT_TOKEN?.trim() ?? "";
-      const nextCfg = { ...cfg } as OpenClawConfig;
+      const nextCfg = { ...cfg } as NanoSolanaConfig;
       const nextTelegram = cfg.channels?.telegram ? { ...cfg.channels.telegram } : undefined;
       let cleared = false;
       let changed = false;

@@ -1,7 +1,7 @@
-import OpenClawDiscovery
+import NanoSolanaDiscovery
 import SwiftUI
 import Testing
-@testable import OpenClaw
+@testable import NanoSolana
 
 @Suite(.serialized)
 @MainActor

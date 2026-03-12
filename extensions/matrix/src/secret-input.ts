@@ -3,7 +3,7 @@ import {
   hasConfiguredSecretInput,
   normalizeResolvedSecretInputString,
   normalizeSecretInputString,
-} from "openclaw/plugin-sdk/matrix";
+} from "nanosolana/plugin-sdk/matrix";
 
 export {
   buildSecretInputSchema,

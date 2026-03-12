@@ -1,6 +1,6 @@
-package ai.openclaw.app.ui.chat
+package ai.nanosolana.app.ui.chat
 
-import ai.openclaw.app.chat.ChatSessionEntry
+import ai.nanosolana.app.chat.ChatSessionEntry
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

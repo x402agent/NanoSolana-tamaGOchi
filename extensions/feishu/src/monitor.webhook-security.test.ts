@@ -1,6 +1,6 @@
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
-import type { ClawdbotConfig } from "openclaw/plugin-sdk/feishu";
+import type { TamaGObotConfig } from "nanosolana/plugin-sdk/feishu";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   createFeishuClientMockModule,
@@ -65,7 +65,7 @@ function buildConfig(params: {
   port: number;
   verificationToken?: string;
   encryptKey?: string;
-}): ClawdbotConfig {
+}): TamaGObotConfig {
   return {
     channels: {
       feishu: {
@@ -85,7 +85,7 @@ function buildConfig(params: {
         },
       },
     },
-  } as ClawdbotConfig;
+  } as TamaGObotConfig;
 }
 
 async function withRunningWebhookMonitor(

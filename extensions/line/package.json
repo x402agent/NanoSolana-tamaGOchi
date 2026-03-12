@@ -1,10 +1,10 @@
 {
-  "name": "@openclaw/line",
+  "name": "@nanosolana/line",
   "version": "2026.3.11",
   "private": true,
-  "description": "OpenClaw LINE channel plugin",
+  "description": "NanoSolana LINE channel plugin",
   "type": "module",
-  "openclaw": {
+  "nanosolana": {
     "extensions": [
       "./index.ts"
     ],
@@ -19,7 +19,7 @@
       "quickstartAllowFrom": true
     },
     "install": {
-      "npmSpec": "@openclaw/line",
+      "npmSpec": "@nanosolana/line",
       "localPath": "extensions/line",
       "defaultChoice": "npm"
     }

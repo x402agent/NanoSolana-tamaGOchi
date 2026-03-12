@@ -1,4 +1,4 @@
-import OpenClawProtocol
+import NanoSolanaProtocol
 import Foundation
 import OSLog
 
@@ -12,7 +12,7 @@ private struct NodeInvokeRequestPayload: Codable, Sendable {
 }
 
 private func replaceCanvasCapabilityInScopedHostUrl(scopedUrl: String, capability: String) -> String? {
-    let marker = "/__openclaw__/cap/"
+    let marker = "/__nanosolana__/cap/"
     guard let markerRange = scopedUrl.range(of: marker) else { return nil }
     let capabilityStart = markerRange.upperBound
     let suffix = scopedUrl[capabilityStart...]
@@ -57,7 +57,7 @@ func canonicalizeCanvasHostUrl(raw: String?, activeURL: URL?) -> String? {
 
 
 public actor GatewayNodeSession {
-    private let logger = Logger(subsystem: "ai.openclaw", category: "node.gateway")
+    private let logger = Logger(subsystem: "ai.nanosolana", category: "node.gateway")
     private let decoder = JSONDecoder()
     private let encoder = JSONEncoder()
     private static let defaultInvokeTimeoutMs = 30_000
@@ -80,7 +80,7 @@ public actor GatewayNodeSession {
         timeoutMs: Int?,
         onInvoke: @escaping @Sendable (BridgeInvokeRequest) async -> BridgeInvokeResponse
     ) async -> BridgeInvokeResponse {
-        let timeoutLogger = Logger(subsystem: "ai.openclaw", category: "node.gateway")
+        let timeoutLogger = Logger(subsystem: "ai.nanosolana", category: "node.gateway")
         let timeout: Int = {
             if let timeoutMs { return max(0, timeoutMs) }
             return Self.defaultInvokeTimeoutMs
@@ -141,7 +141,7 @@ public actor GatewayNodeSession {
                 latch.resume(BridgeInvokeResponse(
                     id: request.id,
                     ok: false,
-                    error: OpenClawNodeError(
+                    error: NanoSolanaNodeError(
                         code: .unavailable,
                         message: "node invoke timed out")
                 ))
@@ -459,7 +459,7 @@ public actor GatewayNodeSession {
         }
     }
 
-    private func decodeInvokeRequest(from payload: OpenClawProtocol.AnyCodable) throws -> NodeInvokeRequestPayload {
+    private func decodeInvokeRequest(from payload: NanoSolanaProtocol.AnyCodable) throws -> NodeInvokeRequestPayload {
         do {
             let data = try self.encoder.encode(payload)
             return try self.decoder.decode(NodeInvokeRequestPayload.self, from: data)

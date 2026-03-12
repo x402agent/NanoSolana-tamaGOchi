@@ -1,12 +1,12 @@
 {
-  "name": "@openclaw/acpx",
+  "name": "@nanosolana/acpx",
   "version": "2026.3.11",
-  "description": "OpenClaw ACP runtime backend via acpx",
+  "description": "NanoSolana ACP runtime backend via acpx",
   "type": "module",
   "dependencies": {
     "acpx": "0.2.0"
   },
-  "openclaw": {
+  "nanosolana": {
     "extensions": [
       "./index.ts"
     ]

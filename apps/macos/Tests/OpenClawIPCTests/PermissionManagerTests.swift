@@ -1,7 +1,7 @@
 import CoreLocation
-import OpenClawIPC
+import NanoSolanaIPC
 import Testing
-@testable import OpenClaw
+@testable import NanoSolana
 
 @Suite(.serialized)
 @MainActor

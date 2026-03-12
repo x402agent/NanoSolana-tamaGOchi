@@ -1,5 +1,5 @@
 import Foundation
-import OpenClawIPC
+import NanoSolanaIPC
 
 enum ShellExecutor {
     struct ShellResult {

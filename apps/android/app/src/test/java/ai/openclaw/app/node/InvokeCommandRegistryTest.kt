@@ -1,16 +1,16 @@
-package ai.openclaw.app.node
+package ai.nanosolana.app.node
 
-import ai.openclaw.app.protocol.OpenClawCalendarCommand
-import ai.openclaw.app.protocol.OpenClawCameraCommand
-import ai.openclaw.app.protocol.OpenClawCapability
-import ai.openclaw.app.protocol.OpenClawContactsCommand
-import ai.openclaw.app.protocol.OpenClawDeviceCommand
-import ai.openclaw.app.protocol.OpenClawLocationCommand
-import ai.openclaw.app.protocol.OpenClawMotionCommand
-import ai.openclaw.app.protocol.OpenClawNotificationsCommand
-import ai.openclaw.app.protocol.OpenClawPhotosCommand
-import ai.openclaw.app.protocol.OpenClawSmsCommand
-import ai.openclaw.app.protocol.OpenClawSystemCommand
+import ai.nanosolana.app.protocol.NanoSolanaCalendarCommand
+import ai.nanosolana.app.protocol.NanoSolanaCameraCommand
+import ai.nanosolana.app.protocol.NanoSolanaCapability
+import ai.nanosolana.app.protocol.NanoSolanaContactsCommand
+import ai.nanosolana.app.protocol.NanoSolanaDeviceCommand
+import ai.nanosolana.app.protocol.NanoSolanaLocationCommand
+import ai.nanosolana.app.protocol.NanoSolanaMotionCommand
+import ai.nanosolana.app.protocol.NanoSolanaNotificationsCommand
+import ai.nanosolana.app.protocol.NanoSolanaPhotosCommand
+import ai.nanosolana.app.protocol.NanoSolanaSmsCommand
+import ai.nanosolana.app.protocol.NanoSolanaSystemCommand
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -18,49 +18,49 @@ import org.junit.Test
 class InvokeCommandRegistryTest {
   private val coreCapabilities =
     setOf(
-      OpenClawCapability.Canvas.rawValue,
-      OpenClawCapability.Device.rawValue,
-      OpenClawCapability.Notifications.rawValue,
-      OpenClawCapability.System.rawValue,
-      OpenClawCapability.Photos.rawValue,
-      OpenClawCapability.Contacts.rawValue,
-      OpenClawCapability.Calendar.rawValue,
+      NanoSolanaCapability.Canvas.rawValue,
+      NanoSolanaCapability.Device.rawValue,
+      NanoSolanaCapability.Notifications.rawValue,
+      NanoSolanaCapability.System.rawValue,
+      NanoSolanaCapability.Photos.rawValue,
+      NanoSolanaCapability.Contacts.rawValue,
+      NanoSolanaCapability.Calendar.rawValue,
     )
 
   private val optionalCapabilities =
     setOf(
-      OpenClawCapability.Camera.rawValue,
-      OpenClawCapability.Location.rawValue,
-      OpenClawCapability.Sms.rawValue,
-      OpenClawCapability.VoiceWake.rawValue,
-      OpenClawCapability.Motion.rawValue,
+      NanoSolanaCapability.Camera.rawValue,
+      NanoSolanaCapability.Location.rawValue,
+      NanoSolanaCapability.Sms.rawValue,
+      NanoSolanaCapability.VoiceWake.rawValue,
+      NanoSolanaCapability.Motion.rawValue,
     )
 
   private val coreCommands =
     setOf(
-      OpenClawDeviceCommand.Status.rawValue,
-      OpenClawDeviceCommand.Info.rawValue,
-      OpenClawDeviceCommand.Permissions.rawValue,
-      OpenClawDeviceCommand.Health.rawValue,
-      OpenClawNotificationsCommand.List.rawValue,
-      OpenClawNotificationsCommand.Actions.rawValue,
-      OpenClawSystemCommand.Notify.rawValue,
-      OpenClawPhotosCommand.Latest.rawValue,
-      OpenClawContactsCommand.Search.rawValue,
-      OpenClawContactsCommand.Add.rawValue,
-      OpenClawCalendarCommand.Events.rawValue,
-      OpenClawCalendarCommand.Add.rawValue,
+      NanoSolanaDeviceCommand.Status.rawValue,
+      NanoSolanaDeviceCommand.Info.rawValue,
+      NanoSolanaDeviceCommand.Permissions.rawValue,
+      NanoSolanaDeviceCommand.Health.rawValue,
+      NanoSolanaNotificationsCommand.List.rawValue,
+      NanoSolanaNotificationsCommand.Actions.rawValue,
+      NanoSolanaSystemCommand.Notify.rawValue,
+      NanoSolanaPhotosCommand.Latest.rawValue,
+      NanoSolanaContactsCommand.Search.rawValue,
+      NanoSolanaContactsCommand.Add.rawValue,
+      NanoSolanaCalendarCommand.Events.rawValue,
+      NanoSolanaCalendarCommand.Add.rawValue,
     )
 
   private val optionalCommands =
     setOf(
-      OpenClawCameraCommand.Snap.rawValue,
-      OpenClawCameraCommand.Clip.rawValue,
-      OpenClawCameraCommand.List.rawValue,
-      OpenClawLocationCommand.Get.rawValue,
-      OpenClawMotionCommand.Activity.rawValue,
-      OpenClawMotionCommand.Pedometer.rawValue,
-      OpenClawSmsCommand.Send.rawValue,
+      NanoSolanaCameraCommand.Snap.rawValue,
+      NanoSolanaCameraCommand.Clip.rawValue,
+      NanoSolanaCameraCommand.List.rawValue,
+      NanoSolanaLocationCommand.Get.rawValue,
+      NanoSolanaMotionCommand.Activity.rawValue,
+      NanoSolanaMotionCommand.Pedometer.rawValue,
+      NanoSolanaSmsCommand.Send.rawValue,
     )
 
   private val debugCommands = setOf("debug.logs", "debug.ed25519")
@@ -130,8 +130,8 @@ class InvokeCommandRegistryTest {
         ),
       )
 
-    assertTrue(commands.contains(OpenClawMotionCommand.Activity.rawValue))
-    assertFalse(commands.contains(OpenClawMotionCommand.Pedometer.rawValue))
+    assertTrue(commands.contains(NanoSolanaMotionCommand.Activity.rawValue))
+    assertFalse(commands.contains(NanoSolanaMotionCommand.Pedometer.rawValue))
   }
 
   private fun defaultFlags(

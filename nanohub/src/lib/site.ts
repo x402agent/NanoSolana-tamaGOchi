@@ -3,7 +3,7 @@ export type SiteMode = 'skills' | 'souls'
 const DEFAULT_CLAWHUB_SITE_URL = 'https://clawhub.ai'
 const DEFAULT_ONLYCRABS_SITE_URL = 'https://onlycrabs.ai'
 const DEFAULT_ONLYCRABS_HOST = 'onlycrabs.ai'
-const LEGACY_CLAWDHUB_HOSTS = new Set(['clawdhub.com', 'www.clawdhub.com', 'auth.clawdhub.com'])
+const LEGACY_NANOHUB_HOSTS = new Set(['nanohub.com', 'www.nanohub.com', 'auth.nanohub.com'])
 
 function readMetaEnv(value?: string | null) {
   const trimmed = value?.trim()
@@ -14,7 +14,7 @@ export function normalizeClawHubSiteOrigin(value?: string | null) {
   if (!value) return null
   try {
     const url = new URL(value)
-    if (LEGACY_CLAWDHUB_HOSTS.has(url.hostname.toLowerCase())) {
+    if (LEGACY_NANOHUB_HOSTS.has(url.hostname.toLowerCase())) {
       return DEFAULT_CLAWHUB_SITE_URL
     }
     return url.origin

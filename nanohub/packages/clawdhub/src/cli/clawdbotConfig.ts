@@ -3,7 +3,7 @@ import { basename, join, resolve } from 'node:path'
 import JSON5 from 'json5'
 import { resolveHome } from '../homedir.js'
 
-type ClawdbotConfig = {
+type TamaGObotConfig = {
   agent?: { workspace?: string }
   agents?: {
     defaults?: { workspace?: string }
@@ -30,43 +30,43 @@ type ClawdbotConfig = {
   }
 }
 
-export type ClawdbotSkillRoots = {
+export type TamaGObotSkillRoots = {
   roots: string[]
   labels: Record<string, string>
 }
 
-export async function resolveClawdbotSkillRoots(): Promise<ClawdbotSkillRoots> {
+export async function resolveTamaGObotSkillRoots(): Promise<TamaGObotSkillRoots> {
   const roots: string[] = []
   const labels: Record<string, string> = {}
 
-  const clawdbotStateDir = resolveClawdbotStateDir()
-  const sharedSkills = resolveUserPath(join(clawdbotStateDir, 'skills'))
+  const tamagobotStateDir = resolveTamaGObotStateDir()
+  const sharedSkills = resolveUserPath(join(tamagobotStateDir, 'skills'))
   pushRoot(roots, labels, sharedSkills, 'Shared skills')
 
-  const openclawStateDir = resolveOpenclawStateDir()
-  const openclawShared = resolveUserPath(join(openclawStateDir, 'skills'))
-  pushRoot(roots, labels, openclawShared, 'OpenClaw: Shared skills')
+  const nanosolanaStateDir = resolveNanoSolanaStateDir()
+  const nanosolanaShared = resolveUserPath(join(nanosolanaStateDir, 'skills'))
+  pushRoot(roots, labels, nanosolanaShared, 'NanoSolana: Shared skills')
 
-  const [clawdbotConfig, openclawConfig] = await Promise.all([
-    readClawdbotConfig(),
-    readOpenclawConfig(),
+  const [tamagobotConfig, nanosolanaConfig] = await Promise.all([
+    readTamaGObotConfig(),
+    readNanoSolanaConfig(),
   ])
-  if (!clawdbotConfig && !openclawConfig) return { roots, labels }
+  if (!tamagobotConfig && !nanosolanaConfig) return { roots, labels }
 
-  if (clawdbotConfig) {
-    addConfigRoots(clawdbotConfig, roots, labels)
+  if (tamagobotConfig) {
+    addConfigRoots(tamagobotConfig, roots, labels)
   }
-  if (openclawConfig) {
-    addConfigRoots(openclawConfig, roots, labels, 'OpenClaw')
+  if (nanosolanaConfig) {
+    addConfigRoots(nanosolanaConfig, roots, labels, 'NanoSolana')
   }
 
   return { roots, labels }
 }
 
-export async function resolveClawdbotDefaultWorkspace(): Promise<string | null> {
-  const config = await readClawdbotConfig()
-  const openclawConfig = await readOpenclawConfig()
-  if (!config && !openclawConfig) return null
+export async function resolveTamaGObotDefaultWorkspace(): Promise<string | null> {
+  const config = await readTamaGObotConfig()
+  const nanosolanaConfig = await readNanoSolanaConfig()
+  if (!config && !nanosolanaConfig) return null
 
   const defaultsWorkspace = resolveUserPath(
     config?.agents?.defaults?.workspace ?? config?.agent?.workspace ?? '',
@@ -79,41 +79,41 @@ export async function resolveClawdbotDefaultWorkspace(): Promise<string | null> 
   const listWorkspace = resolveUserPath(defaultAgent?.workspace ?? '')
   if (listWorkspace) return listWorkspace
 
-  if (!openclawConfig) return null
-  const openclawDefaults = resolveUserPath(
-    openclawConfig.agents?.defaults?.workspace ?? openclawConfig.agent?.workspace ?? '',
+  if (!nanosolanaConfig) return null
+  const nanosolanaDefaults = resolveUserPath(
+    nanosolanaConfig.agents?.defaults?.workspace ?? nanosolanaConfig.agent?.workspace ?? '',
   )
-  if (openclawDefaults) return openclawDefaults
-  const openclawAgents = openclawConfig.agents?.list ?? []
-  const openclawDefaultAgent =
-    openclawAgents.find((entry) => entry.default) ??
-    openclawAgents.find((entry) => entry.id === 'main')
-  const openclawWorkspace = resolveUserPath(openclawDefaultAgent?.workspace ?? '')
-  return openclawWorkspace || null
+  if (nanosolanaDefaults) return nanosolanaDefaults
+  const nanosolanaAgents = nanosolanaConfig.agents?.list ?? []
+  const nanosolanaDefaultAgent =
+    nanosolanaAgents.find((entry) => entry.default) ??
+    nanosolanaAgents.find((entry) => entry.id === 'main')
+  const nanosolanaWorkspace = resolveUserPath(nanosolanaDefaultAgent?.workspace ?? '')
+  return nanosolanaWorkspace || null
 }
 
-function resolveClawdbotStateDir() {
-  const override = process.env.CLAWDBOT_STATE_DIR?.trim()
+function resolveTamaGObotStateDir() {
+  const override = process.env.TAMAGOBOT_STATE_DIR?.trim()
   if (override) return resolveUserPath(override)
-  return join(resolveHome(), '.clawdbot')
+  return join(resolveHome(), '.tamagobot')
 }
 
-function resolveClawdbotConfigPath() {
-  const override = process.env.CLAWDBOT_CONFIG_PATH?.trim()
+function resolveTamaGObotConfigPath() {
+  const override = process.env.TAMAGOBOT_CONFIG_PATH?.trim()
   if (override) return resolveUserPath(override)
-  return join(resolveClawdbotStateDir(), 'clawdbot.json')
+  return join(resolveTamaGObotStateDir(), 'tamagobot.json')
 }
 
-function resolveOpenclawStateDir() {
-  const override = process.env.OPENCLAW_STATE_DIR?.trim()
+function resolveNanoSolanaStateDir() {
+  const override = process.env.NANOSOLANA_STATE_DIR?.trim()
   if (override) return resolveUserPath(override)
-  return join(resolveHome(), '.openclaw')
+  return join(resolveHome(), '.nanosolana')
 }
 
-function resolveOpenclawConfigPath() {
-  const override = process.env.OPENCLAW_CONFIG_PATH?.trim()
+function resolveNanoSolanaConfigPath() {
+  const override = process.env.NANOSOLANA_CONFIG_PATH?.trim()
   if (override) return resolveUserPath(override)
-  return join(resolveOpenclawStateDir(), 'openclaw.json')
+  return join(resolveNanoSolanaStateDir(), 'nanosolana.json')
 }
 
 function resolveUserPath(input: string) {
@@ -125,27 +125,27 @@ function resolveUserPath(input: string) {
   return resolve(trimmed)
 }
 
-async function readClawdbotConfig(): Promise<ClawdbotConfig | null> {
-  return readConfigFile(resolveClawdbotConfigPath())
+async function readTamaGObotConfig(): Promise<TamaGObotConfig | null> {
+  return readConfigFile(resolveTamaGObotConfigPath())
 }
 
-async function readOpenclawConfig(): Promise<ClawdbotConfig | null> {
-  return readConfigFile(resolveOpenclawConfigPath())
+async function readNanoSolanaConfig(): Promise<TamaGObotConfig | null> {
+  return readConfigFile(resolveNanoSolanaConfigPath())
 }
 
-async function readConfigFile(path: string): Promise<ClawdbotConfig | null> {
+async function readConfigFile(path: string): Promise<TamaGObotConfig | null> {
   try {
     const raw = await readFile(path, 'utf8')
     const parsed = JSON5.parse(raw)
     if (!parsed || typeof parsed !== 'object') return null
-    return parsed as ClawdbotConfig
+    return parsed as TamaGObotConfig
   } catch {
     return null
   }
 }
 
 function addConfigRoots(
-  config: ClawdbotConfig,
+  config: TamaGObotConfig,
   roots: string[],
   labels: Record<string, string>,
   labelPrefix?: string,

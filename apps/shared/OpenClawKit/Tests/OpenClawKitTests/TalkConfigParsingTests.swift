@@ -1,4 +1,4 @@
-import OpenClawKit
+import NanoSolanaKit
 import Testing
 
 struct TalkConfigParsingTests {

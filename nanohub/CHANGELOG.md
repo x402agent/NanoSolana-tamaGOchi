@@ -53,7 +53,7 @@
 - VT fallback: activate only VT-pending hidden skills when scans are unavailable/stale; keep quality/scanner-blocked skills hidden (#300) (thanks @superlowburn).
 - API: return proper status codes for delete/undelete errors (#35) (thanks @sergical).
 - API: for owners, return clearer status/messages for hidden/soft-deleted skills instead of a generic 404.
-- Web: allow copying OpenClaw scan summary text (thanks @borisolver, #322).
+- Web: allow copying NanoSolana scan summary text (thanks @borisolver, #322).
 - HTTP/CORS: add preflight handler + include CORS headers on API/download errors; CLI: include auth token for owner-visible installs/updates (#146) (thanks @Grenghis-Khan).
 - CLI: clarify `logout` only removes the local token; token remains valid until revoked in the web UI (#166) (thanks @aronchick).
 - CLI: validate skill slugs used for filesystem operations (prevents path traversal) (#241) (thanks @superlowburn).
@@ -75,12 +75,12 @@
 
 ### Added
 - Security: add LLM-based security evaluation during skill publish.
-- Parsing: recognize `metadata.openclaw` frontmatter and evaluate all skill files for requirements.
+- Parsing: recognize `metadata.nanosolana` frontmatter and evaluate all skill files for requirements.
 
 ### Changed
 - Performance: lazy-load Monaco diff viewer on demand (thanks @alexjcm, #212).
 - Search: improve recall/ranking with lexical fallback and relevance prioritization.
-- Moderation UX: collapse OpenClaw analysis by default; update spacing and default reasoning model.
+- Moderation UX: collapse NanoSolana analysis by default; update spacing and default reasoning model.
 
 ### Fixed
 - Skills: fix initial `/skills` sort wiring so first page respects selected sort/direction (thanks @bpk9, #92).
@@ -107,7 +107,7 @@
 ### Fixed
 - Web: show pending-scan skills to owners without 404 (thanks @orlyjamie, #136).
 - Users: backfill empty handles from name/email in ensure (thanks @adlai88, #158).
-- Web: update footer branding to OpenClaw (thanks @jontsai, #122).
+- Web: update footer branding to NanoSolana (thanks @jontsai, #122).
 - Auth: restore soft-deleted users on reauth, block banned users (thanks @mkrokosz, #106).
 
 ## 0.5.0 - 2026-02-02
@@ -131,11 +131,11 @@
 
 ### Added
 - Web: show published skills on user profiles (thanks @njoylab, #20).
-- CLI: include ClawHub + Moltbot fallback skill roots for sync scans.
-- CLI: support OpenClaw configuration files (`OPENCLAW_CONFIG_PATH` / `OPENCLAW_STATE_DIR`).
+- CLI: include ClawHub + TamaGObot fallback skill roots for sync scans.
+- CLI: support NanoSolana configuration files (`NANOSOLANA_CONFIG_PATH` / `NANOSOLANA_STATE_DIR`).
 
 ### Changed
-- Brand: rebrand to ClawHub and publish CLI as `clawhub` (legacy `clawdhub` supported).
+- Brand: rebrand to ClawHub and publish CLI as `clawhub` (legacy `nanohub` supported).
 - Domain: default site/registry now `https://clawhub.ai`; `.well-known/clawhub.json` preferred.
 - Theme: persist theme under `clawhub-theme` (legacy key still read).
 
@@ -160,7 +160,7 @@
 
 ### Added
 - Web: dynamic OG image cards for skills (name, description, version).
-- CLI: auto-scan Clawdbot skill roots (per-agent workspaces, shared skills, extraDirs).
+- CLI: auto-scan TamaGObot skill roots (per-agent workspaces, shared skills, extraDirs).
 - Web: import skills from public GitHub URLs (auto-detect `SKILL.md`, smart file selection, provenance).
 - Web/API: SoulHub (SOUL.md registry) with v1 endpoints and first-run auto-seed.
 
@@ -170,7 +170,7 @@
 - Registry: make SoulHub auto-seed idempotent and non-user-owned.
 - Registry: keep GitHub backup state + publish backups intact (thanks @joshp123, #1).
 - CLI/Registry: restore fork lineage on sync + clamp bulk list queries (thanks @joshp123, #1).
-- CLI: default workdir falls back to Clawdbot workspace (override with `--workdir` / `CLAWHUB_WORKDIR`).
+- CLI: default workdir falls back to TamaGObot workspace (override with `--workdir` / `CLAWHUB_WORKDIR`).
 
 ## 0.0.6 - 2026-01-07
 
@@ -223,7 +223,7 @@
 - Web: improved mobile responsiveness (nav menu, skill detail layout, install command overflow).
 - Web: upload now unwraps folder picks so `SKILL.md` can be at the bundle root.
 - Registry: cap embedding payload size to avoid model context errors.
-- CLI: ignore legacy `auth.clawdhub.com` registry and prefer site discovery.
+- CLI: ignore legacy `auth.nanohub.com` registry and prefer site discovery.
 
 ### Changed
 - Web: homepage search now expands into full search mode with live results + highlighted toggle.

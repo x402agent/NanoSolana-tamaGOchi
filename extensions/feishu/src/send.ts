@@ -1,4 +1,4 @@
-import type { ClawdbotConfig } from "openclaw/plugin-sdk/feishu";
+import type { TamaGObotConfig } from "nanosolana/plugin-sdk/feishu";
 import { resolveFeishuAccount } from "./accounts.js";
 import { createFeishuClient } from "./client.js";
 import type { MentionTarget } from "./mention.js";
@@ -151,7 +151,7 @@ function parseQuotedMessageContent(rawContent: string, msgType: string): string 
  * Useful for fetching quoted/replied message content.
  */
 export async function getMessageFeishu(params: {
-  cfg: ClawdbotConfig;
+  cfg: TamaGObotConfig;
   messageId: string;
   accountId?: string;
 }): Promise<FeishuMessageInfo | null> {
@@ -236,7 +236,7 @@ export async function getMessageFeishu(params: {
 }
 
 export type SendFeishuMessageParams = {
-  cfg: ClawdbotConfig;
+  cfg: TamaGObotConfig;
   to: string;
   text: string;
   replyToMessageId?: string;
@@ -319,7 +319,7 @@ export async function sendMessageFeishu(
 }
 
 export type SendFeishuCardParams = {
-  cfg: ClawdbotConfig;
+  cfg: TamaGObotConfig;
   to: string;
   card: Record<string, unknown>;
   replyToMessageId?: string;
@@ -363,7 +363,7 @@ export async function sendCardFeishu(params: SendFeishuCardParams): Promise<Feis
 }
 
 export async function updateCardFeishu(params: {
-  cfg: ClawdbotConfig;
+  cfg: TamaGObotConfig;
   messageId: string;
   card: Record<string, unknown>;
   accountId?: string;
@@ -414,7 +414,7 @@ export function buildMarkdownCard(text: string): Record<string, unknown> {
  * This renders markdown properly in Feishu (code blocks, tables, bold/italic, etc.)
  */
 export async function sendMarkdownCardFeishu(params: {
-  cfg: ClawdbotConfig;
+  cfg: TamaGObotConfig;
   to: string;
   text: string;
   replyToMessageId?: string;
@@ -438,7 +438,7 @@ export async function sendMarkdownCardFeishu(params: {
  * Note: Feishu only allows editing messages within 24 hours.
  */
 export async function editMessageFeishu(params: {
-  cfg: ClawdbotConfig;
+  cfg: TamaGObotConfig;
   messageId: string;
   text: string;
   accountId?: string;

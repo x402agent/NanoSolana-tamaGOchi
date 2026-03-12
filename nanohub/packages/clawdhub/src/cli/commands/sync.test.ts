@@ -57,15 +57,15 @@ vi.mock('../scanSkills.js', () => ({
   getFallbackSkillRoots: vi.fn(() => []),
 }))
 
-const mockResolveClawdbotSkillRoots = vi.fn(
+const mockResolveTamaGObotSkillRoots = vi.fn(
   async () =>
     ({
       roots: [] as string[],
       labels: {} as Record<string, string>,
     }) as const,
 )
-vi.mock('../clawdbotConfig.js', () => ({
-  resolveClawdbotSkillRoots: () => mockResolveClawdbotSkillRoots(),
+vi.mock('../tamagobotConfig.js', () => ({
+  resolveTamaGObotSkillRoots: () => mockResolveTamaGObotSkillRoots(),
 }))
 
 vi.mock('../../skills.js', async () => {
@@ -230,9 +230,9 @@ describe('cmdSync', () => {
     expect(output).toMatch(/dup-skill/)
   })
 
-  it('prints labeled roots when clawdbot roots are detected', async () => {
+  it('prints labeled roots when tamagobot roots are detected', async () => {
     interactive = false
-    mockResolveClawdbotSkillRoots.mockResolvedValueOnce({
+    mockResolveTamaGObotSkillRoots.mockResolvedValueOnce({
       roots: ['/auto'],
       labels: { '/auto': 'Agent: Work' },
     })
