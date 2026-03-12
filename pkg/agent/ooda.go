@@ -1,8 +1,9 @@
-// Package agent implements the MawdBot OODA trading loop in Go.
+// Package agent implements the NanoSolana OODA trading loop in Go.
 // Ported from src/agent/TradingAgent.ts and src/agent/mawdbot.ts.
 package agent
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -14,6 +15,7 @@ import (
 	"time"
 
 	"github.com/8bitlabs/mawdbot/pkg/config"
+	"github.com/8bitlabs/mawdbot/pkg/onchain"
 	"github.com/8bitlabs/mawdbot/pkg/solana"
 	"github.com/8bitlabs/mawdbot/pkg/strategy"
 )
@@ -32,6 +34,9 @@ type OODAAgent struct {
 	aster     *solana.AsterClient
 	solanaRPC *solana.SolanaRPC // native solana-go RPC
 	wallet    *solana.Wallet    // agentic wallet (auto-generated)
+
+	// On-chain engine (Helius RPC/WSS + Jupiter swaps)
+	onchain *onchain.Engine
 
 	// Memory
 	vault *ClawVault
@@ -171,6 +176,19 @@ func NewOODAAgent(cfg *config.Config, hooks AgentHooks) *OODAAgent {
 	vaultPath := filepath.Join(config.DefaultWorkspacePath(), "vault")
 	agent.vault = NewClawVault(vaultPath)
 
+	// Initialize on-chain engine (Helius RPC/WSS + Jupiter)
+	oCfg := onchain.Config{
+		HeliusRPCURL: cfg.Solana.HeliusRPCURL,
+		HeliusAPIKey: cfg.Solana.HeliusAPIKey,
+		HeliusWSSURL: cfg.Solana.HeliusWSSURL,
+	}
+	if engine, err := onchain.NewEngine(oCfg); err == nil {
+		agent.onchain = engine
+		log.Printf("[OODA] ⛓️  On-chain engine connected (Helius RPC + Jupiter)")
+	} else {
+		log.Printf("[OODA] ⚠️  On-chain engine unavailable: %v", err)
+	}
+
 	return agent
 }
 
@@ -207,7 +225,7 @@ func (a *OODAAgent) Start() error {
 		log.Printf("[OODA] 🌐 Native Solana RPC connected (network=%s)", a.cfg.Solana.HeliusNetwork)
 	}
 
-	log.Printf("[OODA] 🦞 MawdBot starting (mode=%s interval=%ds)",
+	log.Printf("[OODA] 🦞 NanoSolana starting (mode=%s interval=%ds)",
 		a.cfg.OODA.Mode, a.cfg.OODA.IntervalSeconds)
 	log.Printf("[OODA] Watchlist: %v", a.cfg.OODA.Watchlist)
 	log.Printf("[OODA] Strategy: RSI(%d/%d) EMA(%d/%d) SL=%.0f%% TP=%.0f%%",
@@ -240,8 +258,16 @@ func (a *OODAAgent) Start() error {
 				np := len(a.openPositions)
 				a.mu.RUnlock()
 
-				// Log wallet balance on heartbeat if native RPC available
-				if a.solanaRPC != nil {
+				// Log wallet balance on heartbeat using on-chain engine first
+				if a.onchain != nil && a.wallet != nil {
+					ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+					pubkey := a.wallet.PublicKey
+					if bal, err := a.onchain.GetSOLBalance(ctx, pubkey); err == nil {
+						log.Printf("[HEARTBEAT] 💰 Wallet: %s | Balance: %.4f SOL (on-chain)",
+							a.wallet.ShortKey(4), bal.SOL)
+					}
+					cancel()
+				} else if a.solanaRPC != nil {
 					if bal, err := a.solanaRPC.GetWalletBalance(); err == nil {
 						log.Printf("[HEARTBEAT] 💰 Wallet: %s | Balance: %.4f SOL",
 							a.wallet.ShortKey(4), bal)
@@ -377,9 +403,29 @@ func (a *OODAAgent) runCycle() {
 func (a *OODAAgent) observe() *Observation {
 	obs := &Observation{Timestamp: time.Now()}
 
-	if a.helius != nil {
+	// ── On-chain engine: slot + wallet balance via Helius RPC ──────
+	if a.onchain != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		defer cancel()
+
+		if health, err := a.onchain.CheckHealth(ctx); err == nil {
+			obs.Slot = health.Slot
+		}
+
+		if a.wallet != nil {
+			if bal, err := a.onchain.GetSOLBalance(ctx, a.wallet.PublicKey); err == nil {
+				obs.WalletSOL = bal.SOL
+			}
+		}
+	} else if a.helius != nil {
+		// Fallback to legacy Helius client
 		if slot, err := a.helius.GetSlot(); err == nil {
 			obs.Slot = slot
+		}
+		if a.cfg.Solana.WalletPubkey != "" {
+			if bal, err := a.helius.GetBalance(a.cfg.Solana.WalletPubkey); err == nil {
+				obs.WalletSOL = bal.SOL
+			}
 		}
 	}
 
@@ -407,12 +453,6 @@ func (a *OODAAgent) observe() *Observation {
 		}
 	}
 
-	if a.helius != nil && a.cfg.Solana.WalletPubkey != "" {
-		if bal, err := a.helius.GetBalance(a.cfg.Solana.WalletPubkey); err == nil {
-			obs.WalletSOL = bal.SOL
-		}
-	}
-
 	if a.aster != nil {
 		if digest, err := a.aster.GetMarketDigest(); err == nil {
 			obs.PerpsDigest = digest
@@ -422,7 +462,7 @@ func (a *OODAAgent) observe() *Observation {
 	return obs
 }
 
-// ── Signal generation via MawdBot Strategy ──────────────────────────
+// ── Signal generation via NanoSolana Strategy ───────────────────────
 
 func (a *OODAAgent) evaluateWatchlist(obs *Observation) {
 	for _, entry := range obs.WatchlistData {
@@ -501,7 +541,7 @@ func (a *OODAAgent) evaluateToken(entry WatchlistEntry) *Signal {
 					StopLoss:   sig.StopLoss,
 					TakeProfit: sig.TakeProfit,
 					Reasoning:  sig.Reasoning,
-					Sources:    []string{"birdeye_ohlcv", "mawdbot_strategy"},
+					Sources:    []string{"birdeye_ohlcv", "nanosolana_strategy"},
 				}
 			}
 
@@ -509,7 +549,7 @@ func (a *OODAAgent) evaluateToken(entry WatchlistEntry) *Signal {
 			base.RSI = sig.RSI
 			base.EMACross = sig.EMACross
 			base.ATR = sig.ATR
-			base.Sources = append(base.Sources, "mawdbot_strategy")
+			base.Sources = append(base.Sources, "nanosolana_strategy")
 			return base
 		}
 	}

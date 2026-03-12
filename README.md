@@ -13,13 +13,13 @@
 
 ### A GoBot on Solana · Physical Companion: TamaGOchi · By NanoSolana Labs
 
-**9.6MB Binary · <10MB RAM · 1s Boot · Pure Go**
+**10MB Binary · <10MB RAM · 1s Boot · Pure Go**
 
 **Autonomous Solana Trading Intelligence with a Virtual Pet Soul**
 
 <p>
   <img src="https://img.shields.io/badge/Go-1.25+-00ADD8?style=flat&logo=go&logoColor=white" alt="Go">
-  <img src="https://img.shields.io/badge/Binary-9.6MB-14F195?style=flat" alt="Size">
+  <img src="https://img.shields.io/badge/Binary-10MB-14F195?style=flat" alt="Size">
   <img src="https://img.shields.io/badge/x402-Payment%20Protocol-FF6B35?style=flat" alt="x402">
   <img src="https://img.shields.io/badge/Solana-Mainnet-9945FF?style=flat&logo=solana&logoColor=white" alt="Solana">
   <img src="https://img.shields.io/badge/NVIDIA-Orin%20Nano%20%C2%B7%20Spark-76B900?style=flat&logo=nvidia&logoColor=white" alt="NVIDIA">
@@ -35,7 +35,7 @@
 
 ## Overview
 
-**NanoSolana TamaGObot** is an ultra-lightweight autonomous Solana trading **GoBot** built in pure Go by **NanoSolana Labs**. It ships as a single **9.6MB binary** that runs on anything from an **NVIDIA Orin Nano** (via [Brev.dev](https://brev.dev) GPU cloud or bare-metal [NVIDIA Spark](https://developer.nvidia.com)) to a **Raspberry Pi** to any laptop — executing a full OODA trading loop with real-time market data, on-chain execution, **x402 payment protocol** for monetized APIs, and a virtual **TamaGObot** pet engine whose mood and evolution are driven by live trading performance. Its physical companion, **TamaGOchi**, bridges the digital agent with Arduino Modulino® I2C hardware.
+**NanoSolana TamaGObot** is an ultra-lightweight autonomous Solana trading **GoBot** built in pure Go by **NanoSolana Labs**. It ships as a single **10MB binary** (`nano`) that runs on anything from an **NVIDIA Orin Nano** (via [Brev.dev](https://brev.dev) GPU cloud or bare-metal [NVIDIA Spark](https://developer.nvidia.com)) to a **Raspberry Pi** to any laptop — executing a full OODA trading loop with real-time market data, on-chain execution via Helius RPC/WSS, Jupiter swaps, **x402 payment protocol** for monetized APIs, and a virtual **TamaGObot** pet engine whose mood and evolution are driven by live trading performance. Its physical companion, **TamaGOchi**, bridges the digital agent with Arduino Modulino® I2C hardware.
 
 The GoBot bridges **software intelligence** (LLM-powered OODA agent, RSI/EMA/ATR strategy, ClawVault memory) with **physical hardware** (Arduino Modulino® I2C sensor cluster) — LEDs pulse with trade signals, buzzers chirp on wins, a rotary knob tunes RSI thresholds in real-time, and a 6-axis IMU auto-pauses trading if you tilt the device.
 
@@ -75,6 +75,9 @@ The GoBot bridges **software intelligence** (LLM-powered OODA agent, RSI/EMA/ATR
 | 📱 **Telegram Bot** | Zero-dep bot channel with markdown→HTML, commands, allowlist |
 | 💰 **x402 Protocol** | Multi-chain USDC payment gateway (Solana, Base, Polygon, Avalanche) |
 | 🎛️ **Arduino I2C** | Modulino® sensors: 8× RGB LEDs, buzzer, 3× buttons, rotary knob, IMU, thermo, ToF |
+| ⛓️ **On-Chain Engine** | Native Solana SDK (gagliardetto/solana-go) + Helius RPC/WSS + Jupiter swaps |
+| 🔄 **Jupiter Swaps** | DEX swap quotes + execution via Jupiter Ultra API with auto priority fees |
+| 🌐 **Native Gateway** | Pure Go TCP bridge with token auth, Tailscale mesh, tmux management |
 | 🟢 **NVIDIA Orin Nano** | Native ARM64 binary for Jetson edge AI hardware |
 | ☁️ **Brev.dev** | One-click GPU cloud deployment for NVIDIA Spark instances |
 | 🐳 **Docker** | Multi-stage Alpine image ~15MB total |
@@ -102,25 +105,33 @@ make build
 
 ```bash
 # Full autonomous GoBot (wallet + RPC + TamaGOchi + Telegram + x402)
-./build/mawdbot daemon
+./build/nano daemon
 
 # Seeker profile (branding + SeekerClaw pet identity)
-./build/mawdbot daemon --seeker --pet-name SeekerClaw
+./build/nano daemon --seeker --pet-name SeekerClaw
 
 # Daemon safe mode (no Telegram + no OODA autostart)
-./build/mawdbot daemon --seeker --no-telegram --no-ooda
+./build/nano daemon --seeker --no-telegram --no-ooda
 
 # Start the OODA trading loop directly
-./build/mawdbot ooda --interval 60
+./build/nano ooda --interval 60
 
 # Simulated mode (no real money)
-./build/mawdbot ooda --sim --interval 30
+./build/nano ooda --sim --interval 30
 
 # Check your pet's status
-./build/mawdbot pet
+./build/nano pet
+
+# On-chain tools (live Solana data via Helius)
+./build/nano solana health
+./build/nano solana balance [pubkey]
+
+# Native gateway (no OpenClaw, pure Go)
+./build/nano gateway start
+./build/nano gateway stop
 
 # x402 paywall mode (monetize your agent's API)
-X402_PAYWALL_ENABLED=true ./build/mawdbot daemon
+X402_PAYWALL_ENABLED=true ./build/nano daemon
 ```
 
 ### 3. Docker
@@ -137,7 +148,7 @@ docker run --env-file .env nanosolana
 make orin
 
 # Deploy to your Orin Nano (bare-metal or via Brev.dev)
-scp build/mawdbot-orin user@orin-nano:~/nanosolana
+scp build/nano-orin user@orin-nano:~/nanosolana
 ssh user@orin-nano './nanosolana daemon'
 ```
 
@@ -158,7 +169,7 @@ brev shell nanosolana
 
 ```
 NanoSolana-tamaGOchi/
-├── main.go                    # CLI entry point (cobra commands)
+├── main.go                    # CLI entry point (`nano` binary, cobra commands)
 ├── hardware.go                # Hardware CLI subcommands
 ├── go.mod / go.sum            # Go module + dependencies
 ├── Makefile                   # Build targets (all platforms)
@@ -168,12 +179,12 @@ NanoSolana-tamaGOchi/
 ├── CONTRIBUTING.md            # Contributor guide
 ├── schema.sql                 # Supabase database schema
 ├── SOUL.md                    # GoBot personality & trading philosophy
-├── skills/                    # Seeker/OpenClaw-compatible skills (SKILL.md)
+├── skills/                    # Agent skills (SKILL.md format)
 │
 ├── cmd/
-│   ├── mawdbot/               # Primary CLI entry point (make build)
-│   │   ├── main.go            #   All commands: daemon, ooda, pet, solana, hardware
-│   │   └── hardware.go        #   Arduino Modulino® I2C commands (scan/test/monitor/demo)
+│   ├── mawdbot/               # Primary CLI entry point (builds `nano`)
+│   │   ├── main.go            #   All commands: daemon, ooda, pet, solana, gateway, hardware
+│   │   └── hardware.go        #   Arduino Modulino® I2C commands
 │   └── mawdbot-tui/           # TUI launcher
 │
 ├── pkg/                       # Core packages
@@ -185,11 +196,15 @@ NanoSolana-tamaGOchi/
 │   │   └── hooks.go           #   AgentHooks interface (→ hardware adapter)
 │   │
 │   ├── solana/                # ⛓️ Solana integration
-│   │   ├── wallet.go          #   Agentic wallet (auto-gen + persist)
+│   │   ├── wallet.go          #   Agentic wallet (auto-gen at ~/.nanosolana/wallet/)
 │   │   ├── rpc.go             #   Native RPC client (solana-go)
 │   │   ├── clients.go         #   Helius, Birdeye, Jupiter, Aster clients
 │   │   ├── programs.go        #   Program IDs, mints, PDA helpers
 │   │   └── tx.go              #   Transaction builders (swap, transfer)
+│   │
+│   ├── onchain/               # ⛓️ On-chain financial engine (NEW)
+│   │   ├── engine.go          #   Helius RPC/WSS: balance, txns, transfers, fees, WSS
+│   │   └── jupiter.go         #   Jupiter Ultra API: quotes, swaps, well-known mints
 │   │
 │   ├── tamagochi/             # 🐹 TamaGOchi pet engine
 │   │   └── tamagochi.go       #   Mood, XP, evolution, on-chain performance
@@ -204,6 +219,10 @@ NanoSolana-tamaGOchi/
 │   ├── channels/              # 📡 Multi-channel gateway
 │   │   ├── channels.go        #   Channel/Manager interface
 │   │   └── telegram/          #   Telegram bot (zero-dep HTTP)
+│   │
+│   ├── gateway/               # 🌐 Native TCP bridge gateway
+│   │   ├── bridge.go          #   Pure Go TCP server, token auth, Tailscale
+│   │   └── spawn.go           #   tmux-based gateway lifecycle
 │   │
 │   ├── x402/                  # 💰 x402 payment protocol
 │   │   └── x402.go            #   SVM signer, USDC middleware, paywall server
@@ -247,7 +266,7 @@ Your GoBot has a virtual pet whose life is driven by **real on-chain performance
 🤩 Ecstatic · 😊 Happy · 😐 Neutral · 😰 Anxious · 😢 Sad · 😴 Sleeping · 🤤 Hungry
 
 ```bash
-$ mawdbot pet
+$ nano pet
 
 🥚 NanoSolana  😐
 
@@ -263,7 +282,7 @@ $ mawdbot pet
 ⏱️ Age: 0s · Uptime: 0h
 ```
 
-State persists to `~/.mawdbot/tamagochi.json`.
+State persists to `~/.nanosolana/tamagochi.json`.
 
 ---
 
@@ -272,7 +291,7 @@ State persists to `~/.mawdbot/tamagochi.json`.
 On first boot, NanoSolana automatically generates a Solana keypair:
 
 ```
-~/.mawdbot/wallet/agent-wallet.json    # Standard Solana keygen format
+~/.nanosolana/wallet/agent-wallet.json    # Standard Solana keygen format
 ```
 
 The wallet is:
@@ -282,10 +301,10 @@ The wallet is:
 - **Reloaded** on subsequent boots (same wallet identity)
 
 ```bash
-$ mawdbot solana wallet
+$ nano solana wallet
 🔑 Agent Wallet
    Address:  7xKXqR8...3vBp
-   Path:     ~/.mawdbot/wallet/agent-wallet.json
+   Path:     ~/.nanosolana/wallet/agent-wallet.json
    Balance:  0.000000 SOL
    Explorer: https://solscan.io/account/7xKXqR8...3vBp
 ```
@@ -322,23 +341,23 @@ NanoSolana TamaGOchi bridges **software intelligence** with **physical hardware*
 
 ```bash
 # Scan I2C bus for connected Modulino® sensors
-mawdbot hardware scan --bus 1
+nano hardware scan --bus 1
 
 # Run full hardware self-test (LED sweep + buzzer + sensor reads)
-mawdbot hardware test --bus 1
+nano hardware test --bus 1
 
 # Live sensor monitor (real-time readings, Ctrl+C to stop)
-mawdbot hardware monitor --bus 1 --interval 200
+nano hardware monitor --bus 1 --interval 200
 
 # Play trading event demo animations
 # (startup → signal → trade open → win → loss → learning → error → idle)
-mawdbot hardware demo --bus 1
+nano hardware demo --bus 1
 
 # OODA loop with hardware integration
-mawdbot ooda --hw-bus 1 --interval 30
+nano ooda --hw-bus 1 --interval 30
 
 # OODA loop without hardware (software-only)
-mawdbot ooda --no-hw --interval 60
+nano ooda --no-hw --interval 60
 ```
 
 ### How Hardware Integrates with the OODA Loop
@@ -399,15 +418,15 @@ Bot features:
 NanoSolana uses a layered configuration system:
 
 1. **Defaults** — sane defaults baked into the binary
-2. **Config file** — `~/.mawdbot/config.json`
+2. **Config file** — `~/.nanosolana/config.json`
 3. **Environment variables** — override everything (`.env` file)
 
 ```bash
 # Create config and workspace
-mawdbot onboard
+nano onboard
 
 # Show current config
-mawdbot status
+nano status
 ```
 
 Key environment variables:
@@ -613,7 +632,7 @@ NanoSolana integrates the [x402 payment standard](https://x402.org) for crypto-g
 
 ```bash
 # Enable the x402 paywall server
-X402_PAYWALL_ENABLED=true ./build/mawdbot daemon
+X402_PAYWALL_ENABLED=true ./build/nano daemon
 
 # Endpoints:
 # GET /health          — free
@@ -637,7 +656,7 @@ make docker
 docker run -d --name nanosolana \
   --env-file .env \
   --restart unless-stopped \
-  mawdbot:latest
+  nanosolana:latest
 
 # View logs
 docker logs -f nanosolana
@@ -664,7 +683,7 @@ After=network.target
 Type=simple
 User=nanosolana
 EnvironmentFile=/home/nanosolana/.env
-ExecStart=/usr/local/bin/mawdbot daemon
+ExecStart=/usr/local/bin/nano daemon
 Restart=always
 RestartSec=10
 
@@ -693,17 +712,17 @@ See [schema.sql](schema.sql) for the complete schema.
 
 | Target | Command | Output |
 |--------|---------|--------|
-| Current platform | `make build` | `build/mawdbot` |
-| Slim profile | `make slim` | `build/mawdbot-slim` |
+| Current platform | `make build` | `build/nano` |
+| Slim profile | `make slim` | `build/nano-slim` |
 | Size comparison | `make size-report` | Standard vs slim delta |
-| TUI launcher | `make tui` | `build/mawdbot-tui` |
-| NVIDIA Orin Nano / Spark | `make orin` | `build/mawdbot-orin` |
-| Raspberry Pi | `make rpi` | `build/mawdbot-rpi` |
-| RISC-V | `make riscv` | `build/mawdbot-riscv` |
-| macOS | `make macos` | `build/mawdbot-macos` |
-| Docker | `make docker` | `mawdbot:latest` |
+| TUI launcher | `make tui` | `build/nano-tui` |
+| NVIDIA Orin Nano / Spark | `make orin` | `build/nano-orin` |
+| Raspberry Pi | `make rpi` | `build/nano-rpi` |
+| RISC-V | `make riscv` | `build/nano-riscv` |
+| macOS | `make macos` | `build/nano-macos` |
+| Docker | `make docker` | `nanosolana:latest` |
 | All | `make cross` | All binaries |
-| Install | `make install` | `/usr/local/bin/mawdbot` |
+| Install | `make install` | `/usr/local/bin/nano` |
 | Test | `make test` | Run test suite |
 | Clean | `make clean` | Remove build/ |
 
@@ -712,32 +731,38 @@ See [schema.sql](schema.sql) for the complete schema.
 ## 📚 CLI Reference
 
 ```
-mawdbot                         Show help
-mawdbot daemon                  Start full GoBot (wallet+RPC+TamaGOchi+Telegram+x402)
-mawdbot daemon --seeker         Start Seeker-branded daemon mode
-mawdbot daemon --pet-name X     Override TamaGOchi pet identity
-mawdbot daemon --no-telegram    Disable Telegram channel startup
-mawdbot daemon --no-ooda        Keep daemon online without OODA autostart
-mawdbot ooda                    Start OODA trading loop
-mawdbot ooda --interval 30      Custom cycle interval (seconds)
-mawdbot ooda --sim              Simulated mode (no real trades)
-mawdbot ooda --hw-bus 1         With Modulino® hardware on I2C bus 1
-mawdbot ooda --no-hw            Disable hardware integration
-mawdbot agent                   Interactive chat REPL
-mawdbot agent -m "message"      Single message mode
-mawdbot pet                     Show TamaGOchi status
-mawdbot gateway                 Start multi-channel gateway (Telegram, Discord)
-mawdbot solana wallet           Show wallet info + balance
-mawdbot solana trending         Trending tokens (Birdeye)
-mawdbot solana search <keyword> Search tokens by name/symbol
-mawdbot solana research <mint>  Deep research a token
-mawdbot hardware scan           Scan I2C bus for Modulino® sensors
-mawdbot hardware test           Run hardware self-test
-mawdbot hardware monitor        Live sensor readings
-mawdbot hardware demo           Play trading event animations
-mawdbot status                  System status + config overview
-mawdbot onboard                 Initialize config & workspace
-mawdbot version                 Version + build info
+nano                             Show help
+nano daemon                      Start full GoBot (wallet+RPC+TamaGOchi+Telegram+x402)
+nano daemon --seeker              Start Seeker-branded daemon mode
+nano daemon --pet-name X          Override TamaGOchi pet identity
+nano daemon --no-telegram         Disable Telegram channel startup
+nano daemon --no-ooda             Keep daemon online without OODA autostart
+nano ooda                         Start OODA trading loop
+nano ooda --interval 30           Custom cycle interval (seconds)
+nano ooda --sim                   Simulated mode (no real trades)
+nano ooda --hw-bus 1              With Modulino® hardware on I2C bus 1
+nano ooda --no-hw                 Disable hardware integration
+nano agent                        Interactive chat REPL
+nano agent -m "message"           Single message mode
+nano pet                          Show TamaGOchi status
+nano gateway start                Start native TCP bridge gateway
+nano gateway start --port 19001   Custom gateway port
+nano gateway stop                 Stop gateway tmux session
+nano channels                     Start multi-channel gateway (Telegram, Discord)
+nano solana health                Check Helius RPC health + network status
+nano solana balance [pubkey]      Check SOL + SPL token balances
+nano solana wallet                Show wallet info + balance
+nano solana trending              Trending tokens (Birdeye)
+nano solana research <mint>       Deep research a token
+nano node pair                    Pair this node with a gateway
+nano node run                     Run headless node client
+nano hardware scan                Scan I2C bus for Modulino® sensors
+nano hardware test                Run hardware self-test
+nano hardware monitor             Live sensor readings
+nano hardware demo                Play trading event animations
+nano status                       System status + config overview
+nano onboard                      Initialize config & workspace
+nano version                      Version + build info
 ```
 
 ---
