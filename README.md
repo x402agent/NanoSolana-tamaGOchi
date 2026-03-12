@@ -264,6 +264,43 @@ Connect your agent to any communication surface:
 
 ---
 
+## 🌐 Chrome Extension — Browser Agent Relay
+
+NanoSolana ships with a **Manifest V3 Chrome extension** that connects your browser to your running agent:
+
+### Features
+
+| Feature | Description |
+|---------|-------------|
+| **🔗 Tab Relay** | Click the toolbar icon to attach any Chrome tab — your agent controls it via CDP |
+| **💰 Wallet Panel** | View wallet status, generate or rehydrate wallets from the extension |
+| **💬 Chat Relay** | Send messages through the gateway, optionally forward to Telegram |
+| **📈 Manual Trades** | Submit buy/sell/hold signals with confidence scores directly to the OODA engine |
+| **⚙️ Gateway Sync** | Auto-load configuration from your running gateway |
+
+### Install
+
+```bash
+# 1. Start your agent (includes gateway + relay server)
+nanosolana go
+
+# 2. Open Chrome → chrome://extensions → Enable "Developer mode"
+# 3. Click "Load unpacked" → select: assets/chrome-extension/
+# 4. Pin the extension → Click icon to attach tabs
+```
+
+### Architecture
+
+```
+Chrome Tab ◄──CDP──► Relay Server (:18792) ◄──HTTP──► NanoSolana Gateway (:18790)
+                                                              │
+Extension Options ◄──────── /api/extension/* ────────────────►│ OODA Engine
+```
+
+> Full documentation: [`assets/chrome-extension/README.md`](assets/chrome-extension/README.md)
+
+---
+
 ## ⚡ Commands
 
 | Command | Description |
