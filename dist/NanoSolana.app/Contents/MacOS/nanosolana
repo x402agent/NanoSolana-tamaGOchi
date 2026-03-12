@@ -1,0 +1,11 @@
+#!/bin/bash
+# NanoSolana Launcher — runs as menu bar app or CLI
+DIR="$(cd "$(dirname "$0")" && pwd)"
+BINARY="$DIR/nanosolana"
+
+# If running from Finder (double-click), start daemon
+if [ -z "$TERM_PROGRAM" ] && [ -t 0 ] 2>/dev/null; then
+  exec "$BINARY" daemon
+else
+  exec "$BINARY" "$@"
+fi

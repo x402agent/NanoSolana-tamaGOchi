@@ -26,6 +26,7 @@ import (
 	"github.com/8bitlabs/mawdbot/pkg/hardware"
 	"github.com/8bitlabs/mawdbot/pkg/node"
 	"github.com/8bitlabs/mawdbot/pkg/onchain"
+	"github.com/8bitlabs/mawdbot/pkg/seeker"
 	"github.com/8bitlabs/mawdbot/pkg/solana"
 	"github.com/8bitlabs/mawdbot/pkg/tamagochi"
 )
@@ -108,6 +109,7 @@ Features:
 		NewOODACommand(),
 		NewSolanaCommand(),
 		NewHardwareCommand(),
+		NewSeekerCommand(),
 		NewVersionCommand(),
 	)
 
@@ -705,6 +707,49 @@ Devnet SOL is auto-airdropped if needed (zero cost).`,
 			},
 		},
 	)
+
+	return cmd
+}
+
+// ── Seeker ───────────────────────────────────────────────────────────
+
+func NewSeekerCommand() *cobra.Command {
+	var bridgePort int
+
+	cmd := &cobra.Command{
+		Use:   "seeker",
+		Short: "NanoSolana agent for the Solana Seeker phone",
+		Long: `Start the NanoSolana agent on the Solana Seeker phone.
+
+Replaces the Node.js + OpenClaw stack with a native Go binary (~10MB).
+Connects to the Android Bridge for device capabilities (battery, GPS,
+clipboard, TTS) and runs the full OODA trading loop with Helius RPC,
+Jupiter swaps, and TamaGOchi pet.
+
+Architecture:
+  Android App (Kotlin/Compose)
+   └─ Foreground Service
+       └─ NanoSolana binary (ARM64, ~10MB)
+           ├─ OODA trading loop
+           ├─ Solana on-chain engine (Helius)
+           ├─ Jupiter swap execution
+           ├─ TamaGOchi pet
+           ├─ Telegram bot
+           └─ Android Bridge client (localhost:8765)`,
+		Example: `  nanosolana seeker
+  nanosolana seeker --bridge-port 8765`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cfg := seeker.DefaultSeekerConfig()
+			if bridgePort > 0 {
+				cfg.BridgePort = bridgePort
+			}
+
+			agent := seeker.NewAgent(cfg)
+			return agent.Run(cmd.Context())
+		},
+	}
+
+	cmd.Flags().IntVar(&bridgePort, "bridge-port", 8765, "Android Bridge HTTP port")
 
 	return cmd
 }
