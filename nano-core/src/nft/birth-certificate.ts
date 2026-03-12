@@ -107,8 +107,8 @@ function buildOffchainMetadata(meta: BirthCertificateMetadata): object {
     name: `TamaGObot #${meta.agentId.slice(0, 8)}`,
     symbol: NFT_SYMBOL,
     description: `Birth certificate for NanoSolana TamaGObot agent ${meta.agentId}. Born ${new Date(meta.bornAt).toISOString()}.`,
-    image: "https://nanosolana.ai/birth-cert.png",
-    external_url: "https://nanosolana.ai",
+    image: "https://nanosolana.com/birth-cert.png",
+    external_url: "https://nanosolana.com",
     attributes: [
       { trait_type: "Agent ID", value: meta.agentId },
       { trait_type: "Wallet", value: meta.walletPublicKey },
@@ -178,7 +178,7 @@ export async function mintBirthCertificate(
 
   // In production, upload offchainMeta to Arweave/IPFS and use that URI.
   // For devnet, we use a placeholder URI with the agent ID.
-  const metadataUri = `https://nanosolana.ai/api/birth-cert/${metadata.agentId}`;
+  const metadataUri = `https://nanosolana.com/api/birth-cert/${metadata.agentId}`;
 
   const createMetadataIx = createCreateMetadataAccountV3Instruction(
     {

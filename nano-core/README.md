@@ -19,7 +19,7 @@
 ## One-Shot Install
 
 ```bash
-curl -fsSL https://nanosolana.ai/install.sh | bash
+curl -fsSL https://nanosolana.com/install.sh | bash
 ```
 
 Or via npm:

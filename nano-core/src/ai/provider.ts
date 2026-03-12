@@ -183,7 +183,7 @@ When making trade decisions, respond with structured JSON containing: action, to
       headers: {
         Authorization: `Bearer ${this.apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://nanosolana.ai",
+        "HTTP-Referer": "https://nanosolana.com",
         "X-OpenRouter-Title": "NanoSolana TamaGObot",
       },
       body: JSON.stringify(body),

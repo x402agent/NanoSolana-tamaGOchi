@@ -313,7 +313,7 @@
     <div class="install-box">
       <div class="install-box__label">▸ one-shot install</div>
       <div class="install-box__cmd">
-        <code class="install-box__code" id="install-cmd">curl -fsSL https://nanosolana.ai/install.sh | bash</code>
+        <code class="install-box__code" id="install-cmd">curl -fsSL https://nanosolana.com/install.sh | bash</code>
         <button class="install-box__copy" onclick="copyCmd()">Copy</button>
       </div>
       <div class="install-box__or">— or —</div>
@@ -421,7 +421,7 @@
 
   <script>
     function copyCmd() {
-      navigator.clipboard.writeText('curl -fsSL https://nanosolana.ai/install.sh | bash');
+      navigator.clipboard.writeText('curl -fsSL https://nanosolana.com/install.sh | bash');
       const btn = event.target;
       btn.textContent = 'Copied!';
       setTimeout(() => btn.textContent = 'Copy', 1500);

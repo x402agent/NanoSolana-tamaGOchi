@@ -512,7 +512,7 @@ export function renderApp(state: AppViewState) {
           <div class="sidebar-footer__docs-block">
             <a
               class="nav-item nav-item--external"
-              href="https://docs.nanosolana.ai"
+              href="https://docs.nanosolana.com"
               target=${EXTERNAL_LINK_TARGET}
               rel=${buildExternalLinkRel()}
               title="${t("common.docs")} (opens in new tab)"

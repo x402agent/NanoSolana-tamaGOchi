@@ -30,8 +30,8 @@ Options:
   -h, --help               Show this help message
 
 Examples:
-  curl -fsSL https://nanosolana.ai/install.sh | bash
-  curl -fsSL https://nanosolana.ai/install.sh | \
+  curl -fsSL https://nanosolana.com/install.sh | bash
+  curl -fsSL https://nanosolana.com/install.sh | \
     bash -s -- --install-method npm --version latest
 USAGE
 }
