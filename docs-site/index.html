@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NanoSolana TamaGOchi — A GoBot on Solana</title>
+  <meta name="description" content="Ultra-lightweight autonomous Solana trading GoBot. 9.6MB binary, <10MB RAM, boots in <1s. Powered by x402 Protocol, Arduino Modulino® I2C, NVIDIA Orin Nano." />
+  <meta name="theme-color" content="#020208" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-brand">
+        <span class="nav-logo">🐹</span>
+        <span class="nav-title">NanoSolana</span>
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="#features">Features</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#hardware">Hardware</a>
+        <a href="#tamagochi">TamaGOchi</a>
+        <a href="#x402">x402</a>
+        <a href="#quickstart">Quick Start</a>
+        <a href="https://github.com/x402agent/NanoSolana-tamaGOchi" target="_blank" class="nav-github">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="hero-grid"></div>
+      <div class="hero-glow hero-glow-1"></div>
+      <div class="hero-glow hero-glow-2"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge animate-in">
+        <span class="badge-dot"></span>
+        Powered by x402 Protocol · Go Runtime · Solana
+      </div>
+      <h1 class="hero-title animate-in delay-1">
+        <span class="hero-title-line"><span class="text-gradient-green">Nano</span><span class="text-gradient-purple">Solana</span></span>
+        <span class="hero-title-line hero-title-sub">TamaGOchi</span>
+      </h1>
+      <p class="hero-subtitle animate-in delay-2">
+        A <strong>GoBot</strong> on Solana — autonomous trading intelligence with a virtual pet soul.
+        <br>9.6MB binary · &lt;10MB RAM · boots in &lt;1s
+      </p>
+      <div class="hero-stats animate-in delay-3">
+        <div class="stat">
+          <span class="stat-value">9.6<span class="stat-unit">MB</span></span>
+          <span class="stat-label">Binary Size</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value">&lt;10<span class="stat-unit">MB</span></span>
+          <span class="stat-label">RAM Usage</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value">&lt;1<span class="stat-unit">s</span></span>
+          <span class="stat-label">Boot Time</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value">7<span class="stat-unit">+</span></span>
+          <span class="stat-label">I2C Sensors</span>
+        </div>
+      </div>
+      <div class="hero-actions animate-in delay-4">
+        <a href="#quickstart" class="btn btn-primary">
+          <span>Get Started</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="https://github.com/x402agent/NanoSolana-tamaGOchi" target="_blank" class="btn btn-secondary">View on GitHub</a>
+      </div>
+    </div>
+    <div class="hero-terminal animate-in delay-3">
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <span class="terminal-title">mawdbot daemon</span>
+        </div>
+        <div class="terminal-body" id="terminalBody">
+          <pre id="terminalOutput"></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Core Capabilities</span>
+        <h2 class="section-title">Everything You Need to Trade Autonomously</h2>
+        <p class="section-desc">From market data ingestion to hardware LED feedback — one binary does it all.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card" data-animate>
+          <div class="feature-icon" style="--icon-color: #14F195">🔄</div>
+          <h3>OODA Trading Loop</h3>
+          <p>Observe → Orient → Decide → Act. Continuous autonomous cycle pulling Helius RPC, Birdeye OHLCV, and Aster perps data.</p>
+        </div>
+        <div class="feature-card" data-animate>
+          <div class="feature-icon" style="--icon-color: #9945FF">🧠</div>
+          <h3>ClawVault Memory</h3>
+          <p>3-tier epistemological memory: Known (fresh API data) → Learned (trade patterns) → Inferred (cross-asset correlations).</p>
+        </div>
+        <div class="feature-card" data-animate>
+          <div class="feature-icon" style="--icon-color: #00D4FF">📊</div>
+          <h3>RSI + EMA + ATR Strategy</h3>
+          <p>Multi-condition signal engine with auto-optimizer. Parameters adjust based on rolling trade performance.</p>
+        </div>
+        <div class="feature-card" data-animate>
+          <div class="feature-icon" style="--icon-color: #FF6B35">💰</div>
+          <h3>x402 Payment Protocol</h3>
+          <p>Monetize your bot's API with crypto-gated endpoints. Multi-chain USDC payments via Solana, Base, Polygon.</p>
+        </div>
+        <div class="feature-card" data-animate>
+          <div class="feature-icon" style="--icon-color: #FFAA00">🎛️</div>
+          <h3>Arduino Modulino® I2C</h3>
+          <p>8× RGB LEDs, buzzer, 3 buttons, rotary knob, IMU, thermometer, ToF sensor. Physical trading feedback.</p>
+        </div>
+        <div class="feature-card" data-animate>
+          <div class="feature-icon" style="--icon-color: #76B900">🟢</div>
+          <h3>NVIDIA Edge AI</h3>
+          <p>Native ARM64 binary for Orin Nano and Spark. Deploy via Brev.dev GPU cloud or bare-metal JetPack.</p>
+        </div>
+        <div class="feature-card" data-animate>
+          <div class="feature-icon" style="--icon-color: #14F195">🔑</div>
+          <h3>Agentic Wallet</h3>
+          <p>Auto-generates and persists a Solana keypair on first boot. Standard keygen format, 0600 permissions.</p>
+        </div>
+        <div class="feature-card" data-animate>
+          <div class="feature-icon" style="--icon-color: #9945FF">📱</div>
+          <h3>Telegram Bot</h3>
+          <p>Zero-dependency HTTP bot with markdown→HTML, long polling, command registration, and allowlist filtering.</p>
+        </div>
+        <div class="feature-card" data-animate>
+          <div class="feature-icon" style="--icon-color: #00D4FF">🐹</div>
+          <h3>TamaGOchi Pet</h3>
+          <p>Virtual pet evolves based on on-chain performance: Egg → Larva → Juvenile → Adult → Alpha. Mood driven by P&L.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture -->
+  <section class="section section-dark" id="architecture">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">System Design</span>
+        <h2 class="section-title">Architecture</h2>
+        <p class="section-desc">A single daemon orchestrates wallet, RPC, pet engine, Telegram, x402, and hardware — all in &lt;10MB.</p>
+      </div>
+      <div class="arch-diagram" data-animate>
+        <div class="arch-row">
+          <div class="arch-node arch-observe">
+            <span class="arch-label">OBSERVE</span>
+            <span class="arch-detail">Helius · Birdeye · Aster</span>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-node arch-orient">
+            <span class="arch-label">ORIENT</span>
+            <span class="arch-detail">RSI · EMA · ATR · Memory</span>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-node arch-decide">
+            <span class="arch-label">DECIDE</span>
+            <span class="arch-detail">Signal Gate · Confidence</span>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-node arch-act">
+            <span class="arch-label">ACT</span>
+            <span class="arch-detail">Jupiter · SOL Transfer</span>
+          </div>
+        </div>
+        <div class="arch-connector">
+          <svg width="100%" height="60"><path d="M50% 0 L50% 30 L25% 30 L25% 60 M50% 30 L75% 30 L75% 60" stroke="#9945FF" stroke-width="2" fill="none" stroke-dasharray="5,5"/></svg>
+        </div>
+        <div class="arch-row arch-row-bottom">
+          <div class="arch-node arch-learn">
+            <span class="arch-label">LEARN</span>
+            <span class="arch-detail">Auto-Optimize · Vault</span>
+          </div>
+          <div class="arch-node arch-pet">
+            <span class="arch-label">🐹 TamaGOchi</span>
+            <span class="arch-detail">Mood · XP · Evolution</span>
+          </div>
+          <div class="arch-node arch-hw">
+            <span class="arch-label">🎛️ Hardware</span>
+            <span class="arch-detail">Modulino® I2C Bus</span>
+          </div>
+          <div class="arch-node arch-x402">
+            <span class="arch-label">💰 x402</span>
+            <span class="arch-detail">USDC Paywall</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack-grid">
+        <div class="stack-card" data-animate>
+          <div class="stack-icon">⛓️</div>
+          <h4>Solana Stack</h4>
+          <ul>
+            <li><span class="stack-dot green"></span>Helius RPC + WebSocket</li>
+            <li><span class="stack-dot green"></span>Birdeye Market Data</li>
+            <li><span class="stack-dot green"></span>Jupiter DEX Aggregator</li>
+            <li><span class="stack-dot green"></span>Aster Perp Futures</li>
+          </ul>
+        </div>
+        <div class="stack-card" data-animate>
+          <div class="stack-icon">🏗️</div>
+          <h4>Build Targets</h4>
+          <ul>
+            <li><span class="stack-dot purple"></span>NVIDIA Orin Nano (ARM64)</li>
+            <li><span class="stack-dot purple"></span>Raspberry Pi (ARM64)</li>
+            <li><span class="stack-dot purple"></span>RISC-V (riscv64)</li>
+            <li><span class="stack-dot purple"></span>macOS Apple Silicon</li>
+          </ul>
+        </div>
+        <div class="stack-card" data-animate>
+          <div class="stack-icon">📡</div>
+          <h4>Channels</h4>
+          <ul>
+            <li><span class="stack-dot teal"></span>Telegram Bot (zero-dep)</li>
+            <li><span class="stack-dot teal"></span>Discord (planned)</li>
+            <li><span class="stack-dot teal"></span>CLI Interactive REPL</li>
+            <li><span class="stack-dot teal"></span>x402 Paywall API</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hardware -->
+  <section class="section" id="hardware">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Physical Computing</span>
+        <h2 class="section-title">Arduino Modulino® + NVIDIA Orin Nano</h2>
+        <p class="section-desc">Software intelligence bridged with physical hardware. 7 sensors over a single Qwiic I2C cable.</p>
+      </div>
+      <div class="hardware-showcase">
+        <div class="hw-sensors" data-animate>
+          <div class="hw-sensor" data-sensor="pixels">
+            <div class="hw-sensor-icon" style="--sensor-color: #14F195">💡</div>
+            <div class="hw-sensor-info">
+              <h4>Pixels <span class="hw-addr">0x6C</span></h4>
+              <p>8× RGB LEDs — LC8822</p>
+              <span class="hw-use">Status: idle 🔵 signal 🟣 trade 🟡 win 🟢 loss 🔴</span>
+            </div>
+          </div>
+          <div class="hw-sensor" data-sensor="buzzer">
+            <div class="hw-sensor-icon" style="--sensor-color: #FFAA00">🔊</div>
+            <div class="hw-sensor-info">
+              <h4>Buzzer <span class="hw-addr">0x3C</span></h4>
+              <p>PKLCS1212E — Tone Generator</p>
+              <span class="hw-use">Audio alerts for signals, trades, wins, errors</span>
+            </div>
+          </div>
+          <div class="hw-sensor" data-sensor="buttons">
+            <div class="hw-sensor-icon" style="--sensor-color: #FF4060">🔘</div>
+            <div class="hw-sensor-info">
+              <h4>Buttons <span class="hw-addr">0x7C</span></h4>
+              <p>3× Push + LED</p>
+              <span class="hw-use">A = trigger cycle · B = toggle mode · C = e-stop</span>
+            </div>
+          </div>
+          <div class="hw-sensor" data-sensor="knob">
+            <div class="hw-sensor-icon" style="--sensor-color: #9945FF">🎛️</div>
+            <div class="hw-sensor-info">
+              <h4>Knob <span class="hw-addr">0x76</span></h4>
+              <p>PEC11J — Rotary Encoder</p>
+              <span class="hw-use">Real-time RSI threshold tuning</span>
+            </div>
+          </div>
+          <div class="hw-sensor" data-sensor="imu">
+            <div class="hw-sensor-icon" style="--sensor-color: #00D4FF">🧭</div>
+            <div class="hw-sensor-info">
+              <h4>Movement <span class="hw-addr">0x6A</span></h4>
+              <p>LSM6DSOX — 6-axis IMU</p>
+              <span class="hw-use">Tilt detection → auto-pause trading</span>
+            </div>
+          </div>
+          <div class="hw-sensor" data-sensor="thermo">
+            <div class="hw-sensor-icon" style="--sensor-color: #FF6B35">🌡️</div>
+            <div class="hw-sensor-info">
+              <h4>Thermo <span class="hw-addr">0x44</span></h4>
+              <p>HS3003 — Temp + Humidity</p>
+              <span class="hw-use">Environment logging to ClawVault</span>
+            </div>
+          </div>
+          <div class="hw-sensor" data-sensor="tof">
+            <div class="hw-sensor-icon" style="--sensor-color: #76B900">📡</div>
+            <div class="hw-sensor-info">
+              <h4>Distance <span class="hw-addr">0x29</span></h4>
+              <p>VL53L4CD — Time-of-Flight</p>
+              <span class="hw-use">Proximity wake-up (&lt;5cm triggers cycle)</span>
+            </div>
+          </div>
+        </div>
+        <div class="hw-platforms" data-animate>
+          <h3>Supported Platforms</h3>
+          <div class="platform-grid">
+            <div class="platform-card">
+              <div class="platform-icon">🟢</div>
+              <h4>NVIDIA Orin Nano</h4>
+              <code>make orin</code>
+            </div>
+            <div class="platform-card">
+              <div class="platform-icon">☁️</div>
+              <h4>Brev.dev Spark</h4>
+              <code>brev create nanosolana --gpu</code>
+            </div>
+            <div class="platform-card">
+              <div class="platform-icon">🍓</div>
+              <h4>Raspberry Pi</h4>
+              <code>make rpi</code>
+            </div>
+            <div class="platform-card">
+              <div class="platform-icon">🍎</div>
+              <h4>macOS (Stub)</h4>
+              <code>make macos</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TamaGOchi -->
+  <section class="section section-dark" id="tamagochi">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Virtual Pet Engine</span>
+        <h2 class="section-title">🐹 TamaGOchi</h2>
+        <p class="section-desc">Your GoBot has a soul. A virtual pet whose life is driven by real on-chain performance.</p>
+      </div>
+      <div class="pet-showcase">
+        <div class="pet-stages" data-animate>
+          <div class="pet-stage" data-stage="egg">
+            <span class="pet-emoji">🥚</span>
+            <span class="pet-name">Egg</span>
+            <span class="pet-req">First boot</span>
+          </div>
+          <div class="pet-arrow">→</div>
+          <div class="pet-stage" data-stage="larva">
+            <span class="pet-emoji">🦐</span>
+            <span class="pet-name">Larva</span>
+            <span class="pet-req">Wallet created</span>
+          </div>
+          <div class="pet-arrow">→</div>
+          <div class="pet-stage" data-stage="juvenile">
+            <span class="pet-emoji">🐹</span>
+            <span class="pet-name">Juvenile</span>
+            <span class="pet-req">10+ trades</span>
+          </div>
+          <div class="pet-arrow">→</div>
+          <div class="pet-stage" data-stage="adult">
+            <span class="pet-emoji">🐹</span>
+            <span class="pet-name">Adult</span>
+            <span class="pet-req">50+ trades, >40% WR</span>
+          </div>
+          <div class="pet-arrow">→</div>
+          <div class="pet-stage active" data-stage="alpha">
+            <span class="pet-emoji">👑</span>
+            <span class="pet-name">Alpha</span>
+            <span class="pet-req">200+ trades, >55% WR</span>
+          </div>
+        </div>
+        <div class="pet-terminal" data-animate>
+          <div class="terminal">
+            <div class="terminal-header">
+              <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+              <span class="terminal-title">mawdbot pet</span>
+            </div>
+            <div class="terminal-body">
+<pre><span class="t-green">🥚 NanoSolana</span>  😐
+
+<span class="t-dim">📊 Stage:</span> egg · Level 1 · XP 0
+<span class="t-dim">😐 Mood:</span> neutral
+<span class="t-dim">⚡ Energy:</span> <span class="t-green">⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡</span>
+<span class="t-dim">🍽️ Hunger:</span> <span class="t-green">🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢</span>
+
+<span class="t-dim">📈 Trades:</span> 0 · Win Rate: 0%
+<span class="t-dim">💰 Balance:</span> 0.0000 SOL
+<span class="t-dim">📊 Total PnL:</span> +0.0000 SOL
+<span class="t-dim">🔥 Streak:</span> +0
+<span class="t-dim">⏱️ Age:</span> 0s · Uptime: 0h</pre>
+            </div>
+          </div>
+        </div>
+        <div class="mood-grid" data-animate>
+          <h3>Mood System</h3>
+          <div class="moods">
+            <span class="mood">🤩 Ecstatic</span>
+            <span class="mood">😊 Happy</span>
+            <span class="mood active">😐 Neutral</span>
+            <span class="mood">😰 Anxious</span>
+            <span class="mood">😢 Sad</span>
+            <span class="mood">😴 Sleeping</span>
+            <span class="mood">🤤 Hungry</span>
+          </div>
+          <p class="mood-desc">Mood is driven by streak, PnL, and wallet balance in real-time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- x402 -->
+  <section class="section" id="x402">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Payment Protocol</span>
+        <h2 class="section-title">💰 x402 — Crypto-Gated APIs</h2>
+        <p class="section-desc">Monetize your GoBot's intelligence. Accept USDC payments per API call across multiple chains.</p>
+      </div>
+      <div class="x402-flow" data-animate>
+        <div class="flow-step">
+          <div class="flow-icon">📱</div>
+          <div class="flow-label">Client</div>
+          <div class="flow-desc">Sends request with<br>X-PAYMENT header</div>
+        </div>
+        <div class="flow-connector">
+          <div class="flow-line"></div>
+          <span class="flow-amount">0.001 USDC</span>
+        </div>
+        <div class="flow-step flow-step-main">
+          <div class="flow-icon">🐹</div>
+          <div class="flow-label">NanoSolana Paywall</div>
+          <div class="flow-desc">Verifies payment<br>Serves API response</div>
+        </div>
+        <div class="flow-connector">
+          <div class="flow-line"></div>
+          <span class="flow-amount">Verify + Settle</span>
+        </div>
+        <div class="flow-step">
+          <div class="flow-icon">🏦</div>
+          <div class="flow-label">x402 Facilitator</div>
+          <div class="flow-desc">facilitator.x402.rs<br>On-chain settlement</div>
+        </div>
+      </div>
+      <div class="x402-chains" data-animate>
+        <h3>Supported Chains</h3>
+        <div class="chain-grid">
+          <div class="chain active"><span>◎</span> Solana</div>
+          <div class="chain"><span>🔵</span> Base</div>
+          <div class="chain"><span>🟣</span> Polygon</div>
+          <div class="chain"><span>🔺</span> Avalanche</div>
+        </div>
+      </div>
+      <div class="x402-endpoints" data-animate>
+        <div class="terminal">
+          <div class="terminal-header">
+            <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+            <span class="terminal-title">x402 paywall endpoints</span>
+          </div>
+          <div class="terminal-body">
+<pre><span class="t-green">GET /health</span>          <span class="t-dim">— free</span>
+<span class="t-green">GET /x402/info</span>       <span class="t-dim">— free</span>
+<span class="t-amber">GET /api/signals</span>     <span class="t-purple">— 0.001 USDC per call</span>
+<span class="t-amber">GET /api/research</span>    <span class="t-purple">— 0.001 USDC per call</span>
+<span class="t-amber">GET /api/agent</span>       <span class="t-purple">— 0.001 USDC per call</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Start -->
+  <section class="section section-dark" id="quickstart">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Get Started in 60 Seconds</span>
+        <h2 class="section-title">Quick Start</h2>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card" data-animate>
+          <div class="step-num">1</div>
+          <h3>Clone & Build</h3>
+          <div class="terminal terminal-sm">
+            <div class="terminal-body">
+<pre><span class="t-dim">$</span> git clone https://github.com/x402agent/NanoSolana-tamaGOchi.git
+<span class="t-dim">$</span> cd NanoSolana-tamaGOchi
+<span class="t-dim">$</span> cp .env.example .env
+<span class="t-dim">$</span> make build</pre>
+            </div>
+          </div>
+        </div>
+        <div class="step-card" data-animate>
+          <div class="step-num">2</div>
+          <h3>Configure</h3>
+          <div class="terminal terminal-sm">
+            <div class="terminal-body">
+<pre><span class="t-dim"># Edit .env with your API keys</span>
+<span class="t-green">HELIUS_API_KEY</span>=your_key_here
+<span class="t-green">TELEGRAM_BOT_TOKEN</span>=your_token
+<span class="t-green">BIRDEYE_API_KEY</span>=optional</pre>
+            </div>
+          </div>
+        </div>
+        <div class="step-card" data-animate>
+          <div class="step-num">3</div>
+          <h3>Run</h3>
+          <div class="terminal terminal-sm">
+            <div class="terminal-body">
+<pre><span class="t-dim">$</span> ./build/mawdbot daemon
+<span class="t-green">🐹 TamaGOchi — A GoBot on Solana</span>
+<span class="t-teal">🔑 Agent wallet: 7xKXqR8...3vBp</span>
+<span class="t-purple">🤖 Telegram: @YourBot connected</span>
+<span class="t-amber">💰 x402 paywall: :18402</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cta-section" data-animate>
+        <h3>Ready to deploy your GoBot?</h3>
+        <div class="cta-actions">
+          <a href="https://github.com/x402agent/NanoSolana-tamaGOchi" target="_blank" class="btn btn-primary btn-lg">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            <span>Star on GitHub</span>
+          </a>
+          <a href="https://github.com/x402agent/NanoSolana-tamaGOchi/blob/main/CONTRIBUTING.md" target="_blank" class="btn btn-secondary btn-lg">Contribute</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="footer-logo">🐹</span>
+          <span>NanoSolana TamaGOchi</span>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/x402agent/NanoSolana-tamaGOchi" target="_blank">GitHub</a>
+          <a href="https://github.com/x402agent/NanoSolana-tamaGOchi/blob/main/SECURITY.md" target="_blank">Security</a>
+          <a href="https://github.com/x402agent/NanoSolana-tamaGOchi/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a>
+          <a href="https://x402.org" target="_blank">x402.org</a>
+        </div>
+        <div class="footer-copy">
+          Built with Go on Solana · Powered by x402 Protocol · MIT License
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
