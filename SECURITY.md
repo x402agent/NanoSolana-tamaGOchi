@@ -43,6 +43,7 @@ git diff --cached | grep -iE "(sk-|api[_-]?key\s*[:=]\s*['\"][A-Za-z0-9]|private
 | `ASTER_API_KEY` / `ASTER_API_SECRET` | `.env` / env var | ✅ |
 | `SOLANA_PRIVATE_KEY` | `.env` / env var | ✅ |
 | `OPENROUTER_API_KEY` | `.env` / env var | ✅ |
+| `OPENROUTER_MODEL` | `.env` / env var | ✅ |
 | `ANTHROPIC_API_KEY` | `.env` / env var | ✅ |
 | `SUPABASE_SERVICE_KEY` | `.env` / env var | ✅ |
 | `TELEGRAM_BOT_TOKEN` | `.env` / env var | ✅ |

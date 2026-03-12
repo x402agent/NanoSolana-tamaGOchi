@@ -27,6 +27,10 @@ type Config struct {
 	Supabase SupabaseConfig `json:"supabase"`
 	X402     X402Config     `json:"x402"`
 	Strategy StrategyConfig `json:"strategy"`
+
+	// Node + Gateway
+	Node         NodeClientConfig   `json:"node"`
+	GatewaySpawn GatewaySpawnConfig `json:"gateway_spawn"`
 }
 
 // ── Agent Defaults ───────────────────────────────────────────────────
@@ -147,6 +151,30 @@ type GatewayConfig struct {
 	Port int    `json:"port"`
 }
 
+// ── Node Client ─────────────────────────────────────────────────────
+
+type NodeClientConfig struct {
+	Enabled      bool   `json:"enabled"`
+	BridgeAddr   string `json:"bridge_addr"`
+	DisplayName  string `json:"display_name"`
+	DeviceFamily string `json:"device_family"`
+	ModelID      string `json:"model_id"`
+	SessionKey   string `json:"session_key"`
+	TTSEngine    string `json:"tts_engine"`
+	MDNSEnabled  bool   `json:"mdns_enabled"`
+	MDNSService  string `json:"mdns_service"`
+}
+
+// ── Gateway Spawn ───────────────────────────────────────────────────
+
+type GatewaySpawnConfig struct {
+	AutoSpawn    bool   `json:"auto_spawn"`
+	Port         int    `json:"port"`
+	TMUXSession  string `json:"tmux_session"`
+	UseTailscale bool   `json:"use_tailscale"`
+	Force        bool   `json:"force"`
+}
+
 // ── MawdBot: Solana Stack ────────────────────────────────────────────
 
 type SolanaConfig struct {
@@ -226,7 +254,7 @@ func DefaultConfig() *Config {
 	return &Config{
 		Agents: AgentsConfig{
 			Defaults: AgentDefaults{
-				Workspace:           "~/.mawdbot/workspace",
+				Workspace:           "~/.nanosolana/workspace",
 				RestrictToWorkspace: true,
 				ModelName:           "gpt4",
 				MaxTokens:           8192,
@@ -254,6 +282,21 @@ func DefaultConfig() *Config {
 		},
 		Heartbeat: HeartbeatConfig{Enabled: true, Interval: 30},
 		Gateway:   GatewayConfig{Host: "127.0.0.1", Port: 18790},
+		Node: NodeClientConfig{
+			Enabled:     false,
+			BridgeAddr:  "127.0.0.1:18790",
+			SessionKey:  "main",
+			TTSEngine:   "none",
+			MDNSEnabled: true,
+			MDNSService: "_nanoclaw-node._tcp",
+		},
+		GatewaySpawn: GatewaySpawnConfig{
+			AutoSpawn:    false,
+			Port:         18790,
+			TMUXSession:  "nano-gw",
+			UseTailscale: true,
+			Force:        false,
+		},
 		Solana: SolanaConfig{
 			HeliusNetwork:        "mainnet",
 			HeliusTimeoutSeconds: 20,
@@ -302,14 +345,20 @@ func DefaultConfig() *Config {
 // ── Path Helpers ─────────────────────────────────────────────────────
 
 func DefaultHome() string {
+	if h := os.Getenv("NANOSOLANA_HOME"); h != "" {
+		return h
+	}
 	if h := os.Getenv("MAWDBOT_HOME"); h != "" {
 		return h
 	}
 	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".mawdbot")
+	return filepath.Join(home, ".nanosolana")
 }
 
 func DefaultConfigPath() string {
+	if p := os.Getenv("NANOSOLANA_CONFIG"); p != "" {
+		return p
+	}
 	if p := os.Getenv("MAWDBOT_CONFIG"); p != "" {
 		return p
 	}
@@ -486,6 +535,20 @@ func applyEnvOverrides(cfg *Config) {
 	if v := os.Getenv("OPENROUTER_API_KEY"); v != "" {
 		cfg.Providers.OpenRouter.APIKey = v
 	}
+	if v := strings.TrimSpace(os.Getenv("OPENROUTER_MODEL")); v != "" {
+		cfg.Agents.Defaults.ModelName = v
+		if len(cfg.ModelList) > 0 {
+			cfg.ModelList[0].Model = v
+			if cfg.ModelList[0].ModelName == "" {
+				cfg.ModelList[0].ModelName = v
+			}
+		} else {
+			cfg.ModelList = []ModelEntry{{
+				ModelName: v,
+				Model:     v,
+			}}
+		}
+	}
 
 	if v := os.Getenv("X402_ENABLED"); v != "" {
 		cfg.X402.Enabled = parseBoolWithDefault(v, cfg.X402.Enabled)
@@ -523,6 +586,36 @@ func applyEnvOverrides(cfg *Config) {
 		if port, err := strconv.Atoi(v); err == nil && port > 0 {
 			cfg.X402.PaywallPort = port
 		}
+	}
+
+	// ── Node overrides ──────────────────────────────────────────────
+	if v := os.Getenv("NODE_BRIDGE_ADDR"); v != "" {
+		cfg.Node.BridgeAddr = v
+	}
+	if v := os.Getenv("NODE_DISPLAY_NAME"); v != "" {
+		cfg.Node.DisplayName = v
+	}
+	if v := os.Getenv("NODE_DEVICE_FAMILY"); v != "" {
+		cfg.Node.DeviceFamily = v
+	}
+	if v := os.Getenv("NODE_SESSION_KEY"); v != "" {
+		cfg.Node.SessionKey = v
+	}
+	if v := os.Getenv("NODE_TTS_ENGINE"); v != "" {
+		cfg.Node.TTSEngine = v
+	}
+
+	// ── Gateway spawn overrides ────────────────────────────────────
+	if v := os.Getenv("GATEWAY_AUTO_SPAWN"); v != "" {
+		cfg.GatewaySpawn.AutoSpawn = parseBoolWithDefault(v, cfg.GatewaySpawn.AutoSpawn)
+	}
+	if v := os.Getenv("GATEWAY_SPAWN_PORT"); v != "" {
+		if port, err := strconv.Atoi(v); err == nil && port > 0 {
+			cfg.GatewaySpawn.Port = port
+		}
+	}
+	if v := os.Getenv("GATEWAY_USE_TAILSCALE"); v != "" {
+		cfg.GatewaySpawn.UseTailscale = parseBoolWithDefault(v, cfg.GatewaySpawn.UseTailscale)
 	}
 }
 

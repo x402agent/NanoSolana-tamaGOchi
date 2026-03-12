@@ -1,6 +1,5 @@
-// MawdBot Go — Ultra-lightweight Solana Trading Intelligence
-// Adapted from PicoClaw architecture for NVIDIA Orin Nano deployment
-// Built by 8BIT Labs / Factory Division
+// NanoSolana — Ultra-lightweight Solana Trading Intelligence
+// Built by 8BIT Labs / NanoSolana Labs
 //
 // Copyright (c) 2026 8BIT Labs. All rights reserved.
 // License: MIT
@@ -8,17 +7,25 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/spf13/cobra"
+
+	solanago "github.com/gagliardetto/solana-go"
 
 	"github.com/8bitlabs/mawdbot/pkg/agent"
 	"github.com/8bitlabs/mawdbot/pkg/config"
 	"github.com/8bitlabs/mawdbot/pkg/daemon"
+	gw "github.com/8bitlabs/mawdbot/pkg/gateway"
 	"github.com/8bitlabs/mawdbot/pkg/hardware"
+	"github.com/8bitlabs/mawdbot/pkg/node"
+	"github.com/8bitlabs/mawdbot/pkg/onchain"
 	"github.com/8bitlabs/mawdbot/pkg/tamagochi"
 )
 
@@ -69,28 +76,31 @@ const (
 )
 
 func NewMawdBotCommand() *cobra.Command {
-	short := fmt.Sprintf("🦞 MawdBot — Sentient Solana Trading Intelligence v%s", config.GetVersion())
+	short := fmt.Sprintf("🦞 NanoSolana — Sentient Solana Trading Intelligence v%s", config.GetVersion())
 
 	cmd := &cobra.Command{
-		Use:   "mawdbot",
+		Use:   "nano",
 		Short: short,
-		Long: `MawdBot Go — Ultra-lightweight autonomous trading agent for Solana.
-Powered by the PicoClaw Go runtime, adapted for NVIDIA Orin Nano hardware.
+		Long: `NanoSolana — Ultra-lightweight autonomous trading agent for Solana.
+Powered by the NanoSolana Go runtime with native gateway and headless nodes.
 
 Features:
   • OODA Loop (Observe → Orient → Decide → Act)
-  • ClawVault persistent memory (known/learned/inferred)
-  • MawdBot Strategy: RSI + EMA cross + ATR signal engine
+  • Sentient Memory Vault (known/learned/inferred)
+  • NanoSolana Strategy: RSI + EMA cross + ATR signal engine
   • Solana: Jupiter swaps, Birdeye analytics, Helius RPC, Aster perps
-  • Arduino Modulino® I2C: LEDs, buzzer, buttons, knob, sensors
+  • Native Gateway: TCP bridge with Tailscale mesh + tmux sessions
+  • Headless Nodes: Connect hardware (Orin Nano, RPi) over mesh
   • <10MB RAM, boots in <1s on ARM64`,
-		Example: "mawdbot agent\nmawdbot ooda --interval 60\nmawdbot ooda --hw-bus 1\nmawdbot hardware scan\nmawdbot hardware demo",
+		Example: "nano daemon\nnano gateway start\nnano node run\nnano ooda --interval 60",
 	}
 
 	cmd.AddCommand(
 		NewAgentCommand(),
 		NewGatewayCommand(),
+		NewNativeGatewayCommand(),
 		NewDaemonCommand(),
+		NewNodeCommand(),
 		NewPetCommand(),
 		NewOnboardCommand(),
 		NewStatusCommand(),
@@ -274,19 +284,19 @@ Hardware integration (when --hw-bus is set):
 	return cmd
 }
 
-// ── Gateway Command ──────────────────────────────────────────────────
+// ── Gateway Command (legacy — channels) ──────────────────────────────
 
 func NewGatewayCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "gateway",
-		Short: "Start MawdBot gateway (Telegram, Discord, WebSocket)",
+		Use:   "channels",
+		Short: "Start NanoSolana channel gateway (Telegram, Discord)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load()
 			if err != nil {
 				return fmt.Errorf("config error: %w", err)
 			}
 
-			fmt.Printf("%s🦞 MawdBot Gateway starting...%s\n", colorGreen, colorReset)
+			fmt.Printf("%s🦞 NanoSolana Channel Gateway starting...%s\n", colorGreen, colorReset)
 			fmt.Printf("%sHost: %s:%d%s\n", colorDim, cfg.Gateway.Host, cfg.Gateway.Port, colorReset)
 
 			if cfg.Channels.Telegram.Enabled {
@@ -307,6 +317,82 @@ func NewGatewayCommand() *cobra.Command {
 			return nil
 		},
 	}
+}
+
+// ── Native Gateway Command (TCP bridge) ──────────────────────────────
+
+func NewNativeGatewayCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "gateway",
+		Short: "NanoSolana native TCP bridge gateway",
+		Long: `The NanoSolana native gateway — a Go TCP bridge server that connects
+headless hardware nodes to the daemon over Tailscale mesh networking.
+No OpenClaw or Node.js required.`,
+	}
+
+	var (
+		port     int
+		bindAddr string
+		noTS     bool
+	)
+
+	startCmd := &cobra.Command{
+		Use:   "start",
+		Short: "Start the native gateway bridge server",
+		Example: `  nano gateway start
+  nano gateway start --port 19001
+  nano gateway start --bind 100.88.46.29`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cfg, _ := config.Load()
+
+			bridgeCfg := gw.BridgeConfig{
+				Port:         port,
+				BindAddr:     bindAddr,
+				UseTailscale: !noTS,
+			}
+			if bridgeCfg.Port == 0 {
+				bridgeCfg.Port = cfg.GatewaySpawn.Port
+			}
+
+			fmt.Printf("%s🦞 NanoSolana Gateway%s\n\n", colorGreen, colorReset)
+
+			bridge := gw.NewBridge(bridgeCfg, nil)
+			ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+			defer cancel()
+
+			if err := bridge.Start(ctx); err != nil {
+				return err
+			}
+
+			fmt.Printf("\n%sBridge: %s%s\n", colorTeal, bridge.BridgeAddr(), colorReset)
+			fmt.Printf("%sPair:   nano node pair --bridge %s%s\n", colorDim, bridge.BridgeAddr(), colorReset)
+			fmt.Printf("%sRun:    nano node run  --bridge %s%s\n\n", colorDim, bridge.BridgeAddr(), colorReset)
+
+			<-ctx.Done()
+			bridge.Stop()
+			return nil
+		},
+	}
+
+	startCmd.Flags().IntVar(&port, "port", 18790, "Bridge port")
+	startCmd.Flags().StringVar(&bindAddr, "bind", "", "Bind address (default: Tailscale IP or 0.0.0.0)")
+	startCmd.Flags().BoolVar(&noTS, "no-tailscale", false, "Don't use Tailscale IP")
+
+	stopCmd := &cobra.Command{
+		Use:   "stop",
+		Short: "Stop the gateway tmux session",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			session := "nano-gw"
+			if err := gw.KillGateway(session); err != nil {
+				return err
+			}
+			fmt.Printf("  %s✔%s Gateway session '%s' killed\n", colorGreen, colorReset, session)
+			return nil
+		},
+	}
+
+	cmd.AddCommand(startCmd, stopCmd)
+	return cmd
 }
 
 // ── Onboard ──────────────────────────────────────────────────────────
@@ -402,7 +488,7 @@ func NewStatusCommand() *cobra.Command {
 func NewSolanaCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "solana",
-		Short: "Solana tools (wallet, trending, research)",
+		Short: "Solana on-chain tools (wallet, balance, health, trending)",
 	}
 
 	cmd.AddCommand(
@@ -411,10 +497,112 @@ func NewSolanaCommand() *cobra.Command {
 			Short: "Show wallet info and balance",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				cfg, _ := config.Load()
-				fmt.Printf("%s💰 Solana Wallet%s\n", colorGreen, colorReset)
+				fmt.Printf("%s💰 NanoSolana Wallet%s\n", colorGreen, colorReset)
 				fmt.Printf("Pubkey:  %s\n", cfg.Solana.WalletPubkey)
 				fmt.Printf("RPC:     %s\n", truncate(cfg.Solana.HeliusRPCURL, 50))
 				fmt.Printf("MaxPos:  %.4f SOL\n", cfg.Solana.MaxPositionSOL)
+				return nil
+			},
+		},
+		&cobra.Command{
+			Use:   "health",
+			Short: "Check Helius RPC health and Solana network status",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				cfg, _ := config.Load()
+				oCfg := onchain.Config{
+					HeliusRPCURL: cfg.Solana.HeliusRPCURL,
+					HeliusAPIKey: cfg.Solana.HeliusAPIKey,
+					HeliusWSSURL: cfg.Solana.HeliusWSSURL,
+				}
+				engine, err := onchain.NewEngine(oCfg)
+				if err != nil {
+					return fmt.Errorf("on-chain engine: %w", err)
+				}
+				defer engine.Close()
+
+				ctx := cmd.Context()
+				health, err := engine.CheckHealth(ctx)
+				if err != nil {
+					fmt.Printf("  %s✗%s Helius RPC: %v\n", colorRed, colorReset, err)
+					return nil
+				}
+
+				fmt.Printf("%s⛓️  Solana Network Status%s\n\n", colorGreen, colorReset)
+				fmt.Printf("  %sHealthy:%s  %s\n", colorDim, colorReset, boolIcon(health.Healthy))
+				fmt.Printf("  %sVersion:%s  %s\n", colorDim, colorReset, health.Version)
+				fmt.Printf("  %sSlot:%s     %d\n", colorDim, colorReset, health.Slot)
+				fmt.Printf("  %sHeight:%s   %d\n", colorDim, colorReset, health.BlockHeight)
+				fmt.Printf("  %sLatency:%s  %s\n", colorDim, colorReset, health.Latency.Round(time.Millisecond))
+
+				// Priority fees
+				fees, err := engine.GetPriorityFees(ctx)
+				if err == nil {
+					fmt.Printf("\n%s⚡ Priority Fees (µL)%s\n", colorAmber, colorReset)
+					fmt.Printf("  Min:    %d\n", fees.Min)
+					fmt.Printf("  Low:    %d\n", fees.Low)
+					fmt.Printf("  Medium: %d\n", fees.Medium)
+					fmt.Printf("  High:   %d\n", fees.High)
+				}
+				return nil
+			},
+		},
+		&cobra.Command{
+			Use:   "balance [pubkey]",
+			Short: "Check SOL + token balances for a wallet",
+			Args:  cobra.MaximumNArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				cfg, _ := config.Load()
+				oCfg := onchain.Config{
+					HeliusRPCURL: cfg.Solana.HeliusRPCURL,
+					HeliusAPIKey: cfg.Solana.HeliusAPIKey,
+					HeliusWSSURL: cfg.Solana.HeliusWSSURL,
+				}
+				engine, err := onchain.NewEngine(oCfg)
+				if err != nil {
+					return fmt.Errorf("on-chain engine: %w", err)
+				}
+				defer engine.Close()
+
+				pubkeyStr := cfg.Solana.WalletPubkey
+				if len(args) > 0 {
+					pubkeyStr = args[0]
+				}
+				if pubkeyStr == "" {
+					return fmt.Errorf("no pubkey — set SOLANA_WALLET_PUBKEY or pass as argument")
+				}
+
+				pubkey := solanago.MustPublicKeyFromBase58(pubkeyStr)
+				ctx := cmd.Context()
+
+				// SOL balance
+				bal, err := engine.GetSOLBalance(ctx, pubkey)
+				if err != nil {
+					return fmt.Errorf("get balance: %w", err)
+				}
+
+				fmt.Printf("%s💰 Wallet: %s%s\n\n", colorGreen, pubkey.Short(6), colorReset)
+				fmt.Printf("  %sSOL:%s    %.9f SOL (%d lamports)\n", colorAmber, colorReset, bal.SOL, bal.Lamports)
+
+				// SPL tokens
+				tokens, err := engine.GetTokenBalances(ctx, pubkey)
+				if err != nil {
+					fmt.Printf("  %s⚠️  Token fetch failed: %v%s\n", colorDim, err, colorReset)
+					return nil
+				}
+
+				if len(tokens) > 0 {
+					fmt.Printf("\n  %sSPL Tokens:%s\n", colorTeal, colorReset)
+					for _, t := range tokens {
+						mintShort := t.Mint
+						if len(mintShort) > 12 {
+							mintShort = t.Mint[:6] + "..." + t.Mint[len(t.Mint)-4:]
+						}
+						fmt.Printf("    %s  %.6f\n", mintShort, t.UIAmount)
+					}
+				} else {
+					fmt.Printf("\n  %sNo SPL tokens%s\n", colorDim, colorReset)
+				}
+
 				return nil
 			},
 		},
@@ -510,12 +698,31 @@ func NewDaemonCommand() *cobra.Command {
   • Connects to Helius RPC (or fallback)
   • Starts the TamaGOchi pet engine (wallet-driven evolution)
   • Starts the Telegram bot (if configured)
+  • Optionally spawns a NanoSolana Gateway (tmux + Tailscale)
   • Runs the heartbeat loop
   • Waits for SIGINT/SIGTERM to shutdown`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load()
 			if err != nil {
 				return fmt.Errorf("config error: %w", err)
+			}
+
+			// Optionally auto-spawn gateway
+			if cfg.GatewaySpawn.AutoSpawn {
+				spawnCfg := gw.SpawnConfig{
+					Port:         cfg.GatewaySpawn.Port,
+					TMUXSession:  cfg.GatewaySpawn.TMUXSession,
+					UseTailscale: cfg.GatewaySpawn.UseTailscale,
+					ForceBind:    cfg.GatewaySpawn.Force,
+				}
+				result, err := gw.SpawnGateway(spawnCfg)
+				if err != nil {
+					log.Printf("[DAEMON] ⚠️ Gateway spawn failed (non-fatal): %v", err)
+				} else if result.AlreadyExists {
+					log.Printf("[DAEMON] 🌐 Gateway already running: %s", result.BridgeAddr)
+				} else {
+					log.Printf("[DAEMON] 🌐 Gateway spawned: %s (tmux: %s)", result.BridgeAddr, result.TMUXSession)
+				}
 			}
 
 			d, err := daemon.New(cfg)
@@ -526,6 +733,264 @@ func NewDaemonCommand() *cobra.Command {
 			return d.Run()
 		},
 	}
+	return cmd
+}
+
+// ── Node Command (Headless Bridge Client) ────────────────────────────
+
+func NewNodeCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "node",
+		Short: "Headless node client for hardware ↔ gateway communication",
+		Long: `Connect NanoSolana hardware (Orin Nano, RPi, workstation) to the
+native gateway over TCP. Supports pairing, voice transcript forwarding, chat
+subscription with TTS, and mDNS advertising.
+
+The gateway can be started via 'nano gateway start'.`,
+	}
+
+	cmd.AddCommand(
+		newNodePairCommand(),
+		newNodeRunCommand(),
+		newNodeGatewaySpawnCommand(),
+		newNodeGatewayKillCommand(),
+	)
+
+	return cmd
+}
+
+func newNodePairCommand() *cobra.Command {
+	var (
+		bridge      string
+		displayName string
+		deviceFamily string
+		statePath   string
+	)
+
+	cmd := &cobra.Command{
+		Use:   "pair",
+		Short: "Pair this node with a gateway",
+		Example: `  nano node pair --bridge 100.88.46.29:18790 --display-name "Orin Nano"
+  nano node pair --bridge 127.0.0.1:18790`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cfg, _ := config.Load()
+
+			ncfg := node.DefaultNodeConfig()
+			if bridge != "" {
+				ncfg.BridgeAddr = bridge
+			} else if cfg.Node.BridgeAddr != "" {
+				ncfg.BridgeAddr = cfg.Node.BridgeAddr
+			}
+			if statePath != "" {
+				ncfg.StatePath = statePath
+			}
+			if displayName != "" {
+				ncfg.DisplayName = displayName
+			} else if cfg.Node.DisplayName != "" {
+				ncfg.DisplayName = cfg.Node.DisplayName
+			}
+			if deviceFamily != "" {
+				ncfg.DeviceFamily = deviceFamily
+			} else if cfg.Node.DeviceFamily != "" {
+				ncfg.DeviceFamily = cfg.Node.DeviceFamily
+			}
+
+			fmt.Printf("%s🦞 NanoSolana Node Pairing%s\n", colorGreen, colorReset)
+			fmt.Printf("%sBridge: %s%s\n\n", colorDim, ncfg.BridgeAddr, colorReset)
+
+			state, err := node.LoadOrInitState(ncfg.StatePath)
+			if err != nil {
+				return err
+			}
+			if ncfg.DisplayName != "" {
+				state.DisplayName = ncfg.DisplayName
+			}
+
+			client, err := node.ConnectBridge(ncfg.BridgeAddr)
+			if err != nil {
+				return fmt.Errorf("bridge connect: %w", err)
+			}
+			defer client.Close()
+
+			fmt.Printf("  %s✔%s Connected to bridge\n", colorGreen, colorReset)
+
+			if err := node.SendPairRequest(client, ncfg, state); err != nil {
+				return err
+			}
+			fmt.Printf("  %s⏳%s Waiting for approval...\n", colorTeal, colorReset)
+			fmt.Printf("  %sApprove via: nano nodes approve <requestId>%s\n\n", colorDim, colorReset)
+
+			token, err := node.WaitForPair(client)
+			if err != nil {
+				return err
+			}
+			state.Token = token
+			if err := node.SaveState(ncfg.StatePath, state); err != nil {
+				return err
+			}
+
+			fmt.Printf("  %s✔%s Paired! Token saved to %s\n", colorGreen, colorReset, ncfg.StatePath)
+			fmt.Printf("     %sNode ID: %s%s\n", colorDim, state.NodeID, colorReset)
+			return nil
+		},
+	}
+
+	cmd.Flags().StringVar(&bridge, "bridge", "", "Bridge host:port (default from config)")
+	cmd.Flags().StringVar(&displayName, "display-name", "", "Friendly display name")
+	cmd.Flags().StringVar(&deviceFamily, "device-family", "", "Device family (raspi, orin, workstation)")
+	cmd.Flags().StringVar(&statePath, "state", "", "Path to node state JSON")
+	return cmd
+}
+
+func newNodeRunCommand() *cobra.Command {
+	var (
+		bridge      string
+		displayName string
+		sessionKey  string
+		ttsEngine   string
+		noMDNS      bool
+	)
+
+	cmd := &cobra.Command{
+		Use:   "run",
+		Short: "Run the headless node (connects to gateway bridge)",
+		Long: `Start the headless node client. Connects to the gateway bridge,
+authenticates, and maintains a persistent connection with automatic
+reconnection. Events from hardware can be forwarded as voice.transcript
+or agent.request messages.`,
+		Example: `  nano node run --bridge 100.88.46.29:18790
+  nano node run --bridge 100.88.46.29:18790 --tts-engine system`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cfg, _ := config.Load()
+
+			ncfg := node.DefaultNodeConfig()
+			if bridge != "" {
+				ncfg.BridgeAddr = bridge
+			} else if cfg.Node.BridgeAddr != "" {
+				ncfg.BridgeAddr = cfg.Node.BridgeAddr
+			}
+			if displayName != "" {
+				ncfg.DisplayName = displayName
+			} else if cfg.Node.DisplayName != "" {
+				ncfg.DisplayName = cfg.Node.DisplayName
+			}
+			if sessionKey != "" {
+				ncfg.SessionKey = sessionKey
+			} else if cfg.Node.SessionKey != "" {
+				ncfg.SessionKey = cfg.Node.SessionKey
+			}
+			if ttsEngine != "" {
+				ncfg.TTSEngine = ttsEngine
+			} else if cfg.Node.TTSEngine != "" {
+				ncfg.TTSEngine = cfg.Node.TTSEngine
+			}
+			ncfg.MDNSEnabled = !noMDNS
+			if cfg.Node.MDNSService != "" {
+				ncfg.MDNSService = cfg.Node.MDNSService
+			}
+
+			fmt.Printf("%s🦞 NanoSolana Headless Node%s\n", colorGreen, colorReset)
+			fmt.Printf("%sBridge: %s | Session: %s%s\n\n", colorDim, ncfg.BridgeAddr, ncfg.SessionKey, colorReset)
+
+			return node.RunNode(context.Background(), ncfg)
+		},
+	}
+
+	cmd.Flags().StringVar(&bridge, "bridge", "", "Bridge host:port")
+	cmd.Flags().StringVar(&displayName, "display-name", "", "Friendly display name")
+	cmd.Flags().StringVar(&sessionKey, "session-key", "", "Session key for events")
+	cmd.Flags().StringVar(&ttsEngine, "tts-engine", "", "TTS engine (system, none)")
+	cmd.Flags().BoolVar(&noMDNS, "no-mdns", false, "Disable mDNS advertising")
+	return cmd
+}
+
+func newNodeGatewaySpawnCommand() *cobra.Command {
+	var (
+		port     int
+		session  string
+		noTS     bool
+		force    bool
+	)
+
+	cmd := &cobra.Command{
+		Use:   "gateway-spawn",
+		Short: "Spawn a NanoSolana Gateway in tmux (Tailscale-aware)",
+		Long: `Launch the NanoSolana native gateway in a detached tmux session, bound to
+your Tailscale IP for secure mesh networking. The gateway serves as the
+bridge between headless hardware nodes and the NanoSolana daemon.
+
+Perfect for SSH sessions via Termius — gateway runs in the background.`,
+		Example: `  nano node gateway-spawn
+  nano node gateway-spawn --port 19001
+  nano node gateway-spawn --no-tailscale`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cfg, _ := config.Load()
+
+			spawnCfg := gw.SpawnConfig{
+				Port:         port,
+				TMUXSession:  session,
+				UseTailscale: !noTS,
+				ForceBind:    force,
+			}
+			if spawnCfg.Port == 0 {
+				spawnCfg.Port = cfg.GatewaySpawn.Port
+			}
+			if spawnCfg.TMUXSession == "" {
+				spawnCfg.TMUXSession = cfg.GatewaySpawn.TMUXSession
+			}
+
+			fmt.Printf("%s🦞 NanoSolana Gateway Spawn%s\n\n", colorGreen, colorReset)
+
+			result, err := gw.SpawnGateway(spawnCfg)
+			if err != nil {
+				return err
+			}
+
+			if result.AlreadyExists {
+				fmt.Printf("  %s⚠%s Gateway already running in tmux '%s'\n", colorAmber, colorReset, result.TMUXSession)
+			} else {
+				fmt.Printf("  %s✔%s Gateway spawned\n", colorGreen, colorReset)
+			}
+
+			fmt.Printf("\n%s  Bridge:%s  %s\n", colorTeal, colorReset, result.BridgeAddr)
+			if result.TailscaleIP != "" {
+				fmt.Printf("%s  Tailscale:%s %s\n", colorTeal, colorReset, result.TailscaleIP)
+			}
+			fmt.Printf("%s  tmux:%s    %s\n", colorDim, colorReset, result.TMUXSession)
+			fmt.Printf("\n%s  Connect from node:%s\n", colorDim, colorReset)
+			fmt.Printf("  %snano node run --bridge %s%s\n", colorAmber, result.BridgeAddr, colorReset)
+			fmt.Printf("\n%s  Pair new node:%s\n", colorDim, colorReset)
+			fmt.Printf("  %snano node pair --bridge %s%s\n", colorAmber, result.BridgeAddr, colorReset)
+			fmt.Printf("\n%s  Attach to tmux:%s\n", colorDim, colorReset)
+			fmt.Printf("  %stmux attach -t %s%s\n\n", colorAmber, result.TMUXSession, colorReset)
+
+			return nil
+		},
+	}
+
+	cmd.Flags().IntVar(&port, "port", 18790, "Gateway bridge port")
+	cmd.Flags().StringVar(&session, "session", "nanoclaw-gw", "tmux session name")
+	cmd.Flags().BoolVar(&noTS, "no-tailscale", false, "Don't bind to Tailscale IP")
+	cmd.Flags().BoolVar(&force, "force", false, "Kill existing port listeners")
+	return cmd
+}
+
+func newNodeGatewayKillCommand() *cobra.Command {
+	var session string
+
+	cmd := &cobra.Command{
+		Use:   "gateway-kill",
+		Short: "Stop the NanoSolana Gateway tmux session",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := gw.KillGateway(session); err != nil {
+				return err
+			}
+			fmt.Printf("  %s✔%s Gateway session '%s' killed\n", colorGreen, colorReset, session)
+			return nil
+		},
+	}
+
+	cmd.Flags().StringVar(&session, "session", "nanoclaw-gw", "tmux session name")
 	return cmd
 }
 

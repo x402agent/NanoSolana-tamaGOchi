@@ -104,6 +104,12 @@ make build
 # Full autonomous GoBot (wallet + RPC + TamaGOchi + Telegram + x402)
 ./build/mawdbot daemon
 
+# Seeker profile (branding + SeekerClaw pet identity)
+./build/mawdbot daemon --seeker --pet-name SeekerClaw
+
+# Daemon safe mode (no Telegram + no OODA autostart)
+./build/mawdbot daemon --seeker --no-telegram --no-ooda
+
 # Start the OODA trading loop directly
 ./build/mawdbot ooda --interval 60
 
@@ -162,6 +168,7 @@ NanoSolana-tamaGOchi/
 ├── CONTRIBUTING.md            # Contributor guide
 ├── schema.sql                 # Supabase database schema
 ├── SOUL.md                    # GoBot personality & trading philosophy
+├── skills/                    # Seeker/OpenClaw-compatible skills (SKILL.md)
 │
 ├── cmd/
 │   ├── mawdbot/               # Primary CLI entry point (make build)
@@ -372,6 +379,8 @@ Set `TELEGRAM_BOT_TOKEN` in `.env` and the daemon auto-starts the bot:
 | `/x402` | x402 payment gateway status |
 | `/trending` | Trending tokens on Solana |
 | `/ooda` | Trigger OODA cycle |
+| `/sim` | Switch OODA runtime to simulated mode |
+| `/live` | Switch OODA runtime to live mode |
 | `/research <mint>` | Deep research a token |
 | `/trades` | Recent trade history |
 | `/help` | All commands |
@@ -412,6 +421,7 @@ Key environment variables:
 | `JUPITER_API_KEY` | Optional | DEX swap execution |
 | `SOLANA_PRIVATE_KEY` | Optional | Use existing wallet (base58) |
 | `OPENROUTER_API_KEY` | Optional | LLM agent responses |
+| `OPENROUTER_MODEL` | Optional | OpenRouter model override (default: `openrouter/healer-alpha`) |
 | `ANTHROPIC_API_KEY` | Optional | LLM agent responses (Anthropic) |
 | `X402_FACILITATOR_URL` | Optional | x402 facilitator (default: facilitator.x402.rs) |
 | `X402_RECIPIENT_ADDRESS` | Optional | Payment recipient (default: agent wallet) |
@@ -420,6 +430,128 @@ Key environment variables:
 | `X402_PAYWALL_ENABLED` | Optional | Start local paywall server |
 
 See [.env.example](.env.example) for the full list.
+
+### OpenRouter Multimodal Example (`openrouter/healer-alpha`)
+
+```bash
+export OPENROUTER_API_KEY="sk-or-v1-..."
+export OPENROUTER_MODEL="openrouter/healer-alpha"
+```
+
+#### JavaScript `fetch`
+
+```js
+fetch("https://openrouter.ai/api/v1/chat/completions", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+    "HTTP-Referer": "https://your-site.example", // Optional
+    "X-OpenRouter-Title": "NanoSolana", // Optional
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    model: process.env.OPENROUTER_MODEL || "openrouter/healer-alpha",
+    messages: [
+      {
+        role: "user",
+        content: [
+          { type: "text", text: "What is in this image, audio and video?" },
+          {
+            type: "image_url",
+            image_url: { url: "https://live.staticflickr.com/3851/14825276609_098cac593d_b.jpg" }
+          },
+          {
+            type: "input_audio",
+            input_audio: {
+              data: "UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB",
+              format: "wav"
+            }
+          },
+          {
+            type: "video_url",
+            video_url: { url: "https://storage.googleapis.com/cloud-samples-data/video/JaneGoodall.mp4" }
+          }
+        ]
+      }
+    ]
+  })
+});
+```
+
+#### OpenAI SDK (OpenRouter base URL)
+
+```js
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.OPENROUTER_API_KEY,
+  defaultHeaders: {
+    "HTTP-Referer": "https://your-site.example", // Optional
+    "X-OpenRouter-Title": "NanoSolana" // Optional
+  }
+});
+
+const completion = await openai.chat.completions.create({
+  model: process.env.OPENROUTER_MODEL || "openrouter/healer-alpha",
+  messages: [
+    {
+      role: "user",
+      content: [
+        { type: "text", text: "What is in this image, audio and video?" },
+        {
+          type: "image_url",
+          image_url: { url: "https://live.staticflickr.com/3851/14825276609_098cac593d_b.jpg" }
+        },
+        {
+          type: "input_audio",
+          input_audio: {
+            data: "UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB",
+            format: "wav"
+          }
+        },
+        {
+          type: "video_url",
+          video_url: { url: "https://storage.googleapis.com/cloud-samples-data/video/JaneGoodall.mp4" }
+        }
+      ]
+    }
+  ]
+});
+
+console.log(completion.choices[0].message);
+```
+
+#### cURL
+
+```bash
+curl https://openrouter.ai/api/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -d '{
+    "model": "openrouter/healer-alpha",
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          { "type": "text", "text": "What is in this image, audio and video?" },
+          {
+            "type": "image_url",
+            "image_url": { "url": "https://live.staticflickr.com/3851/14825276609_098cac593d_b.jpg" }
+          },
+          {
+            "type": "input_audio",
+            "input_audio": { "data": "UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB", "format": "wav" }
+          },
+          {
+            "type": "video_url",
+            "video_url": { "url": "https://storage.googleapis.com/cloud-samples-data/video/JaneGoodall.mp4" }
+          }
+        ]
+      }
+    ]
+  }'
+```
 
 ---
 
@@ -562,6 +694,8 @@ See [schema.sql](schema.sql) for the complete schema.
 | Target | Command | Output |
 |--------|---------|--------|
 | Current platform | `make build` | `build/mawdbot` |
+| Slim profile | `make slim` | `build/mawdbot-slim` |
+| Size comparison | `make size-report` | Standard vs slim delta |
 | TUI launcher | `make tui` | `build/mawdbot-tui` |
 | NVIDIA Orin Nano / Spark | `make orin` | `build/mawdbot-orin` |
 | Raspberry Pi | `make rpi` | `build/mawdbot-rpi` |
@@ -580,6 +714,10 @@ See [schema.sql](schema.sql) for the complete schema.
 ```
 mawdbot                         Show help
 mawdbot daemon                  Start full GoBot (wallet+RPC+TamaGOchi+Telegram+x402)
+mawdbot daemon --seeker         Start Seeker-branded daemon mode
+mawdbot daemon --pet-name X     Override TamaGOchi pet identity
+mawdbot daemon --no-telegram    Disable Telegram channel startup
+mawdbot daemon --no-ooda        Keep daemon online without OODA autostart
 mawdbot ooda                    Start OODA trading loop
 mawdbot ooda --interval 30      Custom cycle interval (seconds)
 mawdbot ooda --sim              Simulated mode (no real trades)
