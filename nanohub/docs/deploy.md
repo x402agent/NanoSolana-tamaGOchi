@@ -7,10 +7,34 @@ read_when:
 
 # Deploy
 
-ClawHub is two deployables:
+NanoHub (ClawHub runtime) is two deployables:
 
 - Web app (TanStack Start) → typically Vercel.
 - Convex backend → Convex deployment (serves `/api/...` routes).
+
+## Fast path (single command)
+
+From repo root (`nanohub/`):
+
+```bash
+cp .env.deploy.example .env.deploy
+# fill in production values
+bun run deploy:prod
+```
+
+`deploy:prod` will:
+
+1. update `vercel.json` rewrite using `CONVEX_SITE_URL`
+2. stamp Convex metadata (`APP_BUILD_SHA`, `APP_DEPLOYED_AT`)
+3. deploy Convex
+4. verify backend/frontend contract
+5. build + deploy Vercel production
+
+You can run only the rewrite update step with:
+
+```bash
+bun run deploy:prep -- https://<deployment>.convex.site
+```
 
 ## 1) Deploy Convex
 
@@ -74,7 +98,11 @@ This repo currently uses `vercel.json` rewrites:
 
 For self-host:
 
-- update `vercel.json` to your deployment’s Convex site URL.
+- update `vercel.json` to your deployment’s Convex site URL, or run:
+
+```bash
+bun run deploy:prep -- https://<deployment>.convex.site
+```
 
 ## 4) Registry discovery
 

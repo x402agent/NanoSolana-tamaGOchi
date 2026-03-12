@@ -73,13 +73,20 @@ chmod 755 "$MACOS_DIR/nanosolana"
 # Create launcher script
 cat > "$MACOS_DIR/$APP_NAME" << 'LAUNCHER_EOF'
 #!/bin/bash
-# NanoSolana Launcher — runs as menu bar app or CLI
+# NanoSolana Launcher — opens NanoBot UI on Finder launch
 DIR="$(cd "$(dirname "$0")" && pwd)"
 BINARY="$DIR/nanosolana"
 
-# If running from Finder (double-click), start daemon
-if [ -z "$TERM_PROGRAM" ] && [ -t 0 ] 2>/dev/null; then
-  exec "$BINARY" daemon
+# Detect Finder launch: no TERM_PROGRAM and stdin is NOT a tty
+if [ -z "$TERM_PROGRAM" ] && ! [ -t 0 ] 2>/dev/null; then
+  # Launched from Finder — start NanoBot UI (opens in browser)
+  "$BINARY" nanobot &
+  exit 0
+fi
+
+# Launched from terminal — pass through args
+if [ $# -eq 0 ]; then
+  exec "$BINARY" nanobot
 else
   exec "$BINARY" "$@"
 fi
@@ -110,8 +117,6 @@ cat > "$CONTENTS/Info.plist" << PLIST_EOF
     <string>APPL</string>
     <key>LSMinimumSystemVersion</key>
     <string>14.0</string>
-    <key>LSUIElement</key>
-    <true/>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>LSArchitecturePriority</key>

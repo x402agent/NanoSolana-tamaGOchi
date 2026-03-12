@@ -1,64 +1,90 @@
-# OpenClaw macOS app (dev + signing)
+# NanoSolana macOS App
 
-## Quick dev run
+A native macOS menu bar app that wraps the NanoSolana Go binary.
 
-```bash
-# from repo root
-scripts/restart-mac.sh
-```
+## Install Options
 
-Options:
+### 1. DMG Installer (recommended)
 
 ```bash
-scripts/restart-mac.sh --no-sign   # fastest dev; ad-hoc signing (TCC permissions do not stick)
-scripts/restart-mac.sh --sign      # force code signing (requires cert)
+# Build the DMG
+./scripts/package-macos.sh
+
+# With code signing
+./scripts/package-macos.sh --sign
+
+# With notarization (for distribution)
+./scripts/package-macos.sh --notarize
 ```
 
-## Packaging flow
+Then open `dist/NanoSolana-v2.0.0.dmg` and drag to Applications.
+
+### 2. CLI One-Shot
 
 ```bash
-scripts/package-mac-app.sh
+curl -fsSL https://raw.githubusercontent.com/x402agent/nano-solana-go/main/install.sh | bash
 ```
 
-Creates `dist/OpenClaw.app` and signs it via `scripts/codesign-mac-app.sh`.
-
-## Signing behavior
-
-Auto-selects identity (first match):
-1) Developer ID Application
-2) Apple Distribution
-3) Apple Development
-4) first available identity
-
-If none found:
-- errors by default
-- set `ALLOW_ADHOC_SIGNING=1` or `SIGN_IDENTITY="-"` to ad-hoc sign
-
-## Team ID audit (Sparkle mismatch guard)
-
-After signing, we read the app bundle Team ID and compare every Mach-O inside the app.
-If any embedded binary has a different Team ID, signing fails.
-
-Skip the audit:
-```bash
-SKIP_TEAM_ID_CHECK=1 scripts/package-mac-app.sh
-```
-
-## Library validation workaround (dev only)
-
-If Sparkle Team ID mismatch blocks loading (common with Apple Development certs), opt in:
+### 3. npm
 
 ```bash
-DISABLE_LIBRARY_VALIDATION=1 scripts/package-mac-app.sh
+npx @nanosolana/cli
 ```
 
-This adds `com.apple.security.cs.disable-library-validation` to app entitlements.
-Use for local dev only; keep off for release builds.
+## What the DMG includes
 
-## Useful env flags
+- **NanoSolana.app** — Universal binary (arm64 + x86_64)
+- **nanosolana CLI** — Full trading agent CLI
+- **Info.plist** — macOS 14+ with Retina support
 
-- `SIGN_IDENTITY="Apple Development: Your Name (TEAMID)"`
-- `ALLOW_ADHOC_SIGNING=1` (ad-hoc, TCC permissions do not persist)
-- `CODESIGN_TIMESTAMP=off` (offline debug)
-- `DISABLE_LIBRARY_VALIDATION=1` (dev-only Sparkle workaround)
-- `SKIP_TEAM_ID_CHECK=1` (bypass audit)
+## After Install
+
+```bash
+# Add CLI to PATH
+ln -s /Applications/NanoSolana.app/Contents/MacOS/nanosolana /usr/local/bin/nanosolana
+
+# Run commands
+nanosolana version
+nanosolana solana health
+nanosolana ooda --sim
+nanosolana daemon
+```
+
+## Signing & Notarization
+
+For distribution outside the App Store:
+
+```bash
+# Set signing identity
+export SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)"
+
+# Set notarization credentials
+export APPLE_ID="your@email.com"
+export APPLE_TEAM_ID="TEAMID"
+export APPLE_APP_PASSWORD="app-specific-password"
+
+# Build, sign, and notarize
+./scripts/package-macos.sh --notarize
+```
+
+## Development
+
+The macOS app is adapted from the OpenClaw macOS companion app. Source files
+in `Sources/` are being adapted to use NanoSolana's Go binary as the
+agent runtime instead of Node.js.
+
+### Key files
+- `Sources/OpenClaw/AppState.swift` — Main app state
+- `Sources/OpenClaw/MenuBar.swift` — Menu bar UI
+- `Sources/OpenClaw/NanoSolanaGatewaySettings.swift` — Gateway settings
+- `Package.swift` — Swift package manifest
+
+## Env flags
+
+| Flag | Purpose |
+|------|---------|
+| `SIGN_IDENTITY` | Code signing identity |
+| `ALLOW_ADHOC_SIGNING=1` | Ad-hoc sign (dev only) |
+| `CODESIGN_TIMESTAMP=off` | Offline debug |
+| `DISABLE_LIBRARY_VALIDATION=1` | Dev-only Sparkle workaround |
+| `SKIP_TEAM_ID_CHECK=1` | Bypass Team ID audit |

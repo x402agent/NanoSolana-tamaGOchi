@@ -9,6 +9,8 @@
     "build": "bun --bun vite build",
     "check:peers": "bun scripts/check-peer-deps.ts",
     "convex:deploy": "bunx convex deploy --typecheck=disable --yes",
+    "deploy:prep": "bun scripts/set-vercel-rewrite.mjs",
+    "deploy:prod": "bash scripts/deploy-prod.sh",
     "coverage": "vitest run --coverage",
     "dev": "bun --bun vite dev --port 3000",
     "docs:list": "bun scripts/docs-list.ts",

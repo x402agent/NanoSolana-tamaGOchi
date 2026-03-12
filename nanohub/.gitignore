@@ -11,6 +11,7 @@ dist-ssr
 .vercel
 count.txt
 .env
+.env.deploy
 .nitro
 .tanstack
 .wrangler

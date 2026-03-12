@@ -1,8 +1,8 @@
 export type SiteMode = 'skills' | 'souls'
 
-const DEFAULT_CLAWHUB_SITE_URL = 'https://clawhub.ai'
-const DEFAULT_ONLYCRABS_SITE_URL = 'https://onlycrabs.ai'
-const DEFAULT_ONLYCRABS_HOST = 'onlycrabs.ai'
+const DEFAULT_CLAWHUB_SITE_URL = 'https://nanohub-dun.vercel.app'
+const DEFAULT_ONLYCRABS_SITE_URL = 'https://souls.nanohub-dun.vercel.app'
+const DEFAULT_ONLYCRABS_HOST = 'souls.nanohub-dun.vercel.app'
 const LEGACY_CLAWDHUB_HOSTS = new Set(['clawdhub.com', 'www.clawdhub.com', 'auth.clawdhub.com'])
 
 function readMetaEnv(value?: string | null) {
@@ -89,13 +89,13 @@ export function getSiteMode(): SiteMode {
 }
 
 export function getSiteName(mode: SiteMode = getSiteMode()) {
-  return mode === 'souls' ? 'SoulHub' : 'ClawHub'
+  return mode === 'souls' ? 'NanoHub Souls' : 'NanoHub'
 }
 
 export function getSiteDescription(mode: SiteMode = getSiteMode()) {
   return mode === 'souls'
-    ? 'SoulHub — the home for SOUL.md bundles and personal system lore.'
-    : 'ClawHub — a fast skill registry for agents, with vector search.'
+    ? 'NanoHub Souls — the home for SOUL.md bundles and personal system lore.'
+    : 'NanoHub — the Nano Solana skill registry for agents, with vector search.'
 }
 
 export function getSiteUrlForMode(mode: SiteMode = getSiteMode()) {

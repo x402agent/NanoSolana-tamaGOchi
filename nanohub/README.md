@@ -133,3 +133,47 @@ bun run test
 bun run coverage
 bun run lint
 ```
+
+## Production deploy (server + frontend)
+
+NanoHub deploys in two parts: Convex backend and Vercel frontend. This repo now includes a one-command deploy helper that handles both in order.
+
+### 1) Prepare deploy env
+
+```bash
+cp .env.deploy.example .env.deploy
+# edit .env.deploy with your production values
+```
+
+Required values:
+
+- `CONVEX_DEPLOY_KEY`
+- `CONVEX_SITE_URL`
+- `VITE_CONVEX_URL`
+- `VITE_CONVEX_SITE_URL`
+- `SITE_URL`
+
+Optional:
+
+- `VITE_APP_BUILD_SHA` (auto-inferred from git if omitted)
+- `VERCEL_TOKEN` (needed for non-interactive Vercel deploy)
+
+### 2) Deploy
+
+```bash
+bun run deploy:prod
+```
+
+What this does:
+
+1. Updates `vercel.json` API rewrite to your `CONVEX_SITE_URL`.
+2. Stamps Convex deploy metadata (`APP_BUILD_SHA`, `APP_DEPLOYED_AT`).
+3. Deploys Convex functions.
+4. Verifies Convex contract compatibility.
+5. Builds and deploys the frontend to Vercel production.
+
+If you only need to update the rewrite destination:
+
+```bash
+bun run deploy:prep -- https://<your-convex-deployment>.convex.site
+```

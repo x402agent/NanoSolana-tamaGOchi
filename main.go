@@ -24,6 +24,7 @@ import (
 	"github.com/8bitlabs/mawdbot/pkg/daemon"
 	gw "github.com/8bitlabs/mawdbot/pkg/gateway"
 	"github.com/8bitlabs/mawdbot/pkg/hardware"
+	"github.com/8bitlabs/mawdbot/pkg/nanobot"
 	"github.com/8bitlabs/mawdbot/pkg/node"
 	"github.com/8bitlabs/mawdbot/pkg/onchain"
 	"github.com/8bitlabs/mawdbot/pkg/seeker"
@@ -110,6 +111,7 @@ Features:
 		NewSolanaCommand(),
 		NewHardwareCommand(),
 		NewSeekerCommand(),
+		NewNanoBotCommand(),
 		NewVersionCommand(),
 	)
 
@@ -750,6 +752,45 @@ Architecture:
 	}
 
 	cmd.Flags().IntVar(&bridgePort, "bridge-port", 8765, "Android Bridge HTTP port")
+
+	return cmd
+}
+
+// ── NanoBot ──────────────────────────────────────────────────────────
+
+func NewNanoBotCommand() *cobra.Command {
+	var port int
+
+	cmd := &cobra.Command{
+		Use:   "nanobot",
+		Short: "Launch interactive NanoBot UI (clickable companion)",
+		Long: `Start the NanoBot interactive UI — a local web app with
+an animated NanoBot character you can talk to.
+
+Features:
+  🤖 Animated NanoBot character with moods
+  💬 Chat interface — ask NanoBot anything
+  📊 One-click health, balance, trending, pet status
+  🔐 Wallet info and on-chain registry
+  ⚡ Real-time daemon status
+
+The UI launches on localhost and opens in your browser.`,
+		Example: `  nanosolana nanobot
+  nanosolana nanobot --port 7777`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			binary, _ := os.Executable()
+			if binary == "" {
+				binary = "nanosolana"
+			}
+
+			fmt.Fprintf(os.Stderr, "%s🤖 NanoBot starting on http://127.0.0.1:%d%s\n", colorGreen, port, colorReset)
+
+			srv := nanobot.NewServer(port, binary)
+			return srv.Start(cmd.Context())
+		},
+	}
+
+	cmd.Flags().IntVar(&port, "port", 7777, "NanoBot UI port")
 
 	return cmd
 }

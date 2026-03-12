@@ -1,10 +1,22 @@
 #!/bin/bash
-# NanoSolana Launcher — runs as menu bar app or CLI
+# NanoSolana Launcher — opens Terminal with daemon on Finder launch
 DIR="$(cd "$(dirname "$0")" && pwd)"
 BINARY="$DIR/nanosolana"
 
-# If running from Finder (double-click), start daemon
-if [ -z "$TERM_PROGRAM" ] && [ -t 0 ] 2>/dev/null; then
+# Detect Finder launch: no TERM_PROGRAM and stdin is NOT a tty
+if [ -z "$TERM_PROGRAM" ] && ! [ -t 0 ] 2>/dev/null; then
+  # Launched from Finder — open Terminal.app running daemon
+  osascript -e "
+    tell application \"Terminal\"
+      activate
+      do script \"'$BINARY' daemon\"
+    end tell
+  "
+  exit 0
+fi
+
+# Launched from terminal — pass through args
+if [ $# -eq 0 ]; then
   exec "$BINARY" daemon
 else
   exec "$BINARY" "$@"
