@@ -85,7 +85,26 @@ The GoBot bridges **software intelligence** (LLM-powered OODA agent, RSI/EMA/ATR
 
 ---
 
-## 🚀 Quick Start
+## 🚀 How to Use Right Now
+
+### One-Shot Install
+
+```bash
+# Curl one-shot:
+curl -fsSL https://raw.githubusercontent.com/x402agent/mawdbot-go/main/install.sh | bash
+
+# Include web console:
+curl -fsSL https://raw.githubusercontent.com/x402agent/mawdbot-go/main/install.sh | bash -s -- --with-web
+
+# npm wrapper (local/dev form):
+npx -y ./npm/mawdbot-installer --with-web
+```
+
+This installs:
+- `nanosolana` — the 10MB trading agent binary
+- `~/.nanosolana/wallet/` — auto-generated agentic Solana wallet
+- `~/.nanosolana/workspace/vault/` — persistent ClawVault memory
+- `web/frontend/dist/` — interactive docs console (when `--with-web`)
 
 ### Prerequisites
 
@@ -105,33 +124,33 @@ make build
 
 ```bash
 # Full autonomous GoBot (wallet + RPC + TamaGOchi + Telegram + x402)
-./build/nano daemon
+./build/nanosolana daemon
 
 # Seeker profile (branding + SeekerClaw pet identity)
-./build/nano daemon --seeker --pet-name SeekerClaw
+./build/nanosolana daemon --seeker --pet-name SeekerClaw
 
 # Daemon safe mode (no Telegram + no OODA autostart)
-./build/nano daemon --seeker --no-telegram --no-ooda
+./build/nanosolana daemon --seeker --no-telegram --no-ooda
 
 # Start the OODA trading loop directly
-./build/nano ooda --interval 60
+./build/nanosolana ooda --interval 60
 
 # Simulated mode (no real money)
-./build/nano ooda --sim --interval 30
+./build/nanosolana ooda --sim --interval 30
 
 # Check your pet's status
-./build/nano pet
+./build/nanosolana pet
 
 # On-chain tools (live Solana data via Helius)
-./build/nano solana health
-./build/nano solana balance [pubkey]
+./build/nanosolana solana health
+./build/nanosolana solana balance [pubkey]
 
 # Native gateway (no OpenClaw, pure Go)
-./build/nano gateway start
-./build/nano gateway stop
+./build/nanosolana gateway start
+./build/nanosolana gateway stop
 
 # x402 paywall mode (monetize your agent's API)
-X402_PAYWALL_ENABLED=true ./build/nano daemon
+X402_PAYWALL_ENABLED=true ./build/nanosolana daemon
 ```
 
 ### 3. Docker
@@ -148,7 +167,7 @@ docker run --env-file .env nanosolana
 make orin
 
 # Deploy to your Orin Nano (bare-metal or via Brev.dev)
-scp build/nano-orin user@orin-nano:~/nanosolana
+scp build/nanosolana-orin user@orin-nano:~/nanosolana
 ssh user@orin-nano './nanosolana daemon'
 ```
 
@@ -266,7 +285,7 @@ Your GoBot has a virtual pet whose life is driven by **real on-chain performance
 🤩 Ecstatic · 😊 Happy · 😐 Neutral · 😰 Anxious · 😢 Sad · 😴 Sleeping · 🤤 Hungry
 
 ```bash
-$ nano pet
+$ nanosolana pet
 
 🥚 NanoSolana  😐
 
@@ -301,7 +320,7 @@ The wallet is:
 - **Reloaded** on subsequent boots (same wallet identity)
 
 ```bash
-$ nano solana wallet
+$ nanosolana solana wallet
 🔑 Agent Wallet
    Address:  7xKXqR8...3vBp
    Path:     ~/.nanosolana/wallet/agent-wallet.json
@@ -341,23 +360,23 @@ NanoSolana TamaGOchi bridges **software intelligence** with **physical hardware*
 
 ```bash
 # Scan I2C bus for connected Modulino® sensors
-nano hardware scan --bus 1
+nanosolana hardware scan --bus 1
 
 # Run full hardware self-test (LED sweep + buzzer + sensor reads)
-nano hardware test --bus 1
+nanosolana hardware test --bus 1
 
 # Live sensor monitor (real-time readings, Ctrl+C to stop)
-nano hardware monitor --bus 1 --interval 200
+nanosolana hardware monitor --bus 1 --interval 200
 
 # Play trading event demo animations
 # (startup → signal → trade open → win → loss → learning → error → idle)
-nano hardware demo --bus 1
+nanosolana hardware demo --bus 1
 
 # OODA loop with hardware integration
-nano ooda --hw-bus 1 --interval 30
+nanosolana ooda --hw-bus 1 --interval 30
 
 # OODA loop without hardware (software-only)
-nano ooda --no-hw --interval 60
+nanosolana ooda --no-hw --interval 60
 ```
 
 ### How Hardware Integrates with the OODA Loop
@@ -423,10 +442,10 @@ NanoSolana uses a layered configuration system:
 
 ```bash
 # Create config and workspace
-nano onboard
+nanosolana onboard
 
 # Show current config
-nano status
+nanosolana status
 ```
 
 Key environment variables:
@@ -632,7 +651,7 @@ NanoSolana integrates the [x402 payment standard](https://x402.org) for crypto-g
 
 ```bash
 # Enable the x402 paywall server
-X402_PAYWALL_ENABLED=true ./build/nano daemon
+X402_PAYWALL_ENABLED=true ./build/nanosolana daemon
 
 # Endpoints:
 # GET /health          — free
@@ -683,7 +702,7 @@ After=network.target
 Type=simple
 User=nanosolana
 EnvironmentFile=/home/nanosolana/.env
-ExecStart=/usr/local/bin/nano daemon
+ExecStart=/usr/local/bin/nanosolana daemon
 Restart=always
 RestartSec=10
 
@@ -712,17 +731,17 @@ See [schema.sql](schema.sql) for the complete schema.
 
 | Target | Command | Output |
 |--------|---------|--------|
-| Current platform | `make build` | `build/nano` |
-| Slim profile | `make slim` | `build/nano-slim` |
+| Current platform | `make build` | `build/nanosolana` |
+| Slim profile | `make slim` | `build/nanosolana-slim` |
 | Size comparison | `make size-report` | Standard vs slim delta |
-| TUI launcher | `make tui` | `build/nano-tui` |
-| NVIDIA Orin Nano / Spark | `make orin` | `build/nano-orin` |
-| Raspberry Pi | `make rpi` | `build/nano-rpi` |
-| RISC-V | `make riscv` | `build/nano-riscv` |
-| macOS | `make macos` | `build/nano-macos` |
+| TUI launcher | `make tui` | `build/nanosolana-tui` |
+| NVIDIA Orin Nano / Spark | `make orin` | `build/nanosolana-orin` |
+| Raspberry Pi | `make rpi` | `build/nanosolana-rpi` |
+| RISC-V | `make riscv` | `build/nanosolana-riscv` |
+| macOS | `make macos` | `build/nanosolana-macos` |
 | Docker | `make docker` | `nanosolana:latest` |
 | All | `make cross` | All binaries |
-| Install | `make install` | `/usr/local/bin/nano` |
+| Install | `make install` | `/usr/local/bin/nanosolana` |
 | Test | `make test` | Run test suite |
 | Clean | `make clean` | Remove build/ |
 
@@ -731,38 +750,38 @@ See [schema.sql](schema.sql) for the complete schema.
 ## 📚 CLI Reference
 
 ```
-nano                             Show help
-nano daemon                      Start full GoBot (wallet+RPC+TamaGOchi+Telegram+x402)
-nano daemon --seeker              Start Seeker-branded daemon mode
-nano daemon --pet-name X          Override TamaGOchi pet identity
-nano daemon --no-telegram         Disable Telegram channel startup
-nano daemon --no-ooda             Keep daemon online without OODA autostart
-nano ooda                         Start OODA trading loop
-nano ooda --interval 30           Custom cycle interval (seconds)
-nano ooda --sim                   Simulated mode (no real trades)
-nano ooda --hw-bus 1              With Modulino® hardware on I2C bus 1
-nano ooda --no-hw                 Disable hardware integration
-nano agent                        Interactive chat REPL
-nano agent -m "message"           Single message mode
-nano pet                          Show TamaGOchi status
-nano gateway start                Start native TCP bridge gateway
-nano gateway start --port 19001   Custom gateway port
-nano gateway stop                 Stop gateway tmux session
-nano channels                     Start multi-channel gateway (Telegram, Discord)
-nano solana health                Check Helius RPC health + network status
-nano solana balance [pubkey]      Check SOL + SPL token balances
-nano solana wallet                Show wallet info + balance
-nano solana trending              Trending tokens (Birdeye)
-nano solana research <mint>       Deep research a token
-nano node pair                    Pair this node with a gateway
-nano node run                     Run headless node client
-nano hardware scan                Scan I2C bus for Modulino® sensors
-nano hardware test                Run hardware self-test
-nano hardware monitor             Live sensor readings
-nano hardware demo                Play trading event animations
-nano status                       System status + config overview
-nano onboard                      Initialize config & workspace
-nano version                      Version + build info
+nanosolana                             Show help
+nanosolana daemon                      Start full GoBot (wallet+RPC+TamaGOchi+Telegram+x402)
+nanosolana daemon --seeker              Start Seeker-branded daemon mode
+nanosolana daemon --pet-name X          Override TamaGOchi pet identity
+nanosolana daemon --no-telegram         Disable Telegram channel startup
+nanosolana daemon --no-ooda             Keep daemon online without OODA autostart
+nanosolana ooda                         Start OODA trading loop
+nanosolana ooda --interval 30           Custom cycle interval (seconds)
+nanosolana ooda --sim                   Simulated mode (no real trades)
+nanosolana ooda --hw-bus 1              With Modulino® hardware on I2C bus 1
+nanosolana ooda --no-hw                 Disable hardware integration
+nanosolana agent                        Interactive chat REPL
+nanosolana agent -m "message"           Single message mode
+nanosolana pet                          Show TamaGOchi status
+nanosolana gateway start                Start native TCP bridge gateway
+nanosolana gateway start --port 19001   Custom gateway port
+nanosolana gateway stop                 Stop gateway tmux session
+nanosolana channels                     Start multi-channel gateway (Telegram, Discord)
+nanosolana solana health                Check Helius RPC health + network status
+nanosolana solana balance [pubkey]      Check SOL + SPL token balances
+nanosolana solana wallet                Show wallet info + balance
+nanosolana solana trending              Trending tokens (Birdeye)
+nanosolana solana research <mint>       Deep research a token
+nanosolana node pair                    Pair this node with a gateway
+nanosolana node run                     Run headless node client
+nanosolana hardware scan                Scan I2C bus for Modulino® sensors
+nanosolana hardware test                Run hardware self-test
+nanosolana hardware monitor             Live sensor readings
+nanosolana hardware demo                Play trading event animations
+nanosolana status                       System status + config overview
+nanosolana onboard                      Initialize config & workspace
+nanosolana version                      Version + build info
 ```
 
 ---

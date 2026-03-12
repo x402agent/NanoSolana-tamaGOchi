@@ -26,6 +26,7 @@ import (
 	"github.com/8bitlabs/mawdbot/pkg/hardware"
 	"github.com/8bitlabs/mawdbot/pkg/node"
 	"github.com/8bitlabs/mawdbot/pkg/onchain"
+	"github.com/8bitlabs/mawdbot/pkg/solana"
 	"github.com/8bitlabs/mawdbot/pkg/tamagochi"
 )
 
@@ -79,7 +80,7 @@ func NewMawdBotCommand() *cobra.Command {
 	short := fmt.Sprintf("🦞 NanoSolana — Sentient Solana Trading Intelligence v%s", config.GetVersion())
 
 	cmd := &cobra.Command{
-		Use:   "nano",
+		Use:   "nanosolana",
 		Short: short,
 		Long: `NanoSolana — Ultra-lightweight autonomous trading agent for Solana.
 Powered by the NanoSolana Go runtime with native gateway and headless nodes.
@@ -92,7 +93,7 @@ Features:
   • Native Gateway: TCP bridge with Tailscale mesh + tmux sessions
   • Headless Nodes: Connect hardware (Orin Nano, RPi) over mesh
   • <10MB RAM, boots in <1s on ARM64`,
-		Example: "nano daemon\nnano gateway start\nnano node run\nnano ooda --interval 60",
+		Example: "nanosolana daemon\nnanosolana gateway start\nnanosolana node run\nnanosolana ooda --interval 60",
 	}
 
 	cmd.AddCommand(
@@ -120,7 +121,7 @@ func NewAgentCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "agent",
-		Short: "Chat with MawdBot agent",
+		Short: "Chat with NanoSolana agent",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load()
 			if err != nil {
@@ -134,7 +135,7 @@ func NewAgentCommand() *cobra.Command {
 			}
 
 			fmt.Print(lobster)
-			fmt.Printf("%s🦞 MawdBot Interactive Mode%s\n", colorGreen, colorReset)
+			fmt.Printf("%s🦞 NanoSolana Interactive Mode%s\n", colorGreen, colorReset)
 			fmt.Printf("%sModel: %s | Workspace: %s%s\n", colorDim,
 				cfg.Agents.Defaults.ModelName, cfg.Agents.Defaults.Workspace, colorReset)
 			fmt.Printf("%sMemory commands: !remember, !recall, !trades, !lessons, !status%s\n\n",
@@ -188,7 +189,7 @@ Hardware integration (when --hw-bus is set):
 				cfg.OODA.Mode = "simulated"
 			}
 
-			fmt.Printf("%s🔄 MawdBot OODA Loop%s\n", colorGreen, colorReset)
+			fmt.Printf("%s🔄 NanoSolana OODA Loop%s\n", colorGreen, colorReset)
 			fmt.Printf("%sMode: %s | Interval: %ds | Watchlist: %d tokens%s\n",
 				colorDim, cfg.OODA.Mode, cfg.OODA.IntervalSeconds,
 				len(cfg.OODA.Watchlist), colorReset)
@@ -327,7 +328,7 @@ func NewNativeGatewayCommand() *cobra.Command {
 		Short: "NanoSolana native TCP bridge gateway",
 		Long: `The NanoSolana native gateway — a Go TCP bridge server that connects
 headless hardware nodes to the daemon over Tailscale mesh networking.
-No OpenClaw or Node.js required.`,
+No external dependencies required.`,
 	}
 
 	var (
@@ -339,9 +340,9 @@ No OpenClaw or Node.js required.`,
 	startCmd := &cobra.Command{
 		Use:   "start",
 		Short: "Start the native gateway bridge server",
-		Example: `  nano gateway start
-  nano gateway start --port 19001
-  nano gateway start --bind 100.88.46.29`,
+		Example: `  nanosolana gateway start
+  nanosolana gateway start --port 19001
+  nanosolana gateway start --bind 100.88.46.29`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, _ := config.Load()
 
@@ -365,8 +366,8 @@ No OpenClaw or Node.js required.`,
 			}
 
 			fmt.Printf("\n%sBridge: %s%s\n", colorTeal, bridge.BridgeAddr(), colorReset)
-			fmt.Printf("%sPair:   nano node pair --bridge %s%s\n", colorDim, bridge.BridgeAddr(), colorReset)
-			fmt.Printf("%sRun:    nano node run  --bridge %s%s\n\n", colorDim, bridge.BridgeAddr(), colorReset)
+			fmt.Printf("%sPair:   nanosolana node pair --bridge %s%s\n", colorDim, bridge.BridgeAddr(), colorReset)
+			fmt.Printf("%sRun:    nanosolana node run  --bridge %s%s\n\n", colorDim, bridge.BridgeAddr(), colorReset)
 
 			<-ctx.Done()
 			bridge.Stop()
@@ -382,7 +383,7 @@ No OpenClaw or Node.js required.`,
 		Use:   "stop",
 		Short: "Stop the gateway tmux session",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			session := "nano-gw"
+			session := "nanosolana-gw"
 			if err := gw.KillGateway(session); err != nil {
 				return err
 			}
@@ -400,10 +401,10 @@ No OpenClaw or Node.js required.`,
 func NewOnboardCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "onboard",
-		Short: "Initialize MawdBot config & workspace",
+		Short: "Initialize NanoSolana config & workspace",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Print(lobster)
-			fmt.Printf("%s🦞 Welcome to MawdBot!%s\n\n", colorGreen, colorReset)
+			fmt.Printf("%s🦞 Welcome to NanoSolana!%s\n\n", colorGreen, colorReset)
 			fmt.Printf("Config:    %s%s%s\n", colorTeal, config.DefaultConfigPath(), colorReset)
 			fmt.Printf("Workspace: %s%s%s\n", colorTeal, config.DefaultWorkspacePath(), colorReset)
 
@@ -411,12 +412,12 @@ func NewOnboardCommand() *cobra.Command {
 				return fmt.Errorf("onboard: %w", err)
 			}
 
-			fmt.Printf("\n%s✓ MawdBot initialized!%s\n", colorGreen, colorReset)
+			fmt.Printf("\n%s✓ NanoSolana initialized!%s\n", colorGreen, colorReset)
 			fmt.Printf("%sEdit %s to add your API keys.%s\n\n", colorDim, config.DefaultConfigPath(), colorReset)
 			fmt.Printf("Quick start:\n")
-			fmt.Printf("  %smawdbot ooda --sim%s              # simulated mode\n", colorGreen, colorReset)
-			fmt.Printf("  %smawdbot ooda --hw-bus 1%s         # with Modulino® hardware\n", colorGreen, colorReset)
-			fmt.Printf("  %smawdbot hardware scan%s           # check I2C sensors\n", colorGreen, colorReset)
+			fmt.Printf("  %snanosolana ooda --sim%s              # simulated mode\n", colorGreen, colorReset)
+			fmt.Printf("  %snanosolana ooda --hw-bus 1%s         # with Modulino® hardware\n", colorGreen, colorReset)
+			fmt.Printf("  %snanosolana hardware scan%s           # check I2C sensors\n", colorGreen, colorReset)
 			return nil
 		},
 	}
@@ -429,14 +430,14 @@ func NewStatusCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "status",
-		Short: "Show MawdBot system status",
+		Short: "Show NanoSolana system status",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load()
 			if err != nil {
 				return fmt.Errorf("config error: %w", err)
 			}
 
-			fmt.Printf("%s🦞 MawdBot Status%s\n\n", colorGreen, colorReset)
+			fmt.Printf("%s🦞 NanoSolana Status%s\n\n", colorGreen, colorReset)
 			fmt.Printf("Version:    %s\n", config.FormatVersion())
 			buildTime, goVer := config.FormatBuildInfo()
 			fmt.Printf("Go:         %s\n", goVer)
@@ -623,6 +624,86 @@ func NewSolanaCommand() *cobra.Command {
 				return nil
 			},
 		},
+		&cobra.Command{
+			Use:   "register",
+			Short: "Register this agent on-chain (devnet Metaplex NFT)",
+			Long: `Mint a gasless NFT on Solana devnet to register this agent on-chain.
+The NFT contains your agent's pubkey, version, skills, and a unique fingerprint.
+This serves as the agent's verifiable on-chain identity.
+
+Devnet SOL is auto-airdropped if needed (zero cost).`,
+			RunE: func(cmd *cobra.Command, args []string) error {
+				cfg, _ := config.Load()
+				fmt.Printf("\n%s⛓️  NanoSolana Agent Registration%s\n\n", colorGreen, colorReset)
+
+				// Load agent wallet
+				wallet, err := solana.EnsureAgentWallet(cfg.Solana.WalletKeyPath)
+				if err != nil {
+					return fmt.Errorf("wallet required: %w", err)
+				}
+				fmt.Printf("  %sAgent:%s   %s\n", colorDim, colorReset, wallet.PublicKeyStr())
+
+				// Check for existing registration
+				if reg, err := onchain.LoadRegistration(); err == nil {
+					fmt.Printf("  %sStatus:%s  Already registered!\n", colorDim, colorReset)
+					fmt.Printf("  %sMint:%s    %s\n", colorDim, colorReset, reg.Result.MintAddress)
+					fmt.Printf("  %sTx:%s      %s\n", colorDim, colorReset, reg.Result.TxSignature[:16]+"...")
+					fmt.Printf("  %sNetwork:%s %s\n", colorDim, colorReset, reg.Result.Network)
+					fmt.Printf("\n  %sExplorer: https://explorer.solana.com/address/%s?cluster=devnet%s\n\n",
+						colorDim, reg.Result.MintAddress, colorReset)
+					return nil
+				}
+
+				// Skills from config
+				skills := []string{"ooda-trading", "solana-rpc", "jupiter-swaps"}
+				if cfg.Solana.BirdeyeAPIKey != "" {
+					skills = append(skills, "birdeye-analytics")
+				}
+				if cfg.Solana.AsterAPIKey != "" {
+					skills = append(skills, "aster-perps")
+				}
+
+				fmt.Printf("  %sSkills:%s  %v\n", colorDim, colorReset, skills)
+				fmt.Printf("  %sNetwork:%s devnet (gasless)\n\n", colorDim, colorReset)
+
+				ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+				defer cancel()
+
+				result, err := onchain.RegisterAgent(ctx, wallet.GetPrivateKey(), config.FormatVersion(), skills)
+				if err != nil {
+					return fmt.Errorf("registration failed: %w", err)
+				}
+
+				fmt.Printf("\n  %s✅ Agent registered on-chain!%s\n\n", colorGreen, colorReset)
+				fmt.Printf("  %sMint:%s    %s\n", colorDim, colorReset, result.MintAddress)
+				fmt.Printf("  %sTx:%s      %s\n", colorDim, colorReset, result.TxSignature[:16]+"...")
+				fmt.Printf("  %sNetwork:%s %s\n", colorDim, colorReset, result.Network)
+				fmt.Printf("  %sSaved:%s   ~/.nanosolana/registry/registration.json\n\n", colorDim, colorReset)
+				fmt.Printf("  %sExplorer: https://explorer.solana.com/tx/%s?cluster=devnet%s\n\n",
+					colorAmber, result.TxSignature, colorReset)
+				return nil
+			},
+		},
+		&cobra.Command{
+			Use:   "registry",
+			Short: "Show on-chain agent registration status",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				reg, err := onchain.LoadRegistration()
+				if err != nil {
+					fmt.Printf("%s⚠️  No registration found. Run: nanosolana solana register%s\n", colorAmber, colorReset)
+					return nil
+				}
+				fmt.Printf("\n%s⛓️  Agent Registration%s\n\n", colorGreen, colorReset)
+				fmt.Printf("  %sAgent:%s   %s\n", colorDim, colorReset, reg.Result.AgentPubkey)
+				fmt.Printf("  %sMint:%s    %s\n", colorDim, colorReset, reg.Result.MintAddress)
+				fmt.Printf("  %sTx:%s      %s\n", colorDim, colorReset, reg.Result.TxSignature[:16]+"...")
+				fmt.Printf("  %sNetwork:%s %s\n", colorDim, colorReset, reg.Result.Network)
+				fmt.Printf("  %sSaved:%s   %s\n\n", colorDim, colorReset, reg.SavedAt)
+				fmt.Printf("  %sExplorer:%s https://explorer.solana.com/address/%s?cluster=devnet%s\n\n",
+					colorDim, colorReset, reg.Result.MintAddress, colorReset)
+				return nil
+			},
+		},
 	)
 
 	return cmd
@@ -635,7 +716,7 @@ func NewVersionCommand() *cobra.Command {
 		Use:   "version",
 		Short: "Show version info",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("mawdbot %s\n", config.FormatVersion())
+			fmt.Printf("nanosolana %s\n", config.FormatVersion())
 			buildTime, goVer := config.FormatBuildInfo()
 			if buildTime != "" {
 				fmt.Printf("built:  %s\n", buildTime)
@@ -692,8 +773,8 @@ func (c *consoleHooks) OnError(ctx string, err error) {
 func NewDaemonCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "daemon",
-		Short: "Start the nano Solana daemon (OODA + TamaGOchi + Telegram)",
-		Long: `Launch the full MawdBot daemon — a long-running process that:
+		Short: "Start the NanoSolana daemon (OODA + TamaGOchi + Telegram)",
+		Long: `Launch the full NanoSolana daemon — a long-running process that:
   • Generates/loads the agentic Solana wallet
   • Connects to Helius RPC (or fallback)
   • Starts the TamaGOchi pet engine (wallet-driven evolution)
@@ -746,7 +827,7 @@ func NewNodeCommand() *cobra.Command {
 native gateway over TCP. Supports pairing, voice transcript forwarding, chat
 subscription with TTS, and mDNS advertising.
 
-The gateway can be started via 'nano gateway start'.`,
+The gateway can be started via 'nanosolana gateway start'.`,
 	}
 
 	cmd.AddCommand(
@@ -770,8 +851,8 @@ func newNodePairCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "pair",
 		Short: "Pair this node with a gateway",
-		Example: `  nano node pair --bridge 100.88.46.29:18790 --display-name "Orin Nano"
-  nano node pair --bridge 127.0.0.1:18790`,
+		Example: `  nanosolana node pair --bridge 100.88.46.29:18790 --display-name "Orin Nano"
+  nanosolana node pair --bridge 127.0.0.1:18790`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, _ := config.Load()
 
@@ -818,7 +899,7 @@ func newNodePairCommand() *cobra.Command {
 				return err
 			}
 			fmt.Printf("  %s⏳%s Waiting for approval...\n", colorTeal, colorReset)
-			fmt.Printf("  %sApprove via: nano nodes approve <requestId>%s\n\n", colorDim, colorReset)
+			fmt.Printf("  %sApprove via: nanosolana nodes approve <requestId>%s\n\n", colorDim, colorReset)
 
 			token, err := node.WaitForPair(client)
 			if err != nil {
@@ -858,8 +939,8 @@ func newNodeRunCommand() *cobra.Command {
 authenticates, and maintains a persistent connection with automatic
 reconnection. Events from hardware can be forwarded as voice.transcript
 or agent.request messages.`,
-		Example: `  nano node run --bridge 100.88.46.29:18790
-  nano node run --bridge 100.88.46.29:18790 --tts-engine system`,
+		Example: `  nanosolana node run --bridge 100.88.46.29:18790
+  nanosolana node run --bridge 100.88.46.29:18790 --tts-engine system`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, _ := config.Load()
 
@@ -920,9 +1001,9 @@ your Tailscale IP for secure mesh networking. The gateway serves as the
 bridge between headless hardware nodes and the NanoSolana daemon.
 
 Perfect for SSH sessions via Termius — gateway runs in the background.`,
-		Example: `  nano node gateway-spawn
-  nano node gateway-spawn --port 19001
-  nano node gateway-spawn --no-tailscale`,
+		Example: `  nanosolana node gateway-spawn
+  nanosolana node gateway-spawn --port 19001
+  nanosolana node gateway-spawn --no-tailscale`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, _ := config.Load()
 
@@ -958,9 +1039,9 @@ Perfect for SSH sessions via Termius — gateway runs in the background.`,
 			}
 			fmt.Printf("%s  tmux:%s    %s\n", colorDim, colorReset, result.TMUXSession)
 			fmt.Printf("\n%s  Connect from node:%s\n", colorDim, colorReset)
-			fmt.Printf("  %snano node run --bridge %s%s\n", colorAmber, result.BridgeAddr, colorReset)
+			fmt.Printf("  %snanosolana node run --bridge %s%s\n", colorAmber, result.BridgeAddr, colorReset)
 			fmt.Printf("\n%s  Pair new node:%s\n", colorDim, colorReset)
-			fmt.Printf("  %snano node pair --bridge %s%s\n", colorAmber, result.BridgeAddr, colorReset)
+			fmt.Printf("  %snanosolana node pair --bridge %s%s\n", colorAmber, result.BridgeAddr, colorReset)
 			fmt.Printf("\n%s  Attach to tmux:%s\n", colorDim, colorReset)
 			fmt.Printf("  %stmux attach -t %s%s\n\n", colorAmber, result.TMUXSession, colorReset)
 
@@ -969,7 +1050,7 @@ Perfect for SSH sessions via Termius — gateway runs in the background.`,
 	}
 
 	cmd.Flags().IntVar(&port, "port", 18790, "Gateway bridge port")
-	cmd.Flags().StringVar(&session, "session", "nanoclaw-gw", "tmux session name")
+	cmd.Flags().StringVar(&session, "session", "nanosolana-gw", "tmux session name")
 	cmd.Flags().BoolVar(&noTS, "no-tailscale", false, "Don't bind to Tailscale IP")
 	cmd.Flags().BoolVar(&force, "force", false, "Kill existing port listeners")
 	return cmd
@@ -990,7 +1071,7 @@ func newNodeGatewayKillCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&session, "session", "nanoclaw-gw", "tmux session name")
+	cmd.Flags().StringVar(&session, "session", "nanosolana-gw", "tmux session name")
 	return cmd
 }
 
@@ -1002,7 +1083,7 @@ func NewPetCommand() *cobra.Command {
 		Short: "Show TamaGOchi pet status",
 		Long:  "Display the Nano Solana TamaGOchi — your agent's virtual pet whose evolution is driven by on-chain performance.",
 		Run: func(cmd *cobra.Command, args []string) {
-			pet := tamagochi.New("MawdBot")
+			pet := tamagochi.New("NanoSolana")
 			fmt.Println()
 			fmt.Println(pet.StatusString())
 			fmt.Println()
@@ -1028,9 +1109,9 @@ func runInteractiveAgent(cfg *config.Config) error {
 			fmt.Printf("%s💤 Vault saved. Goodbye.%s\n", colorDim, colorReset)
 			return nil
 		case input == "!trades":
-			fmt.Printf("%s📊 Trade history: use `mawdbot ooda` to start trading%s\n", colorDim, colorReset)
+			fmt.Printf("%s📊 Trade history: use `nanosolana ooda` to start trading%s\n", colorDim, colorReset)
 		case input == "!lessons":
-			fmt.Printf("%s🧠 Learned patterns: stored in ~/.mawdbot/workspace/vault/lessons/%s\n", colorDim, colorReset)
+			fmt.Printf("%s🧠 Learned patterns: stored in ~/.nanosolana/workspace/vault/lessons/%s\n", colorDim, colorReset)
 		case input == "!status":
 			fmt.Printf("%sModel: %s | Mode: %s%s\n", colorDim, cfg.Agents.Defaults.ModelName, cfg.OODA.Mode, colorReset)
 		case len(input) > 10 && input[:10] == "!remember ":

@@ -4,23 +4,24 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 
 const DEMO_COMMANDS: Record<string, string[]> = {
   'help': [
-    '  \x1b[green]nano\x1b[/]                             Show help',
-    '  \x1b[green]nano daemon\x1b[/]                      Start full GoBot',
-    '  \x1b[green]nano solana health\x1b[/]               Check Helius RPC health',
-    '  \x1b[green]nano solana balance [pubkey]\x1b[/]      Check SOL + SPL balances',
-    '  \x1b[green]nano solana wallet\x1b[/]               Show wallet config',
-    '  \x1b[green]nano ooda --interval 60\x1b[/]          Start OODA trading loop',
-    '  \x1b[green]nano gateway start\x1b[/]               Start native TCP bridge',
-    '  \x1b[green]nano pet\x1b[/]                         Show TamaGOchi status',
-    '  \x1b[green]nano node pair\x1b[/]                   Pair hardware node',
-    '  \x1b[green]nano version\x1b[/]                     Version + build info',
+    '  \x1b[green]nanosolana daemon\x1b[/]                      Start full GoBot',
+    '  \x1b[green]nanosolana solana health\x1b[/]               Check Helius RPC health',
+    '  \x1b[green]nanosolana solana balance [pubkey]\x1b[/]      Check SOL + SPL balances',
+    '  \x1b[green]nanosolana solana wallet\x1b[/]               Show wallet config',
+    '  \x1b[green]nanosolana solana register\x1b[/]             Register agent on-chain (devnet NFT)',
+    '  \x1b[green]nanosolana solana registry\x1b[/]             Show registration status',
+    '  \x1b[green]nanosolana ooda --interval 60\x1b[/]          Start OODA trading loop',
+    '  \x1b[green]nanosolana gateway start\x1b[/]               Start native TCP bridge',
+    '  \x1b[green]nanosolana pet\x1b[/]                         Show TamaGOchi status',
+    '  \x1b[green]nanosolana node pair\x1b[/]                   Pair hardware node',
+    '  \x1b[green]nanosolana version\x1b[/]                     Version + build info',
   ],
-  'nano version': [
-    '  nano v2.0.0-nanosolana',
+  'nanosolana version': [
+    '  nanosolana v2.0.0-nanosolana',
     '  built:  2026-03-12T15:28:00Z',
     '  go:     go1.25.0 darwin/arm64',
   ],
-  'nano solana health': [
+  'nanosolana solana health': [
     '',
     '  \x1b[green]⛓️  Solana Network Status\x1b[/]',
     '',
@@ -36,7 +37,7 @@ const DEMO_COMMANDS: Record<string, string[]> = {
     '  Medium: 5,000',
     '  High:   50,000',
   ],
-  'nano solana balance': [
+  'nanosolana solana balance': [
     '',
     '  \x1b[green]💰 Wallet: 7xKX...3vBp\x1b[/]',
     '',
@@ -48,7 +49,7 @@ const DEMO_COMMANDS: Record<string, string[]> = {
     '    DezXAZ...B263  5,000,000.00  (BONK)',
     '    4k3Dyj...X6R   42.78  (RAY)',
   ],
-  'nano pet': [
+  'nanosolana pet': [
     '',
     '  🐹 NanoSolana  😊',
     '',
@@ -63,7 +64,7 @@ const DEMO_COMMANDS: Record<string, string[]> = {
     '  🔥 Streak: +3',
     '  ⏱️ Age: 72h · Uptime: 168h',
   ],
-  'nano ooda --sim': [
+  'nanosolana ooda --sim': [
     '  \x1b[green][OODA]\x1b[/] 🦞 NanoSolana starting (mode=simulated interval=60s)',
     '  \x1b[green][OODA]\x1b[/] ⛓️  On-chain engine connected (Helius RPC + Jupiter)',
     '  \x1b[green][OODA]\x1b[/] 🔑 Agent wallet: 7xKXqR8...3vBp',
@@ -76,14 +77,34 @@ const DEMO_COMMANDS: Record<string, string[]> = {
     '  \x1b[green][OODA]\x1b[/] 📈 LONG JUP at $0.8421 (0.2400 SOL) [simulated]',
     '  \x1b[green][OODA]\x1b[/] ─── Cycle #1 complete (positions=1) ───',
   ],
-  'nano gateway start --no-tailscale': [
+  'nanosolana gateway start --no-tailscale': [
     '  \x1b[green]🦞 NanoSolana Gateway\x1b[/]',
     '  \x1b[dim]Bridge:\x1b[/]  0.0.0.0:18790',
     '  \x1b[dim]Auth:\x1b[/]    token-based',
     '  \x1b[dim]Nodes:\x1b[/]   0 connected',
     '',
-    '  \x1b[dim]Pair:\x1b[/]   nano node pair --bridge localhost:18790',
-    '  \x1b[dim]Run:\x1b[/]    nano node run  --bridge localhost:18790',
+    '  \x1b[dim]Pair:\x1b[/]   nanosolana node pair --bridge localhost:18790',
+    '  \x1b[dim]Run:\x1b[/]    nanosolana node run  --bridge localhost:18790',
+  ],
+  'nanosolana solana register': [
+    '',
+    '  \x1b[green]⛓️  NanoSolana Agent Registration\x1b[/]',
+    '',
+    '  \x1b[dim]Agent:\x1b[/]   7xKXqR8...3vBp',
+    '  \x1b[dim]Skills:\x1b[/]  [ooda-trading, solana-rpc, jupiter-swaps, birdeye-analytics]',
+    '  \x1b[dim]Network:\x1b[/] devnet (gasless)',
+    '',
+    '  ☁️  Requesting devnet airdrop for 7xKXqR8...',
+    '  ✅ Airdrop: 5kYj3Rv8nN2...',
+    '',
+    '  \x1b[green]✅ Agent registered on-chain!\x1b[/]',
+    '',
+    '  \x1b[dim]Mint:\x1b[/]    BRjp4qK9nRfV3vZm7xKXqR8pDn9E4rUsFj2y',
+    '  \x1b[dim]Tx:\x1b[/]      4Qj8nKxm2Y7p...',
+    '  \x1b[dim]Network:\x1b[/] devnet',
+    '  \x1b[dim]Saved:\x1b[/]   ~/.nanosolana/registry/registration.json',
+    '',
+    '  \x1b[amber]Explorer: https://explorer.solana.com/tx/4Qj8nKxm2Y7p...?cluster=devnet\x1b[/]',
   ],
   'clear': [],
 }
@@ -116,7 +137,7 @@ function parseTermColor(text: string) {
 
 function Terminal() {
   const [lines, setLines] = useState<{ type: 'prompt' | 'output'; cmd?: string; text?: string }[]>([
-    { type: 'output', text: '\x1b[green]🦞 NanoSolana Console v2.0\x1b[/] — Try: help, nano solana health, nano pet' },
+    { type: 'output', text: '\x1b[green]🦞 NanoSolana Console v2.0\x1b[/] — Try: help, nanosolana solana health, nanosolana pet' },
   ])
   const [input, setInput] = useState('')
   const [history, setHistory] = useState<string[]>([])
@@ -182,7 +203,7 @@ function Terminal() {
           <div key={i}>
             {line.type === 'prompt' ? (
               <div className="terminal-line">
-                <span className="terminal-prompt">nano $</span>
+                <span className="terminal-prompt">nanosolana $</span>
                 <span className="terminal-cmd">{line.cmd}</span>
               </div>
             ) : (
@@ -195,7 +216,7 @@ function Terminal() {
           </div>
         ))}
         <div className="terminal-input-line">
-          <span className="terminal-prompt">nano $</span>
+          <span className="terminal-prompt">nanosolana $</span>
           <input
             ref={inputRef}
             className="terminal-input"
@@ -227,14 +248,14 @@ const FEATURES = [
 ]
 
 const CLI_COMMANDS = [
-  { cmd: 'nano solana health', desc: 'Helius RPC + priority fees' },
-  { cmd: 'nano solana balance', desc: 'SOL + SPL balances' },
-  { cmd: 'nano daemon', desc: 'Full trading daemon' },
-  { cmd: 'nano ooda --sim', desc: 'Simulated OODA loop' },
-  { cmd: 'nano gateway start', desc: 'TCP bridge server' },
-  { cmd: 'nano pet', desc: 'TamaGOchi status' },
-  { cmd: 'nano node pair', desc: 'Pair hardware node' },
-  { cmd: 'nano version', desc: 'Build info' },
+  { cmd: 'nanosolana solana health', desc: 'Helius RPC + priority fees' },
+  { cmd: 'nanosolana solana balance', desc: 'SOL + SPL balances' },
+  { cmd: 'nanosolana daemon', desc: 'Full trading daemon' },
+  { cmd: 'nanosolana ooda --sim', desc: 'Simulated OODA loop' },
+  { cmd: 'nanosolana gateway start', desc: 'TCP bridge server' },
+  { cmd: 'nanosolana pet', desc: 'TamaGOchi status' },
+  { cmd: 'nanosolana node pair', desc: 'Pair hardware node' },
+  { cmd: 'nanosolana version', desc: 'Build info' },
 ]
 
 // ── Main App ─────────────────────────────────────────────────────────
@@ -343,7 +364,7 @@ export default function App() {
             <div className="section-label">Interactive Demo</div>
             <h2 className="section-title">Try the Terminal</h2>
             <p style={{ color: 'var(--text-secondary)', marginTop: 8, fontSize: '0.9rem' }}>
-              Type commands below — try <code style={{ color: 'var(--sol-green)', fontFamily: 'var(--font-mono)' }}>nano solana health</code> or <code style={{ color: 'var(--sol-green)', fontFamily: 'var(--font-mono)' }}>nano pet</code>
+              Type commands below — try <code style={{ color: 'var(--sol-green)', fontFamily: 'var(--font-mono)' }}>nanosolana solana health</code> or <code style={{ color: 'var(--sol-green)', fontFamily: 'var(--font-mono)' }}>nanosolana pet</code>
             </p>
           </div>
           <Terminal />
@@ -449,7 +470,7 @@ export default function App() {
             <div className="code-header">
               <span>terminal</span>
               <button className="code-copy" onClick={() => navigator.clipboard.writeText(
-                'git clone https://github.com/x402agent/NanoSolana-tamaGOchi.git\ncd NanoSolana-tamaGOchi\ncp .env.example .env\nmake build\n./build/nano daemon'
+                'git clone https://github.com/x402agent/NanoSolana-tamaGOchi.git\ncd NanoSolana-tamaGOchi\ncp .env.example .env\nmake build\n./build/nanosolana daemon'
               )}>Copy</button>
             </div>
             <div className="code-body">
@@ -460,9 +481,9 @@ export default function App() {
               <div><span className="cmd">make build</span></div>
               <div></div>
               <div><span className="comment"># Run</span></div>
-              <div><span className="cmd">./build/nano daemon</span>          <span className="comment"># Full autonomous GoBot</span></div>
-              <div><span className="cmd">./build/nano solana health</span>   <span className="comment"># Check live mainnet</span></div>
-              <div><span className="cmd">./build/nano ooda</span> <span className="flag">--sim</span>        <span className="comment"># Simulated trading</span></div>
+              <div><span className="cmd">./build/nanosolana daemon</span>          <span className="comment"># Full autonomous GoBot</span></div>
+              <div><span className="cmd">./build/nanosolana solana health</span>   <span className="comment"># Check live mainnet</span></div>
+              <div><span className="cmd">./build/nanosolana ooda</span> <span className="flag">--sim</span>        <span className="comment"># Simulated trading</span></div>
             </div>
           </div>
         </div>

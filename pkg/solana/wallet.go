@@ -140,6 +140,15 @@ func (w *Wallet) PrivateKeyBase58() string {
 	return w.inner.PrivateKey.String()
 }
 
+// GetPrivateKey returns the raw solana-go PrivateKey for signing.
+// Returns a zero-value key if the wallet is read-only.
+func (w *Wallet) GetPrivateKey() solanago.PrivateKey {
+	if w == nil || w.inner == nil {
+		return solanago.PrivateKey{}
+	}
+	return w.inner.PrivateKey
+}
+
 // ── Public-Key Helpers ──────────────────────────────────────────────
 // Re-exports from solana-go for convenience, so callers don't need
 // to import solana-go directly.

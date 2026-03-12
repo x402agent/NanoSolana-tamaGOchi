@@ -2,7 +2,7 @@
 // NanoSolana Gateway tmux session management.
 // Orchestrates spawning the native Go bridge in tmux with Tailscale mesh networking.
 //
-// No OpenClaw dependency — uses the native NanoSolana bridge server.
+// Native NanoSolana bridge server.
 package gateway
 
 import (
@@ -16,7 +16,7 @@ type SpawnConfig struct {
 	Port         int    // Gateway bridge port (default 18790)
 	TMUXSession  string // tmux session name (default "nanoclaw-gw")
 	UseTailscale bool   // Bind to Tailscale IP
-	OpenClawBin  string // DEPRECATED — ignored, uses native bridge
+	LegacyBin    string // DEPRECATED — ignored, uses native bridge
 	GatewayFlags string // Extra flags for native gateway
 	ForceBind    bool   // Force kill existing listeners
 }

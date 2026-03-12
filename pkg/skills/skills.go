@@ -117,7 +117,7 @@ func (rm *RegistryManager) Search(ctx context.Context, query string) ([]Skill, e
 }
 
 // InstallSkill installs a skill into workspace/skills/<skill-name>, writing both
-// legacy skill.json and Seeker/OpenClaw-compatible SKILL.md.
+// legacy skill.json and SKILL.md format.
 func InstallSkill(workspace string, skill Skill) error {
 	skill.Name = strings.TrimSpace(skill.Name)
 	if skill.Name == "" {
@@ -334,7 +334,7 @@ func parseSkillMarkdown(raw string) (Skill, error) {
 
 	skill.Emoji = cleanScalar(scalar["emoji"])
 	if skill.Emoji == "" {
-		skill.Emoji = cleanScalar(scalar["metadata.openclaw.emoji"])
+		skill.Emoji = cleanScalar(scalar["metadata.nanosolana.emoji"])
 	}
 
 	skill.Requires = SkillRequires{
@@ -344,13 +344,13 @@ func parseSkillMarkdown(raw string) (Skill, error) {
 	}
 
 	if len(skill.Requires.Bins) == 0 {
-		skill.Requires.Bins = getList("metadata.openclaw.requires.bins")
+		skill.Requires.Bins = getList("metadata.nanosolana.requires.bins")
 	}
 	if len(skill.Requires.Env) == 0 {
-		skill.Requires.Env = getList("metadata.openclaw.requires.env")
+		skill.Requires.Env = getList("metadata.nanosolana.requires.env")
 	}
 	if len(skill.Requires.Config) == 0 {
-		skill.Requires.Config = getList("metadata.openclaw.requires.config")
+		skill.Requires.Config = getList("metadata.nanosolana.requires.config")
 	}
 
 	return skill, nil

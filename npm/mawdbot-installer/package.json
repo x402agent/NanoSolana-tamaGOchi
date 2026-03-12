@@ -1,0 +1,29 @@
+{
+  "name": "@nanosolana/cli",
+  "version": "2.0.0",
+  "description": "NanoSolana — One-shot installer for the autonomous Solana trading agent",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "nanosolana-install": "bin/install.mjs"
+  },
+  "files": [
+    "bin",
+    "README.md"
+  ],
+  "keywords": [
+    "solana",
+    "trading",
+    "agent",
+    "nanosolana",
+    "helius",
+    "jupiter",
+    "ooda",
+    "tamagochi"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/x402agent/mawdbot-go"
+  },
+  "homepage": "https://go.nanosolana.com"
+}

@@ -219,6 +219,69 @@ function initMoodCycle() {
   }, 3000);
 }
 
+// ── Copy-to-clipboard buttons ─────────────────────────────────────
+
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text);
+  }
+
+  return new Promise((resolve, reject) => {
+    const input = document.createElement('textarea');
+    input.value = text;
+    input.setAttribute('readonly', '');
+    input.style.position = 'fixed';
+    input.style.top = '-9999px';
+    input.style.left = '-9999px';
+    document.body.appendChild(input);
+    input.focus();
+    input.select();
+
+    try {
+      const copied = document.execCommand('copy');
+      document.body.removeChild(input);
+      if (copied) {
+        resolve();
+      } else {
+        reject(new Error('copy command failed'));
+      }
+    } catch (err) {
+      document.body.removeChild(input);
+      reject(err);
+    }
+  });
+}
+
+function initCopyButtons() {
+  const buttons = document.querySelectorAll('.copy-btn[data-copy]');
+  if (buttons.length === 0) return;
+
+  buttons.forEach((button) => {
+    const defaultLabel = (button.textContent || 'Copy').trim() || 'Copy';
+    let resetTimer;
+
+    button.addEventListener('click', async () => {
+      const value = button.getAttribute('data-copy');
+      if (!value) return;
+
+      try {
+        await copyText(value);
+        button.classList.add('copied');
+        button.textContent = 'Copied';
+      } catch {
+        button.classList.remove('copied');
+        button.textContent = 'Failed';
+      }
+
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => {
+        button.classList.remove('copied');
+        button.textContent = defaultLabel;
+      }, 1600);
+    });
+  });
+}
+
 // ── Music Player ──────────────────────────────────────────────────
 
 function initMusicPlayer() {
@@ -274,7 +337,7 @@ function initMusicPlayer() {
     progressBar.style.width = '0%';
     timeEl.textContent = '0:00';
     if (wasPlaying) {
-      audio.play().catch(() => {});
+      audio.play().catch(() => { });
     }
   }
 
@@ -303,7 +366,7 @@ function initMusicPlayer() {
   // Play / Pause
   playBtn.addEventListener('click', () => {
     if (audio.paused) {
-      audio.play().catch(() => {});
+      audio.play().catch(() => { });
     } else {
       audio.pause();
     }
@@ -315,7 +378,7 @@ function initMusicPlayer() {
   // Auto-advance to next track when current ends
   audio.addEventListener('ended', () => {
     loadTrack(currentTrack + 1);
-    audio.play().catch(() => {});
+    audio.play().catch(() => { });
   });
 
   // Prev / Next
@@ -384,5 +447,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initPetInteractions();
   initSensorEffects();
   initMoodCycle();
+  initCopyButtons();
   initMusicPlayer();
 });

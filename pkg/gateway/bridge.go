@@ -1,6 +1,6 @@
 // Package gateway provides the NanoSolana Gateway — a native Go TCP bridge
 // server that connects headless hardware nodes to the daemon. No external
-// dependencies (no OpenClaw, no Node.js).
+// dependencies (pure Go, no Node.js).
 //
 // Protocol: JSON-line over TCP (one JSON object per line, newline-delimited).
 // Auth: Token-based pairing flow (pair-request → approve → pair-ok → hello).
