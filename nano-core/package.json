@@ -1,6 +1,6 @@
 {
   "name": "nanosolana",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Nano Solana — Security-first autonomous trading agent platform with real-time memory and Solana wallet integration",
   "keywords": [
     "solana",
@@ -12,9 +12,23 @@
   ],
   "license": "MIT",
   "author": "NanoSolana Labs",
+  "homepage": "https://nanosolana.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/x402agent/NanoSolana.git",
+    "directory": "nano-core"
+  },
+  "bugs": {
+    "url": "https://github.com/x402agent/NanoSolana/issues"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "type": "module",
   "bin": {
-    "nanosolana": "./dist/cli/entry.js"
+    "nanosolana": "dist/cli/entry.js"
   },
   "main": "dist/index.js",
   "exports": {

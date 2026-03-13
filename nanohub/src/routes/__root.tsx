@@ -132,6 +132,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           </AppProviders>
         </ClientOnly>
         <Scripts />
+        {/* ElevenLabs ConvAI Widget */}
+        <div dangerouslySetInnerHTML={{ __html: '<elevenlabs-convai agent-id="agent_0001kcf3a94bfcm9kj51ss02gnv0"></elevenlabs-convai>' }} />
+        <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript" />
       </body>
     </html>
   )

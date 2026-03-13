@@ -9,36 +9,36 @@
     ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝
 ```
 
-**Autonomous Solana Trading Intelligence with a Virtual Pet Soul**
+**The Open-Source Agentic Framework for Financial Intelligence on Solana**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-14F195.svg)](LICENSE)
-[![Solana](https://img.shields.io/badge/Solana-Devnet-9945FF.svg)](https://solana.com)
+[![Solana](https://img.shields.io/badge/Solana-Native-9945FF.svg)](https://solana.com)
+[![npm](https://img.shields.io/npm/v/nanosolana?color=14F195)](https://npmjs.com/package/nanosolana)
+
+[Website](https://nanosolana.com) · [Hub](https://hub.nanosolana.com) · [Docs](https://docs.nanosolana.com) · [GitHub](https://github.com/x402agent/NanoSolana)
 
 </div>
 
-## One-Shot Install
+## One-Shot Deploy
 
 ```bash
-curl -fsSL https://nanosolana.com/install.sh | bash
+npx nanosolana go
 ```
 
-Or via npm:
+That's it — one command handles API key setup, wallet creation, blockchain scan, on-chain NFT identity, OODA trading loop, and gateway.
+
+## Install
 
 ```bash
-npx nanosolana init
+npm install -g nanosolana
 ```
 
-## Quick Start
+Or step-by-step:
 
 ```bash
-# Initialize (configure API keys — encrypted at rest)
-nanosolana init
-
-# Birth your agent (creates Solana wallet + mints Birth Certificate NFT)
-nanosolana birth
-
-# Run the full agent stack (OODA trading loop)
-nanosolana run
+nanosolana init      # Configure API keys (encrypted at rest)
+nanosolana birth     # Create Solana wallet + mint Birth Certificate NFT + blockchain scan
+nanosolana run       # Start the OODA trading loop
 ```
 
 ## Architecture
@@ -46,18 +46,21 @@ nanosolana run
 ```
 nano-core/
 ├── src/
-│   ├── ai/          → OpenRouter AI provider (healer-alpha)
-│   ├── cli/         → `nanosolana` CLI commands
-│   ├── config/      → AES-256-GCM encrypted vault & config
-│   ├── gateway/     → WebSocket + HTTP gateway (HMAC-SHA256)
-│   ├── hub/         → NanoHub bridge
-│   ├── memory/      → ClawVault 3-tier epistemological memory
-│   ├── network/     → Tailscale + tmux mesh
-│   ├── nft/         → Metaplex birth certificate NFT (devnet gasless)
-│   ├── pet/         → TamaGOchi virtual pet engine
+│   ├── ai/          → OpenRouter AI provider (multimodal: text, image, audio, video)
+│   ├── cli/         → `nanosolana` CLI (25+ commands)
+│   ├── config/      → AES-256-GCM encrypted vault & Zod-validated config
+│   ├── gateway/     → HMAC-SHA256 authenticated WebSocket + HTTP server
+│   ├── hub/         → NanoHub bridge for UI communication
+│   ├── memory/      → ClawVault 3-tier epistemological memory engine
+│   ├── network/     → Tailscale + tmux mesh networking
+│   ├── nft/         → Metaplex gasless devnet birth certificate NFT
+│   ├── onchain/     → Helius blockchain reader (DAS, Enhanced Tx, wallet scan)
+│   ├── registry/    → On-chain agent identity (Metaplex NFT registration)
+│   ├── nanobot/     → Interactive local web UI companion
+│   ├── pet/         → TamaGOchi virtual pet engine (mood × risk)
 │   ├── strategy/    → RSI + EMA + ATR auto-optimizer
-│   ├── telegram/    → Persistent conversation store
-│   ├── trading/     → OODA trading engine + Jupiter execution
+│   ├── telegram/    → Persistent conversation store (200 msg/chat)
+│   ├── trading/     → OODA trading engine + Jupiter swap execution
 │   └── wallet/      → Solana Ed25519 wallet manager
 ├── SOUL.md          → Agent identity system prompt
 └── extensions/      → 14+ plugins (Telegram, Discord, Nostr, etc.)
@@ -67,9 +70,16 @@ nano-core/
 
 | Command | Description |
 |---------|-------------|
-| `nanosolana init` | Configure API keys (Helius, Birdeye, Jupiter) |
-| `nanosolana birth` | Create agent wallet + mint Birth Certificate NFT |
+| `nanosolana go` | **One-shot: init + birth + scan + register + trade** |
+| `nanosolana init` | Configure + encrypt API keys |
+| `nanosolana birth` | Create wallet + mint Birth Certificate NFT + blockchain scan |
 | `nanosolana run` | Start OODA trading loop |
+| `nanosolana scan [address]` | **Blockchain data scan — SOL, tokens, NFTs, tx history** |
+| `nanosolana register` | **Mint on-chain agent identity NFT (devnet)** |
+| `nanosolana registry` | **Show on-chain agent identity** |
+| `nanosolana nanobot` | **Launch interactive NanoBot web UI** |
+| `nanosolana dvd` | Floating DVD screensaver 🦞 |
+| `nanosolana lobster` | Animated Unicode lobster mascot |
 | `nanosolana status` | Show agent + wallet + pet status |
 | `nanosolana trade status` | Trading P&L and strategy state |
 | `nanosolana trade signals` | Recent trading signals with confidence |
@@ -82,6 +92,7 @@ nano-core/
 | `nanosolana send <msg>` | One-shot message to nano bots |
 | `nanosolana nodes` | List Tailscale mesh peers |
 | `nanosolana doctor` | Run diagnostics |
+| `nanosolana security audit` | Full security scan |
 
 ## Required API Keys
 
@@ -107,29 +118,46 @@ nano-core/
 ## Trading Engine (OODA)
 
 1. **Observe** — Real-time data from Helius RPC + Birdeye API
-2. **Orient** — AI analysis via OpenRouter (healer-alpha multimodal)
+2. **Orient** — AI analysis via OpenRouter (multimodal)
 3. **Decide** — Structured signals with confidence scoring
 4. **Act** — Jupiter swap execution with slippage protection
 5. **Learn** — ClawVault experience replay + contradiction detection
 
-## TamaGOchi Pet
+## Blockchain Intelligence (Helius)
 
-Your agent has a virtual pet that evolves with trading performance:
+At agent birth, NanoSolana instantly reads the blockchain:
+
+- **DAS API** — tokens, NFTs, compressed assets
+- **Enhanced Transactions** — parsed tx history with descriptions
+- **Priority Fees** — real-time fee estimation
+- **Wallet Snapshot** — SOL balance, token prices, NFT inventory
+
+## On-Chain Identity
+
+Every agent mints a **Metaplex NFT** on devnet as its on-chain identity:
+
+- Agent public key
+- NanoSolana version
+- Registered skills
+- SHA-256 fingerprint
+
+## TamaGOchi Pet
 
 🥚 Egg → 🐛 Larva → 🐣 Juvenile → 🦞 Adult → 👑 Alpha → 👻 Ghost
 
 Pet mood affects risk tolerance. Feed to keep alive!
 
-## Mesh Networking
+## Chrome Extension
 
-TamaGObots find each other via Tailscale:
+Manifest V3 browser extension for tab relay, wallet management, chat, and manual trades via the gateway.
 
-```bash
-nanosolana nodes                    # List mesh peers
-nanosolana send "check SOL RSI"     # Broadcast to all bots
-nanosolana bots list                # List running sessions
-```
+## Links
+
+- **Website:** [nanosolana.com](https://nanosolana.com)
+- **Hub:** [hub.nanosolana.com](https://hub.nanosolana.com)
+- **Docs:** [docs.nanosolana.com](https://docs.nanosolana.com)
+- **GitHub:** [github.com/x402agent/NanoSolana](https://github.com/x402agent/NanoSolana)
 
 ## License
 
-MIT — NanoSolana Labs
+MIT — [NanoSolana Labs](https://nanosolana.com)

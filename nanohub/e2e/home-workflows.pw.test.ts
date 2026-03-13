@@ -6,13 +6,13 @@ test('home install switcher and browse CTA work', async ({ page }) => {
 
   await page.goto('/', { waitUntil: 'domcontentloaded' })
   await expect(page.getByRole('heading', { name: /clawhub, the skill dock/i })).toBeVisible()
-  await expect(page.getByText('npx clawhub@latest install sonoscli')).toBeVisible()
+  await expect(page.getByText('npx nanosolana@latest install sonoscli')).toBeVisible()
 
   await page.getByRole('tab', { name: 'pnpm' }).click()
-  await expect(page.getByText('pnpm dlx clawhub@latest install sonoscli')).toBeVisible()
+  await expect(page.getByText('pnpm dlx nanosolana@latest install sonoscli')).toBeVisible()
 
   await page.getByRole('tab', { name: 'bun' }).click()
-  await expect(page.getByText('bunx clawhub@latest install sonoscli')).toBeVisible()
+  await expect(page.getByText('bunx nanosolana@latest install sonoscli')).toBeVisible()
 
   await page.getByRole('link', { name: 'Browse skills' }).click()
   await expect(page).toHaveURL(/\/skills/)

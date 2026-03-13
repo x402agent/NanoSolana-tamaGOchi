@@ -101,7 +101,7 @@ jobs:
       - deploy-convex
       - deploy-web
     env:
-      PLAYWRIGHT_BASE_URL: https://clawhub.ai
+      PLAYWRIGHT_BASE_URL: https://hub.nanosolana.com
     steps:
       - uses: actions/checkout@v4
 

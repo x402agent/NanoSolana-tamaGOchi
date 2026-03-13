@@ -19,6 +19,8 @@ package-lock.json
 __pycache__/
 *.pyc
 .pnpm-store
+.npmrc
+**/.npmrc
 
 # Build artifacts
 *.bun-build

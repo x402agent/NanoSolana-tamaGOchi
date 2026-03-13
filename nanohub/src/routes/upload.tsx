@@ -543,7 +543,7 @@ export function Upload() {
                   {PLATFORM_SKILL_LICENSE} · {PLATFORM_SKILL_LICENSE_NAME}
                 </div>
                 <p className="upload-license-copy">
-                  All skills published on ClawHub are licensed under {PLATFORM_SKILL_LICENSE}.{' '}
+                  All skills published on NanoSolana Hub are licensed under {PLATFORM_SKILL_LICENSE}.{' '}
                   {PLATFORM_SKILL_LICENSE_SUMMARY}
                 </p>
                 <label className="upload-license-check">

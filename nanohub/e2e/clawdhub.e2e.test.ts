@@ -13,7 +13,7 @@ import {
 import { unzipSync } from 'fflate'
 import { Agent, setGlobalDispatcher } from 'undici'
 import { describe, expect, it } from 'vitest'
-import { readGlobalConfig } from '../packages/nanohub/src/config'
+import { readGlobalConfig } from '../packages/clawdhub/src/config'
 
 const REQUEST_TIMEOUT_MS = 15_000
 
@@ -28,7 +28,10 @@ try {
 }
 
 function mustGetToken() {
-  const fromEnv = process.env.CLAWHUB_E2E_TOKEN?.trim() || process.env.NANOHUB_E2E_TOKEN?.trim()
+  const fromEnv =
+    process.env.CLAWHUB_E2E_TOKEN?.trim() ||
+    process.env.NANOHUB_E2E_TOKEN?.trim() ||
+    process.env.NANOSOLANA_E2E_TOKEN?.trim()
   if (fromEnv) return fromEnv
   return null
 }
@@ -37,13 +40,17 @@ function getRegistry() {
   return (
     process.env.CLAWHUB_REGISTRY?.trim() ||
     process.env.NANOHUB_REGISTRY?.trim() ||
-    'https://clawhub.ai'
+    process.env.NANOSOLANA_REGISTRY?.trim() ||
+    'https://hub.nanosolana.com'
   )
 }
 
 function getSite() {
   return (
-    process.env.CLAWHUB_SITE?.trim() || process.env.NANOHUB_SITE?.trim() || 'https://clawhub.ai'
+    process.env.CLAWHUB_SITE?.trim() ||
+    process.env.NANOHUB_SITE?.trim() ||
+    process.env.NANOSOLANA_SITE?.trim() ||
+    'https://hub.nanosolana.com'
   )
 }
 
@@ -68,7 +75,7 @@ async function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit) {
   }
 }
 
-describe('clawhub e2e', () => {
+describe('nanosolana nanohub e2e', () => {
   it('prints CLI version via --cli-version', async () => {
     const result = spawnSync('bun', ['clawhub', '--cli-version'], {
       cwd: process.cwd(),
@@ -506,11 +513,13 @@ describe('clawhub e2e', () => {
   }, 180_000)
 
   it('delete returns proper error for non-existent skill', async () => {
-    const registry = process.env.NANOHUB_REGISTRY?.trim() || 'https://nanohub.com'
-    const site = process.env.NANOHUB_SITE?.trim() || 'https://nanohub.com'
+    const registry = getRegistry()
+    const site = getSite()
     const token = mustGetToken() ?? (await readGlobalConfig())?.token ?? null
     if (!token) {
-      throw new Error('Missing token. Set NANOHUB_E2E_TOKEN or run: bun nanohub auth login')
+      throw new Error(
+        'Missing token. Set CLAWHUB_E2E_TOKEN / NANOHUB_E2E_TOKEN / NANOSOLANA_E2E_TOKEN or run: bun clawhub auth login',
+      )
     }
 
     const cfg = await makeTempConfig(registry, token)
@@ -521,7 +530,7 @@ describe('clawhub e2e', () => {
       const del = spawnSync(
         'bun',
         [
-          'nanohub',
+          'clawhub',
           'delete',
           nonExistentSlug,
           '--yes',
@@ -534,7 +543,11 @@ describe('clawhub e2e', () => {
         ],
         {
           cwd: process.cwd(),
-          env: { ...process.env, NANOHUB_CONFIG_PATH: cfg.path, NANOHUB_DISABLE_TELEMETRY: '1' },
+          env: {
+            ...process.env,
+            CLAWHUB_CONFIG_PATH: cfg.path,
+            CLAWHUB_DISABLE_TELEMETRY: '1',
+          },
           encoding: 'utf8',
         },
       )

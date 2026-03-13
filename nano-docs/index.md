@@ -1,19 +1,38 @@
 ---
-summary: "NanoSolana documentation index"
-title: "NanoSolana"
+summary: "NanoSolana documentation index — autonomous financial agents on Solana"
+title: "NanoSolana Docs"
 ---
 
 # NanoSolana Documentation
 
-> Autonomous Solana trading intelligence with a virtual pet soul.
+> The Open-Source Agentic Framework for Financial Intelligence on Solana
 
-## Getting started
+**Website:** [nanosolana.com](https://nanosolana.com) · **Hub:** [hub.nanosolana.com](https://hub.nanosolana.com) · **Docs:** [docs.nanosolana.com](https://docs.nanosolana.com) · **GitHub:** [github.com/x402agent/NanoSolana](https://github.com/x402agent/NanoSolana)
+
+## One-Shot Deploy
 
 ```bash
-nanosolana init                    # Initialize config + workspace
-nanosolana birth                   # Generate wallet + TamaGOchi egg
-nanosolana gateway run             # Start the gateway
-nanosolana run                     # Start the OODA trading loop
+npx nanosolana go
+```
+
+That's it — one command handles API key setup, wallet creation, blockchain scan, on-chain NFT identity, OODA trading loop, and gateway.
+
+## Step-by-Step
+
+```bash
+nanosolana init      # Configure API keys (encrypted at rest)
+nanosolana birth     # Create Solana wallet + mint Birth Certificate NFT + blockchain scan
+nanosolana run       # Start the OODA trading loop
+```
+
+## Fun Stuff
+
+```bash
+nanosolana scan        # Blockchain data scan (SOL, tokens, NFTs, tx history)
+nanosolana dvd         # Floating DVD screensaver in your terminal
+nanosolana lobster     # Animated Unicode lobster mascot
+nanosolana nanobot     # Launch interactive web UI companion
+nanosolana register    # Mint on-chain identity NFT (devnet)
 ```
 
 ## Documentation
@@ -31,6 +50,9 @@ nanosolana run                     # Start the OODA trading loop
 ### Trading
 
 - [**Trading Engine**](/trading) — Strategy, execution, and risk management
+- **OODA Loop** — Military-grade decision cycle adapted for autonomous trading
+- **Strategy** — RSI + EMA + ATR auto-optimizer with Kelly Criterion sizing
+- **Risk** — Max 50% position, -10% daily loss circuit breaker, TamaGOchi mood modifier
 
 ### Gateway
 
@@ -54,49 +76,46 @@ nanosolana run                     # Start the OODA trading loop
 
 ### CLI
 
-- [**CLI Reference**](/cli) — Complete command reference
+- [**CLI Reference**](/cli) — Complete command reference (25+ commands)
 
 ## Architecture
 
 ```
-nano-core/                   # Core TypeScript modules
-├── src/
-│   ├── ai/provider.ts       # OpenRouter AI integration
-│   ├── cli/entry.ts         # Unified CLI
-│   ├── config/vault.ts      # AES-256-GCM encrypted config
-│   ├── gateway/server.ts    # WebSocket + HTTP gateway
-│   ├── hub/bridge.ts        # NanoHub bridge
-│   ├── memory/
-│   │   ├── clawvault.ts     # 3-tier memory engine
-│   │   └── engine.ts        # Memory engine interface
-│   ├── network/mesh.ts      # Tailscale + tmux mesh
-│   ├── pet/tamagochi.ts     # TamaGOchi pet engine
-│   ├── strategy/engine.ts   # RSI + EMA + ATR strategy
-│   ├── telegram/
-│   │   └── persistence.ts   # Telegram conversation DB
-│   ├── trading/engine.ts    # Trading execution engine
-│   └── wallet/manager.ts    # Solana wallet (Ed25519)
-├── SOUL.md                  # Agent identity system prompt
-├── .env                     # Environment variables
-└── .env.example             # Template
-
-extensions/                  # Plugin extensions (14+)
-├── telegram/                # Persistent Telegram channel
-├── discord/                 # Discord trading signals
-├── lobster/                 # Typed workflow pipelines
-├── memory-core/             # ClawVault integration
-├── memory-lancedb/          # Vector semantic search
-├── nostr/                   # Decentralized relay
-└── ...
-
-ui/                          # Web UI (Lit + Vite)
-├── src/styles/base.css      # Cypherpunk design system
-└── public/lobster-logo.png  # NanoSolana mascot
-
-nano-docs/                   # Documentation (you are here)
+┌─────────────────────────────────────────────────────────┐
+│                    AGENT RUNTIME                        │
+│         OODA Loop · ClawVault · Strategy Engine         │
+├─────────────────────────────────────────────────────────┤
+│                  INFRASTRUCTURE                         │
+│     Vault · Gateway · Mesh Network · On-Chain ID        │
+├─────────────────────────────────────────────────────────┤
+│                    INTERFACES                           │
+│   CLI · Telegram · Discord · NanoBot UI · Chrome Ext    │
+└─────────────────────────────────────────────────────────┘
 ```
 
-## Environment variables
+### Core Module Map
+
+```
+nano-core/src/
+├── ai/          → OpenRouter AI provider (multimodal)
+├── cli/         → nanosolana CLI (25+ commands)
+├── config/      → AES-256-GCM encrypted vault & Zod-validated config
+├── gateway/     → HMAC-SHA256 authenticated WebSocket + HTTP server
+├── hub/         → NanoHub bridge for UI communication
+├── memory/      → ClawVault 3-tier epistemological memory engine
+├── network/     → Tailscale + tmux mesh networking
+├── nft/         → Metaplex gasless devnet birth certificate NFT
+├── onchain/     → Helius blockchain reader (DAS, Enhanced Tx, wallet scan)
+├── registry/    → On-chain agent identity (Metaplex NFT registration)
+├── nanobot/     → Interactive local web UI companion
+├── pet/         → TamaGOchi virtual pet engine (mood × risk)
+├── strategy/    → RSI + EMA + ATR auto-optimizer
+├── telegram/    → Persistent conversation store (200 msg/chat)
+├── trading/     → OODA trading engine + Jupiter swap execution
+└── wallet/      → Solana Ed25519 wallet manager
+```
+
+## Required API Keys
 
 | Variable | Required | Description |
 |----------|----------|-------------|
@@ -109,14 +128,50 @@ nano-docs/                   # Documentation (you are here)
 | `NANO_GATEWAY_SECRET` | Recommended | Gateway HMAC secret |
 | `TAILSCALE_AUTH_KEY` | For mesh | Agent mesh networking |
 
-## Security first
-
-NanoSolana is designed for financial operations:
+## Security First
 
 - ✅ AES-256-GCM encrypted secrets vault
 - ✅ HMAC-SHA256 gateway authentication
 - ✅ Ed25519 wallet signatures
 - ✅ Timing-safe token comparison
-- ✅ Rate limiting on all endpoints
+- ✅ Rate limiting (10 conn/min, 100 msg/min)
 - ✅ File permissions enforced (0600/0700)
 - ✅ Wallet private key never leaves the vault
+
+## On-Chain Identity
+
+Every agent mints **Metaplex NFTs** on devnet:
+
+- **Birth Certificate** — creation timestamp, config hash, version
+- **Identity NFT** — public key, version, skills, SHA-256 fingerprint
+- **Blockchain Scan** — instant Helius DAS API scan at birth
+
+## TamaGOchi Pet
+
+```
+🥚 Egg → 🐛 Larva → 🐣 Juvenile → 🦞 Adult → 👑 Alpha → 👻 Ghost
+```
+
+Pet mood affects risk tolerance. Neglect → de-risk → halt. A dead man's switch.
+
+## Platform Support
+
+| Platform | Implementation |
+|----------|--------------|
+| **TypeScript** | nano-core (full-featured runtime) |
+| **Go** | TamaGObot (10MB binary, edge devices) |
+| **macOS** | Native Swift menu bar app (.dmg) |
+| **Android** | Kotlin companion app (Android 14+) |
+| **Chrome** | Manifest V3 extension (tab relay, wallet, chat) |
+| **Hardware** | Arduino Modulino® I2C sensors |
+
+## Links
+
+- **npm:** [npmjs.com/package/nanosolana](https://npmjs.com/package/nanosolana)
+- **Website:** [nanosolana.com](https://nanosolana.com)
+- **Hub:** [hub.nanosolana.com](https://hub.nanosolana.com)
+- **GitHub:** [github.com/x402agent/NanoSolana](https://github.com/x402agent/NanoSolana)
+
+---
+
+MIT — [NanoSolana Labs](https://nanosolana.com) · 🦞 Built with lobster energy

@@ -1,21 +1,33 @@
 export type SiteMode = 'skills' | 'souls'
 
-const DEFAULT_CLAWHUB_SITE_URL = 'https://clawhub.ai'
-const DEFAULT_ONLYCRABS_SITE_URL = 'https://onlycrabs.ai'
-const DEFAULT_ONLYCRABS_HOST = 'onlycrabs.ai'
-const LEGACY_NANOHUB_HOSTS = new Set(['nanohub.com', 'www.nanohub.com', 'auth.nanohub.com'])
+const DEFAULT_NANOHUB_SITE_URL = 'https://hub.nanosolana.com'
+const DEFAULT_DOCS_SITE_URL = 'https://docs.nanosolana.com'
+const DEFAULT_DOCS_HOST = 'docs.nanosolana.com'
+const LEGACY_HOSTS = new Set([
+  'nanohub.com',
+  'www.nanohub.com',
+  'auth.nanohub.com',
+  'clawhub.com',
+  'www.clawhub.com',
+  'auth.clawhub.com',
+  'clawhub.ai',
+  'www.clawhub.ai',
+  'auth.clawhub.ai',
+  'onlycrabs.ai',
+  'www.onlycrabs.ai',
+])
 
 function readMetaEnv(value?: string | null) {
   const trimmed = value?.trim()
   return trimmed ? trimmed : undefined
 }
 
-export function normalizeClawHubSiteOrigin(value?: string | null) {
+export function normalizeNanoHubSiteOrigin(value?: string | null) {
   if (!value) return null
   try {
     const url = new URL(value)
-    if (LEGACY_NANOHUB_HOSTS.has(url.hostname.toLowerCase())) {
-      return DEFAULT_CLAWHUB_SITE_URL
+    if (LEGACY_HOSTS.has(url.hostname.toLowerCase())) {
+      return DEFAULT_NANOHUB_SITE_URL
     }
     return url.origin
   } catch {
@@ -23,11 +35,17 @@ export function normalizeClawHubSiteOrigin(value?: string | null) {
   }
 }
 
-export function getClawHubSiteUrl() {
-  return normalizeClawHubSiteOrigin(readMetaEnv(import.meta.env.VITE_SITE_URL)) ?? DEFAULT_CLAWHUB_SITE_URL
+// Legacy alias
+export const normalizeClawHubSiteOrigin = normalizeNanoHubSiteOrigin
+
+export function getNanoHubSiteUrl() {
+  return normalizeNanoHubSiteOrigin(readMetaEnv(import.meta.env.VITE_SITE_URL)) ?? DEFAULT_NANOHUB_SITE_URL
 }
 
-export function getOnlyCrabsSiteUrl() {
+// Legacy alias
+export const getClawHubSiteUrl = getNanoHubSiteUrl
+
+export function getDocsSiteUrl() {
   const explicit = readMetaEnv(import.meta.env.VITE_SOULHUB_SITE_URL)
   if (explicit) return explicit
 
@@ -47,18 +65,24 @@ export function getOnlyCrabsSiteUrl() {
     }
   }
 
-  return DEFAULT_ONLYCRABS_SITE_URL
+  return DEFAULT_DOCS_SITE_URL
 }
 
-export function getOnlyCrabsHost() {
-  return readMetaEnv(import.meta.env.VITE_SOULHUB_HOST) ?? DEFAULT_ONLYCRABS_HOST
+// Legacy aliases
+export const getOnlyCrabsSiteUrl = getDocsSiteUrl
+
+export function getDocsHost() {
+  return readMetaEnv(import.meta.env.VITE_SOULHUB_HOST) ?? DEFAULT_DOCS_HOST
 }
+
+// Legacy alias
+export const getOnlyCrabsHost = getDocsHost
 
 export function detectSiteMode(host?: string | null): SiteMode {
   if (!host) return 'skills'
-  const onlyCrabsHost = getOnlyCrabsHost().toLowerCase()
+  const docsHost = getDocsHost().toLowerCase()
   const lower = host.toLowerCase()
-  if (lower === onlyCrabsHost || lower.endsWith(`.${onlyCrabsHost}`)) return 'souls'
+  if (lower === docsHost || lower.endsWith(`.${docsHost}`)) return 'souls'
   return 'skills'
 }
 
@@ -79,8 +103,8 @@ export function getSiteMode(): SiteMode {
   const forced = readMetaEnv(import.meta.env.VITE_SITE_MODE)
   if (forced === 'souls' || forced === 'skills') return forced
 
-  const onlyCrabsSite = readMetaEnv(import.meta.env.VITE_SOULHUB_SITE_URL)
-  if (onlyCrabsSite) return detectSiteModeFromUrl(onlyCrabsSite)
+  const docsSite = readMetaEnv(import.meta.env.VITE_SOULHUB_SITE_URL)
+  if (docsSite) return detectSiteModeFromUrl(docsSite)
 
   const siteUrl = readMetaEnv(import.meta.env.VITE_SITE_URL) ?? process.env.SITE_URL
   if (siteUrl) return detectSiteModeFromUrl(siteUrl)
@@ -89,15 +113,15 @@ export function getSiteMode(): SiteMode {
 }
 
 export function getSiteName(mode: SiteMode = getSiteMode()) {
-  return mode === 'souls' ? 'SoulHub' : 'ClawHub'
+  return mode === 'souls' ? 'NanoSolana Docs' : 'NanoSolana Hub'
 }
 
 export function getSiteDescription(mode: SiteMode = getSiteMode()) {
   return mode === 'souls'
-    ? 'SoulHub — the home for SOUL.md bundles and personal system lore.'
-    : 'ClawHub — a fast skill registry for agents, with vector search.'
+    ? 'NanoSolana Docs — the home for SOUL.md bundles and personal system lore.'
+    : 'NanoSolana Hub — a fast skill registry for agents, with vector search.'
 }
 
 export function getSiteUrlForMode(mode: SiteMode = getSiteMode()) {
-  return mode === 'souls' ? getOnlyCrabsSiteUrl() : getClawHubSiteUrl()
+  return mode === 'souls' ? getDocsSiteUrl() : getNanoHubSiteUrl()
 }

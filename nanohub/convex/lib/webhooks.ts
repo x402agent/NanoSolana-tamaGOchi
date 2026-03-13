@@ -16,7 +16,7 @@ export type WebhookConfig = {
   siteUrl: string
 }
 
-const DEFAULT_SITE_URL = 'https://clawhub.ai'
+const DEFAULT_SITE_URL = 'https://hub.nanosolana.com'
 
 export function getWebhookConfig(env: NodeJS.ProcessEnv = process.env): WebhookConfig {
   const url = env.DISCORD_WEBHOOK_URL?.trim() || null

@@ -1,24 +1,6 @@
-<div align="center">
+# NanoSolana — The Complete Guide
 
-<img src="ui/public/lobster-logo.png" width="180" alt="NanoSolana" />
-
-# NanoSolana
-
-### The Open-Source Agentic Framework for Financial Intelligence on Solana
-
-[![License: MIT](https://img.shields.io/badge/license-MIT-14F195?style=for-the-badge)](LICENSE)
-[![Solana](https://img.shields.io/badge/Solana-Native-9945FF?style=for-the-badge&logo=solana)](https://solana.com)
-[![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript)](https://typescriptlang.org)
-[![Node](https://img.shields.io/badge/Node-22+-339933?style=for-the-badge&logo=node.js)](https://nodejs.org)
-
-**NanoSolana is a modular, security-first framework for building autonomous financial agents on Solana.**
-
-Deploy AI-powered trading agents that observe markets in real-time, learn from every trade,
-and coordinate across a decentralized mesh network — all with one command.
-
-[Website](https://nanosolana.com) · [Docs](nano-docs/) · [Quick Start](#-quick-start) · [Contributing](CONTRIBUTING.md)
-
----
+> The Open-Source Agentic Framework for Financial Intelligence on Solana
 
 ```
     ███╗   ██╗ █████╗ ███╗   ██╗ ██████╗ ███████╗ ██████╗ ██╗      █████╗ ███╗   ██╗ █████╗
@@ -29,54 +11,98 @@ and coordinate across a decentralized mesh network — all with one command.
     ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝
 ```
 
-</div>
+**NanoSolana** is a modular, security-first framework for building autonomous financial agents on Solana. Deploy AI-powered trading agents that observe markets in real-time, learn from every trade, and coordinate across a decentralized mesh network — all with one command.
+
+**Website:** [nanosolana.com](https://nanosolana.com) · **Hub:** [hub.nanosolana.com](https://hub.nanosolana.com) · **Docs:** [docs.nanosolana.com](https://docs.nanosolana.com) · **GitHub:** [github.com/x402agent/NanoSolana](https://github.com/x402agent/NanoSolana)
 
 ---
 
-## Why NanoSolana?
+## Table of Contents
 
-The financial world is being rebuilt by autonomous agents. But today's agent frameworks are:
-
-- ❌ **Built for chat, not finance** — retrofitting chatbots for trading is dangerous
-- ❌ **Stateless** — they forget every trade, every lesson, every pattern
-- ❌ **Siloed** — each agent is an island with no coordination
-- ❌ **Insecure** — API keys in `.env` files, no encryption, no audit trail
-
-**NanoSolana is different.** It's built from the ground up for financial agents:
-
-- ✅ **OODA Trading Loop** — military-grade decision cycle (Observe → Orient → Decide → Act → Learn)
-- ✅ **Epistemological Memory** — 3-tier ClawVault that distinguishes facts from patterns from hypotheses
-- ✅ **Mesh Coordination** — agents share signals and lessons across a Tailscale VPN mesh
-- ✅ **Vault-Encrypted Secrets** — AES-256-GCM for every API key and private key, always
-- ✅ **On-Chain Identity** — every agent mints a Metaplex NFT birth certificate at creation
-
-> **"Your trading agent should learn from its mistakes. NanoSolana makes that real."**
+1. [Why NanoSolana?](#1-why-nanosolana)
+2. [Quick Start](#2-quick-start)
+3. [Architecture & Core Concepts](#3-architecture--core-concepts)
+4. [The OODA Trading Loop](#4-the-ooda-trading-loop)
+5. [ClawVault: Epistemological Memory](#5-clawvault-epistemological-memory)
+6. [Trading Engine & Strategy](#6-trading-engine--strategy)
+7. [TamaGOchi: The Pet That Trades](#7-tamagochi-the-pet-that-trades)
+8. [Security Architecture](#8-security-architecture)
+9. [On-Chain Identity](#9-on-chain-identity)
+10. [Mesh Networking](#10-mesh-networking)
+11. [Gateway Architecture](#11-gateway-architecture)
+12. [Sessions & Persistence](#12-sessions--persistence)
+13. [Multi-Channel Communication](#13-multi-channel-communication)
+14. [NanoBot Interactive UI](#14-nanobot-interactive-ui)
+15. [Chrome Extension](#15-chrome-extension)
+16. [TamaGObot: The Go Implementation](#16-tamagobot-the-go-implementation)
+17. [Hardware Integration (Arduino Modulino®)](#17-hardware-integration-arduino-modulino)
+18. [x402 Payment Protocol](#18-x402-payment-protocol)
+19. [Platform Apps (macOS, Android)](#19-platform-apps-macos-android)
+20. [NanoHub: Agent Registry & Skills](#20-nanohub-agent-registry--skills)
+21. [Deployment & Infrastructure](#21-deployment--infrastructure)
+22. [Configuration Reference](#22-configuration-reference)
+23. [CLI Reference](#23-cli-reference)
+24. [Monorepo Structure](#24-monorepo-structure)
+25. [Contributing](#25-contributing)
 
 ---
 
-## 🚀 Quick Start
+## 1. Why NanoSolana?
 
-### One command to deploy your first agent:
+The financial world is being rebuilt by autonomous agents. But today's agent frameworks are fundamentally flawed for finance:
+
+- **Built for chat, not finance** — retrofitting chatbots for trading is dangerous
+- **Stateless** — they forget every trade, every lesson, every pattern
+- **Siloed** — each agent is an island with no coordination
+- **Insecure** — API keys in `.env` files, no encryption, no audit trail
+
+NanoSolana is built from the ground up for financial agents:
+
+- **OODA Trading Loop** — military-grade decision cycle (Observe → Orient → Decide → Act → Learn)
+- **Epistemological Memory** — 3-tier ClawVault that distinguishes facts from patterns from hypotheses
+- **Mesh Coordination** — agents share signals and lessons across a Tailscale VPN mesh
+- **Vault-Encrypted Secrets** — AES-256-GCM for every API key and private key, always
+- **On-Chain Identity** — every agent mints a Metaplex NFT birth certificate at creation
+
+NanoSolana ships in two implementations: a full-featured **TypeScript runtime** (`nano-core`) for rapid development and extensibility, and an ultra-lightweight **Go binary** (`TamaGObot`) that runs on anything from an NVIDIA Orin Nano to a Raspberry Pi in under 10MB.
+
+---
+
+## 2. Quick Start
+
+### One-Command Deploy
 
 ```bash
-curl -fsSL https://nanosolana.com/install.sh | bash
+npx nanosolana go
 ```
 
-Or via npm:
+That's it. `nanosolana go` handles init → wallet → birth certificate NFT → blockchain scan → on-chain identity → OODA trading loop → gateway — all in one shot.
+
+### Alternative Install Methods
 
 ```bash
-npx nanosolana init
-```
-
-### Then — one command does everything:
-
-```bash
+# Global npm install
+npm install -g nanosolana
 nanosolana go
+
+# Shell install script
+curl -fsSL https://nanosolana.com/install.sh | bash
+
+# From source
+git clone https://github.com/x402agent/NanoSolana.git
+cd NanoSolana/nano-core
+npm install
+npm run nanosolana -- go
 ```
 
-That's it. `nanosolana go` handles init → wallet → birth certificate NFT → OODA trading loop → gateway — all in one shot.
+If `nanosolana` is not found right after install, load your PATH:
 
-Or if you prefer step-by-step:
+```bash
+export PATH="$HOME/.nanosolana/bin:$PATH"
+nanosolana --version
+```
+
+### Step-by-Step (if you prefer control)
 
 ```bash
 nanosolana init      # Configure API keys (encrypted at rest)
@@ -84,7 +110,7 @@ nanosolana birth     # Create Solana wallet + mint Birth Certificate NFT
 nanosolana run       # Start the OODA trading loop
 ```
 
-### Fun stuff:
+### Fun Stuff
 
 ```bash
 nanosolana scan        # Instant blockchain data scan (SOL, tokens, NFTs, tx history)
@@ -95,45 +121,89 @@ nanosolana register    # Mint on-chain identity NFT (devnet)
 nanosolana registry    # View your on-chain agent identity
 ```
 
+### Required API Keys
+
+| Key | Source | Required |
+|-----|--------|----------|
+| `OPENROUTER_API_KEY` | [openrouter.ai](https://openrouter.ai) | Yes |
+| `HELIUS_RPC_URL` | [helius.dev](https://helius.dev) | Yes |
+| `HELIUS_API_KEY` | [helius.dev](https://helius.dev) | Yes |
+| `HELIUS_WSS_URL` | [helius.dev](https://helius.dev) | Recommended |
+| `BIRDEYE_API_KEY` | [birdeye.so](https://birdeye.so) | Recommended |
+| `JUPITER_API_KEY` | [jup.ag](https://jup.ag) | For trading |
+
+All keys are encrypted with AES-256-GCM in the local vault. Never stored in plaintext.
+
 ---
 
-## 🏗 Architecture
+## 3. Architecture & Core Concepts
 
-<div align="center">
+### System Overview
+
+NanoSolana is a modular runtime for deploying autonomous financial agents on Solana. Every agent is a self-contained process that observes markets, reasons about data, executes trades, and learns from outcomes — all running inside a security-hardened loop.
+
+The system is organized into three layers:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        OODA TRADING LOOP                        │
-│                                                                 │
-│   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐   │
-│   │ OBSERVE  │──▶│  ORIENT  │──▶│  DECIDE  │──▶│   ACT    │   │
-│   │          │   │          │   │          │   │          │   │
-│   │ Helius   │   │ OpenRouter│   │ Signals  │   │ Jupiter  │   │
-│   │ Birdeye  │   │ AI Model │   │ + Score  │   │ Swaps    │   │
-│   └──────────┘   └──────────┘   └──────────┘   └────┬─────┘   │
-│        ▲                                             │         │
-│        │              ┌──────────┐                   │         │
-│        └──────────────│  LEARN   │◀──────────────────┘         │
-│                       │ClawVault │                              │
-│                       └──────────┘                              │
-└─────────────────────────────────────────────────────────────────┘
-         │                    │                    │
-         ▼                    ▼                    ▼
-   ┌──────────┐        ┌──────────┐        ┌──────────┐
-   │  KNOWN   │        │ LEARNED  │        │ INFERRED │
-   │  <60s    │        │  7 days  │        │  3 days  │
-   │  Prices  │        │ Patterns │        │ Hypoths. │
-   └──────────┘        └──────────┘        └──────────┘
+┌─────────────────────────────────────────────────────────┐
+│                    AGENT RUNTIME                        │
+│         OODA Loop · ClawVault · Strategy Engine         │
+├─────────────────────────────────────────────────────────┤
+│                  INFRASTRUCTURE                         │
+│     Vault · Gateway · Mesh Network · On-Chain ID        │
+├─────────────────────────────────────────────────────────┤
+│                    INTERFACES                           │
+│   CLI · Telegram · Discord · NanoBot UI · Chrome Ext    │
+└─────────────────────────────────────────────────────────┘
 ```
 
-</div>
+**Agent Runtime** — the brain. Houses the OODA trading loop, epistemological memory, AI reasoning, and strategy execution.
 
-### Core Modules
+**Infrastructure** — the skeleton. Encrypted secret storage, authenticated gateways, peer-to-peer mesh networking, and Solana wallet/NFT identity.
+
+**Interfaces** — the skin. Every surface a human (or another agent) can use to interact with a running NanoSolana instance.
+
+### Full Daemon Architecture
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                    NanoSolana Daemon                                  │
+│                                                                      │
+│  1. Agentic Wallet   ─  auto-gen/load Solana keypair                │
+│  2. Solana RPC       ─  Helius mainnet + DAS API                    │
+│  3. TamaGOchi        ─  virtual pet engine (on-chain driven)        │
+│  4. Telegram         ─  bot channel (if configured)                  │
+│  5. x402 Gateway     ─  SVM signer + paywall server                │
+│  6. Channels         ─  multi-channel message routing                │
+│  7. NanoBot UI       ─  interactive widget (wallet, chat, tools)    │
+│  8. Heartbeat        ─  periodic health + balance checks             │
+│                                                                      │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌───────┐│
+│  │ NanoBot  │  │  OODA    │  │ TamaGOchi│  │  x402    │  │Chrome ││
+│  │ UI+API   │  │  Agent   │  │  Pet     │  │  Paywall │  │ Ext   ││
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  └──┬────┘│
+│       │              │              │              │           │     │
+│  ┌────▼──────────────▼──────────────▼──────────────▼───────────▼──┐ │
+│  │          Message Bus + DAS API + Hardware Adapter              │ │
+│  └──────────────────────────┬────────────────────────────────────┘ │
+│                             │                                      │
+│  ┌──────────────────────────▼────────────────────────────────────┐ │
+│  │           pkg/solana + pkg/onchain + pkg/x402                 │ │
+│  │  wallet · rpc · DAS · programs · tx · signer · middleware     │ │
+│  └──────────────────────────┬────────────────────────────────────┘ │
+│                             │                                      │
+│  ┌──────────────────────────▼────────────────────────────────────┐ │
+│  │  Solana Mainnet (Helius RPC/WSS + DAS + Jupiter + Birdeye)   │ │
+│  └───────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+### Core Module Map (TypeScript — nano-core)
 
 ```
 nano-core/src/
 ├── ai/          → OpenRouter AI provider (multimodal: text, image, audio, video)
-├── cli/         → `nanosolana` CLI (20+ commands)
+├── cli/         → nanosolana CLI (25+ commands)
 ├── config/      → AES-256-GCM encrypted vault & Zod-validated config
 ├── gateway/     → HMAC-SHA256 authenticated WebSocket + HTTP server
 ├── hub/         → NanoHub bridge for UI communication
@@ -152,400 +222,396 @@ nano-core/src/
 
 ---
 
-## 🧠 ClawVault: Epistemological Memory
+## 4. The OODA Trading Loop
 
-Most agent frameworks have flat context windows. NanoSolana has **epistemological memory** —
-it knows the difference between "I just saw this price" and "I've noticed this pattern
-across 50 trades."
+NanoSolana's core execution model is the **OODA loop** — a military decision-making framework adapted for autonomous trading.
 
-| Tier | TTL | What it stores | Example |
-|------|-----|----------------|---------|
-| **KNOWN** | 60 seconds | Fresh API data | "SOL is at $142.50 right now" |
-| **LEARNED** | 7 days | Trade outcome patterns | "RSI < 30 + volume spike → 72% bounce rate" |
-| **INFERRED** | 3 days | Tentative correlations | "This token might correlate with BTC" |
+```
+┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐
+│ OBSERVE  │──▶│  ORIENT  │──▶│  DECIDE  │──▶│   ACT    │
+│          │   │          │   │          │   │          │
+│ Helius   │   │ OpenRouter│   │ Signal   │   │ Jupiter  │
+│ Birdeye  │   │ AI Model │   │ Scoring  │   │ Swaps    │
+└──────────┘   └──────────┘   └──────────┘   └────┬─────┘
+     ▲                                             │
+     │              ┌──────────┐                   │
+     └──────────────│  LEARN   │◀──────────────────┘
+                    │ClawVault │
+                    └──────────┘
+```
 
-**Key features:**
-- 🔄 **Experience Replay** — after every trade, analyze the last 20 outcomes for patterns
-- ⚡ **Contradiction Detection** — if new data contradicts an inference, drop it automatically
-- 🔬 **Research Agenda** — the agent maintains questions it wants to answer
-- 🧹 **Temporal Decay** — stale data is garbage-collected automatically
+### Phase 1 — Observe
+Pull real-time data: Helius RPC (on-chain state, DAS), Birdeye (prices, volume), WebSocket feeds, wallet state. All enters ClawVault KNOWN tier (60s TTL).
+
+### Phase 2 — Orient
+Feed observations + memory + strategy params + TamaGOchi mood + SOUL.md to AI model via OpenRouter. Returns market regime classification and directional bias.
+
+### Phase 3 — Decide
+Strategy engine combines AI orientation with RSI + EMA + ATR signals. Confidence scoring: RSI strength (30%) + EMA crossover (30%) + Volume (20%) + Memory patterns (20%). Only confidence ≥ 0.7 advances.
+
+### Phase 4 — Act
+Execute via Jupiter Ultra Swap: dynamic slippage (1-3%), Kelly Criterion sizing, max 50% wallet per position, -10% daily loss circuit breaker, TamaGOchi mood modifier.
+
+### Phase 5 — Learn
+Experience replay on last 20 trades. Promote patterns to LEARNED tier. Generate hypotheses in INFERRED tier. Run contradiction detection. Update research agenda. Broadcast lessons to mesh.
 
 ---
 
-## 📊 Trading Engine
+## 5. ClawVault: Epistemological Memory
 
-The strategy engine implements an auto-optimizing RSI + EMA + ATR system:
+| Tier | TTL | Status | Example |
+|------|-----|--------|---------|
+| **KNOWN** | 60s | Empirical fact | "SOL is at $142.50 right now" |
+| **LEARNED** | 7 days | Validated pattern | "RSI < 30 + volume spike → 72% bounce rate" |
+| **INFERRED** | 3 days | Hypothesis | "This token might correlate with BTC moves" |
 
-```
-Signal Generation:
-  BUY  when:  RSI < 30 (oversold) + EMA crossover (bullish) + ATR confirms volatility
-  SELL when:  RSI > 70 (overbought) + EMA crossover (bearish) + stop-loss/take-profit
-
-Confidence Scoring (0.0 → 1.0):
-  = RSI strength (30%) + EMA crossover (30%) + volume confirm (20%) + memory match (20%)
-
-Execution:
-  High confidence (≥0.7) → Jupiter Ultra Swap with slippage protection
-  Low confidence (<0.7)  → Signal logged, not executed
-```
-
-**Auto-optimizer** adjusts parameters every 20 trades based on Sharpe ratio.
-
-**Risk management:**
-- Kelly Criterion position sizing
-- Max 50% of wallet per position
-- Daily loss limit: -10% → trading paused
-- TamaGOchi mood modifies risk tolerance (happy = +10%, sick = -30%)
+**Temporal Decay** — auto GC every 5 min. **Experience Replay** — post-trade pattern analysis. **Contradiction Detection** — new facts drop invalid hypotheses. **Research Agenda** — open questions prioritized in next OODA cycle.
 
 ---
 
-## 🐾 TamaGOchi: The Pet That Trades
+## 6. Trading Engine & Strategy
 
-Every NanoSolana agent has a virtual pet — the **TamaGOchi** — born with the agent's wallet.
+### RSI + EMA + ATR Auto-Optimizer
 
-```
-🥚 Egg  ──▶  🐛 Larva  ──▶  🐣 Juvenile  ──▶  🦞 Adult  ──▶  👑 Alpha
-                                                                    │
-                        👻 Ghost ◀── (health = 0) ──────────────────┘
-```
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| RSI Period | 14 | Wilder's RSI |
+| RSI Overbought | 70 | Short signal zone |
+| RSI Oversold | 30 | Long signal zone |
+| EMA Fast | 12/20 | Fast moving average |
+| EMA Slow | 26/50 | Slow moving average |
+| ATR Period | 14 | Average True Range |
 
-The pet's mood directly affects trading risk tolerance. Feed your TamaGOchi to keep it alive — neglect it and trading gets disabled.
+Auto-optimizes every 20 trades based on rolling Sharpe ratio. Execution via Jupiter Ultra Swap with slippage protection.
 
----
+### Risk Management
 
-## 🌐 Mesh Networking
-
-TamaGObots form a peer-to-peer mesh network via **Tailscale VPN**:
-
-```bash
-nanosolana nodes                        # Discover mesh peers
-nanosolana send "check SOL RSI"         # Broadcast to all agents
-nanosolana send "status" --to agent-2   # Direct message
-```
-
-Shared across the mesh:
-- 📡 Trading signals (broadcast)
-- 🧠 Learned lessons (broadcast)
-- 📊 Price feeds (shared WebSocket connections)
-- 🔒 Wallet keys (NEVER shared)
+| Control | Value |
+|---------|-------|
+| Max position | 50% of wallet |
+| Daily loss limit | -10% → paused 24h |
+| Max slippage | 3% hard cap |
+| Minimum reserve | 0.01 SOL for gas |
+| Position sizing | Kelly Criterion |
+| TamaGOchi mood | ±30% modifier |
 
 ---
 
-## 🔐 Security
+## 7. TamaGOchi: The Pet That Trades
 
-NanoSolana is built for real money. Every layer is hardened:
+```
+🥚 Egg → 🐛 Larva → 🐣 Juvenile → 🦞 Adult → 👑 Alpha → 👻 Ghost
+```
+
+| Mood | Trigger | Risk Effect |
+|------|---------|-------------|
+| 😊 Happy | Recent wins | +10% position |
+| 😐 Content | Normal | No change |
+| 🤤 Hungry | Not fed in 24h | -10% position |
+| 😢 Sad | Recent losses | -15% position |
+| 🤒 Sick | Losses + hunger | -30% position |
+| 👻 Ghost | Health = 0 | **Trading disabled** |
+
+Neglect your agent → trading de-risks → eventually halts. A dead man's switch built into the design.
+
+---
+
+## 8. Security Architecture
 
 | Layer | Protection |
 |-------|------------|
-| **Secrets** | AES-256-GCM encrypted vault with PBKDF2 key derivation |
-| **Gateway** | HMAC-SHA256 on every WebSocket connection |
-| **Comparison** | `crypto.timingSafeEqual` for all token checks |
-| **Rate Limit** | 10 connections/min per IP, 100 messages/min per agent |
-| **Permissions** | `0600` files, `0700` directories, enforced on every write |
-| **Wallet** | Ed25519 private key never leaves the encrypted vault |
-| **Audit** | `nanosolana security audit --deep` for full security scan |
+| **Secrets** | AES-256-GCM vault with PBKDF2 |
+| **Gateway** | HMAC-SHA256 on every connection |
+| **Comparison** | `crypto.timingSafeEqual` always |
+| **Rate Limit** | 10 conn/min, 100 msg/min |
+| **Permissions** | `0600` files, `0700` dirs |
+| **Wallet** | Ed25519 key never leaves vault |
+| **Audit** | `nanosolana security audit --deep` |
 
 ---
 
-## 📱 Multi-Channel
+## 9. On-Chain Identity
 
-Connect your agent to any communication surface:
+Every agent mints **Metaplex NFTs** on devnet:
+
+- **Birth Certificate** — creation timestamp, config hash, version
+- **Identity NFT** — public key, version, skills, SHA-256 fingerprint
+
+Blockchain scan at birth via Helius: DAS API, Enhanced Transactions, Priority Fees, Wallet Snapshot.
+
+---
+
+## 10. Mesh Networking
+
+Agents form P2P mesh over Tailscale VPN:
+
+| Shared | Never Shared |
+|--------|-------------|
+| Trading signals | Wallet keys |
+| Learned patterns | Private keys |
+| Price feeds | |
+| Pet status | |
+
+```bash
+nanosolana nodes                    # Discover peers
+nanosolana send "check SOL RSI"     # Broadcast
+```
+
+---
+
+## 11. Gateway Architecture
+
+HMAC-SHA256 authenticated WebSocket + HTTP gateway. Wire protocol: JSON text frames.
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Liveness (no auth) |
+| `/api/status` | GET | Full agent status |
+| `/api/framework` | GET | Framework metadata |
+| `/api/memory` | GET | Memory stats |
+
+---
+
+## 12. Sessions & Persistence
+
+| Type | Key Format |
+|------|-----------|
+| Main | `agent:main:main` |
+| Telegram DM | `agent:main:telegram:<chatId>` |
+| Discord | `agent:main:discord:<channelId>` |
+| Trading | `agent:main:trading` |
+
+---
+
+## 13. Multi-Channel Communication
 
 | Channel | Persistence | Plugin |
 |---------|-------------|--------|
-| **Telegram** | ✅ Full (200 msg/chat, auto-summarized) | Built-in |
+| **Telegram** | ✅ Full (200 msg/chat) | Built-in |
 | **Discord** | Session | Built-in |
 | **Nostr** | Session | Extension |
 | **iMessage** | Session | Extension |
 | **Google Chat** | Session | Extension |
 | **Web UI** | Session | Built-in |
 
-14+ extension plugins available. Build your own with the plugin SDK.
+14+ extension plugins. Build your own with the plugin SDK.
 
 ---
 
-## 🌐 Chrome Extension — Browser Agent Relay
+## 14. NanoBot Interactive UI
 
-NanoSolana ships with a **Manifest V3 Chrome extension** that connects your browser to your running agent:
+```bash
+nanosolana nanobot    # Opens http://127.0.0.1:7777
+```
 
-### Features
+| Tab | Features |
+|-----|----------|
+| 🏠 Home | Quick actions, command output |
+| 💰 Wallet | SOL balance, token portfolio, send, tx history |
+| 💬 Chat | Talk to NanoBot, typing indicators |
+| 🔧 Tools | On-chain registration, status, terminal |
+
+---
+
+## 15. Chrome Extension
+
+Manifest V3 browser extension:
 
 | Feature | Description |
 |---------|-------------|
-| **🔗 Tab Relay** | Click the toolbar icon to attach any Chrome tab — your agent controls it via CDP |
-| **💰 Wallet Panel** | View wallet status, generate or rehydrate wallets from the extension |
-| **💬 Chat Relay** | Send messages through the gateway, optionally forward to Telegram |
-| **📈 Manual Trades** | Submit buy/sell/hold signals with confidence scores directly to the OODA engine |
-| **⚙️ Gateway Sync** | Auto-load configuration from your running gateway |
-
-### Install
-
-```bash
-# 1. Start your agent (includes gateway + relay server)
-nanosolana go
-
-# 2. Open Chrome → chrome://extensions → Enable "Developer mode"
-# 3. Click "Load unpacked" → select: assets/chrome-extension/
-# 4. Pin the extension → Click icon to attach tabs
-```
-
-### Architecture
+| 🔗 Tab Relay | Attach any tab via CDP |
+| 💰 Wallet Panel | View status, generate wallets |
+| 💬 Chat Relay | Messages + Telegram forwarding |
+| 📈 Manual Trades | Buy/sell/hold with confidence |
+| ⚙️ Gateway Sync | Auto-load config |
 
 ```
-Chrome Tab ◄──CDP──► Relay Server (:18792) ◄──HTTP──► NanoSolana Gateway (:18790)
-                                                              │
-Extension Options ◄──────── /api/extension/* ────────────────►│ OODA Engine
+Chrome Tab ◄──CDP──► Relay :18792 ◄──HTTP──► Gateway :18790 ◄──► OODA Engine
 ```
-
-> Full documentation: [`assets/chrome-extension/README.md`](assets/chrome-extension/README.md)
 
 ---
 
-## ⚡ Commands
+## 16. TamaGObot: The Go Implementation
+
+**10MB binary** · **<10MB RAM** · **1s boot** · Cross-compile: x86_64, ARM64, RISC-V
+
+```bash
+./build/nanosolana daemon              # Full autonomous daemon
+./build/nanosolana ooda --sim          # Simulated mode
+./build/nanosolana ooda --hw-bus 1     # With hardware
+```
+
+---
+
+## 17. Hardware Integration (Arduino Modulino®)
+
+| Sensor | Function |
+|--------|----------|
+| **Pixels** (8× RGB LED) | Status visualization |
+| **Buzzer** | Audio alerts |
+| **Buttons** (3×) | OODA trigger, sim/live toggle, emergency stop |
+| **Knob** | Real-time RSI threshold tuning |
+| **Thermo** | Temperature logging |
+| **Distance** (ToF) | Proximity wake-up |
+| **Movement** (IMU) | Tilt → auto-pause |
+
+All hardware gracefully degrades — no sensors? Runs in stub mode.
+
+---
+
+## 18. x402 Payment Protocol
+
+Crypto-gated HTTP APIs via [x402.org](https://x402.org):
+
+- Solana USDC payments via agent wallet
+- Multi-chain: Solana, Base, Polygon, Avalanche
+- HTTP middleware for paywalling endpoints
+- Facilitator proxy to `facilitator.x402.rs`
+
+---
+
+## 19. Platform Apps (macOS, Android)
+
+### macOS
+
+```bash
+bash scripts/package-macos.sh    # → dist/NanoSolana-v2.0.0.dmg
+nanosolana menubar               # Launch menu bar agent
+```
+
+### Android (SeekerClaw)
+
+Android 14+ app: background AI agent, Telegram interface, native Solana wallet, secure on-device key management.
+
+---
+
+## 20. NanoHub: Agent Registry & Skills
+
+**URL:** [hub.nanosolana.com](https://hub.nanosolana.com) · React + TanStack Router + Convex + Vercel
+
+- Agent profiles and public pages
+- Skills marketplace
+- Real-time updates
+- Deployment tracking
+
+```bash
+npx nanosolana@latest install my-skill
+```
+
+---
+
+## 21. Deployment & Infrastructure
+
+| Target | Command |
+|--------|---------|
+| Current platform | `make build` |
+| NVIDIA Orin | `make orin` |
+| Raspberry Pi | `make rpi` |
+| Docker (~15MB) | `make docker` |
+| macOS | `make macos` |
+| All | `make cross` |
+
+---
+
+## 22. Configuration Reference
+
+### Core Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `OPENROUTER_API_KEY` | Yes | AI provider |
+| `HELIUS_API_KEY` | Yes | Helius API |
+| `HELIUS_RPC_URL` | Yes | Solana RPC |
+| `HELIUS_WSS_URL` | Recommended | Real-time data |
+| `BIRDEYE_API_KEY` | Recommended | Market analytics |
+| `JUPITER_API_KEY` | For trading | Swap execution |
+| `TELEGRAM_BOT_TOKEN` | Optional | Telegram bot |
+| `NANO_GATEWAY_SECRET` | Recommended | Gateway HMAC |
+| `TAILSCALE_AUTH_KEY` | For mesh | Mesh networking |
+
+---
+
+## 23. CLI Reference
+
+### TypeScript CLI
 
 | Command | Description |
 |---------|-------------|
 | `nanosolana go` | **One-shot: init + birth + scan + register + trade** |
 | `nanosolana init` | Configure + encrypt API keys |
-| `nanosolana birth` | Create wallet + mint Birth Certificate NFT + blockchain scan |
+| `nanosolana birth` | Create wallet + NFT + scan |
 | `nanosolana run` | Start OODA trading loop |
-| `nanosolana scan [address]` | **Blockchain data scan — SOL, tokens, NFTs, tx history** |
-| `nanosolana register` | **Mint on-chain agent identity NFT (devnet)** |
-| `nanosolana registry` | **Show on-chain agent identity** |
-| `nanosolana nanobot` | **Launch interactive NanoBot web UI** |
-| `nanosolana dvd` | Floating DVD screensaver 🦞 |
-| `nanosolana lobster` | Animated Unicode lobster mascot |
-| `nanosolana status` | Agent + wallet + pet status |
-| `nanosolana trade status` | P&L, signals, strategy state |
-| `nanosolana trade signals` | Recent signals with confidence scores |
-| `nanosolana wallet balance` | SOL + SPL token balances |
-| `nanosolana pet status` | TamaGOchi mood and evolution |
-| `nanosolana memory search` | Search ClawVault memory |
-| `nanosolana gateway run` | Start WebSocket gateway |
-| `nanosolana channels add` | Connect Telegram, Discord, etc. |
-| `nanosolana vault set` | Store encrypted secret |
-| `nanosolana nodes` | List mesh peers |
-| `nanosolana doctor` | Run diagnostics |
-| `nanosolana security audit` | Full security scan |
+| `nanosolana scan [address]` | Blockchain scan |
+| `nanosolana register` | Mint identity NFT |
+| `nanosolana registry` | Show identity |
+| `nanosolana nanobot` | Launch web UI |
+| `nanosolana status` | Agent status |
+| `nanosolana trade status` | P&L |
+| `nanosolana wallet balance` | Balances |
+| `nanosolana pet status` | TamaGOchi |
+| `nanosolana memory search` | Search memory |
+| `nanosolana gateway run` | Start gateway |
+| `nanosolana nodes` | Mesh peers |
+| `nanosolana doctor` | Diagnostics |
+| `nanosolana security audit` | Security scan |
+| `nanosolana dvd` | DVD screensaver 🦞 |
+| `nanosolana lobster` | Animated lobster |
+
+### Go CLI
+
+| Command | Description |
+|---------|-------------|
+| `nanosolana daemon` | Full GoBot |
+| `nanosolana ooda` | Trading loop |
+| `nanosolana agent` | Chat REPL |
+| `nanosolana pet` | Pet status |
+| `nanosolana nanobot` | NanoBot UI |
+| `nanosolana menubar` | macOS menu bar |
+| `nanosolana hardware scan` | I2C scan |
 
 ---
 
-## 🔧 API Keys
+## 24. Monorepo Structure
 
-| Key | Source | Required |
-|-----|--------|----------|
-| `OPENROUTER_API_KEY` | [openrouter.ai](https://openrouter.ai) | ✅ |
-| `HELIUS_RPC_URL` | [helius.dev](https://helius.dev) | ✅ |
-| `HELIUS_API_KEY` | [helius.dev](https://helius.dev) | ✅ |
-| `HELIUS_WSS_URL` | [helius.dev](https://helius.dev) | Recommended |
-| `BIRDEYE_API_KEY` | [birdeye.so](https://birdeye.so) | Recommended |
-| `JUPITER_API_KEY` | [jup.ag](https://jup.ag) | For trading |
-
-All keys are encrypted with AES-256-GCM in the local vault. Never stored in plaintext.
-
----
-
-## 🗂 Complete Monorepo Map (Features, One by One)
-
-This repository is intentionally multi-surface: core runtime, mobile + desktop apps, browser relay, docs, web UI, and skill/plugin ecosystems.
-
-### 1) `/.github`
-
-- **`actionlint.yaml`** + **`actions/`**: CI automation and workflow quality checks.
-- **`ISSUE_TEMPLATE/`**: structured issue intake for bugs, feature requests, and triage quality.
-
-### 2) `/apps`
-
-#### `/apps/android`
-
-Android companion app (alpha) for agent operations.
-
-- Real-time trading and portfolio status
-- TamaGOchi pet state
-- Agent chat + Telegram bridge workflows
-- Biometric/auth hardening and encrypted local storage
-- QR/manual gateway pairing
-
-Key paths in Android app:
-
-- **`/apps/android/app/build.gradle.kts`**
-  - Android app namespace/build config
-  - Release signing guardrails via:
-    - `NANOSOLANA_ANDROID_STORE_FILE`
-    - `NANOSOLANA_ANDROID_STORE_PASSWORD`
-    - `NANOSOLANA_ANDROID_KEY_ALIAS`
-    - `NANOSOLANA_ANDROID_KEY_PASSWORD`
-  - Compose + Kotlin + lint/test dependencies
-  - Build artifact naming (`nanosolana-<version>-<buildType>.apk`)
-- **`/apps/android/app/proguard-rules.pro`**
-  - Release shrinking/obfuscation behavior
-- **`/apps/android/benchmark/build.gradle.kts`**
-  - Macrobenchmark module for performance instrumentation
-- **`/apps/android/gradle`**, **`gradlew`**, **`gradlew.bat`**
-  - Reproducible Gradle wrapper/toolchain
-- **`/apps/android/scripts`**
-  - Local Android build/dev helpers
-- **`/apps/android/THIRD_PARTY_LICENSES`**
-  - Dependency license disclosures
-- **`/apps/android/style.md`**
-  - Android coding/style conventions
-- **`/apps/android/README.md`**
-  - Quick build/run, gateway connection, and lint instructions
-
-Requested Android path-by-path index:
-
-- **`/apps/android/.gradle`**: local Gradle cache/state (machine-specific build cache)
-- **`/apps/android/app`**: Android application module
-- **`/apps/android/app/src`**: app source code/resources/Android manifests
-- **`/apps/android/app/build.gradle.kts`**: app module build/signing/dependency config
-- **`/apps/android/app/proguard-rules.pro`**: release shrink/obfuscation policy
-- **`/apps/android/benchmark`**: performance benchmarking module
-- **`/apps/android/benchmark/src`**: benchmark instrumentation sources
-- **`/apps/android/benchmark/build.gradle.kts`**: macrobenchmark config
-- **`/apps/android/gradle`**: Gradle wrapper metadata/version pinning
-- **`/apps/android/scripts`**: helper scripts for Android build/release flows
-- **`/apps/android/THIRD_PARTY_LICENSES`**: third-party attribution notices
-- **`/apps/android/.gitignore`**: Android-specific ignore rules
-- **`/apps/android/build.gradle.kts`**: project-level Android Gradle config
-- **`/apps/android/gradle.properties`**: Gradle/JVM build tuning and flags
-- **`/apps/android/gradlew`** / **`/apps/android/gradlew.bat`**: Unix/Windows wrapper entrypoints
-- **`/apps/android/settings.gradle.kts`**: module includes and build settings
-- **`/apps/android/style.md`**: Kotlin/Compose style conventions
-
-#### `/apps/macos`
-
-Native Swift macOS companion:
-
-- Menu bar status
-- Trading dashboard
-- Pet and chat surfaces
-- Keychain-secured credentials
-- Native notifications
-
-Key paths:
-
-- **`Package.swift` / `Package.resolved`**: SwiftPM manifests
-- **`Sources/`**: macOS app implementation
-- **`Tests/`**: app tests
-- **`README.md`**: run/package/signing guidance
-
-#### `/apps/shared`
-
-- **`OpenClawKit/`** shared cross-app primitives/components used by platform clients.
-
-### 3) `/assets`
-
-- Shared branding/media
-- **`/assets/chrome-extension`**: Manifest V3 NanoSolana browser relay extension
-  - Tab attach/detach relay
-  - Gateway config sync
-  - Wallet status/generate flows
-  - Chat + Telegram forwarding
-  - Manual trade submission
-
-### 4) `/extensions`
-
-Channel/integration plugin ecosystem (dozens of adapters), including:
-
-- Messaging: Telegram, Discord, Slack, Signal, WhatsApp, Matrix, Teams, etc.
-- Utility/infra connectors and shared extension primitives.
-
-### 5) `/nano-core`
-
-The main runtime/CLI engine for NanoSolana:
-
-- OODA trading loop
-- ClawVault memory engine
-- Secure wallet manager
-- Gateway (HTTP + WebSocket, authenticated)
-- On-chain scanning and identity tooling
-- Strategy engine and signal/execution lifecycle
-- Telegram persistence and channel bridges
-
-Important files:
-
-- **`/nano-core/.env.example`**: core env template
-- **`/nano-core/package.json`**: runtime scripts/deps
-- **`/nano-core/src/**`**: source modules
-
-### 6) `/nano-docs`
-
-Dedicated NanoSolana docs content tree:
-
-- `index.md`
-- `cli/`, `concepts/`, `extensions/`, `gateway/`, `security/`, `tools/`, `trading/`
-
-### 7) `/nanohub`
-
-Registry/distribution surface (ClawHub / onlycrabs ecosystem) for skills and SOUL definitions:
-
-- Publish/search/version skills (`SKILL.md` based)
-- Publish/search/version souls (`SOUL.md` based)
-- Convex-backed APIs + auth + vector search
-
-### 8) `/site`
-
-Landing-site surface (`site/index.html`):
-
-- One-command onboarding
-- Feature narrative (OODA, memory, mesh, extension)
-- Product/brand presentation and public conversion flow
-
-### 9) `/skills`
-
-Local skill library with many production-focused skills:
-
-- Productivity and platform integrations
-- API/data automation helpers
-- Media/tooling skills
-- Messaging and workflow skills
-
-### 10) `/ui`
-
-Standalone web UI package (`nanosolana-ui`):
-
-- Vite-powered frontend
-- Lit-based component architecture
-- Vitest + Playwright-enabled testing setup
-
-### 11) Root project files
-
-- **`/.env.example`**: global environment template
-- **`/.gitattributes`**: line-ending and git attributes policy
-- **`/.gitignore`**: repository ignore policy
-- **`/CONTRIBUTING.md`**: contribution workflow and standards
-- **`/LICENSE`**: MIT license
-- **`/README.md`**: project overview and onboarding
-- **`/SECURITY.md`**: vulnerability reporting and security scope
-
-Requested root file checklist (one-by-one):
-
-- **`/.env.example`**: bootstrap env template for local/runtime defaults
-- **`/.gitattributes`**: git normalization rules (line endings, merge behavior)
-- **`/.gitignore`**: ignore patterns for build outputs/secrets/local artifacts
-- **`/CONTRIBUTING.md`**: contribution workflow, code standards, and PR expectations
-- **`/LICENSE`**: MIT license text
-- **`/README.md`**: primary project overview and onboarding entrypoint
-- **`/SECURITY.md`**: private vulnerability reporting policy and security scope
+```
+NanoSolana/
+├── apps/
+│   ├── android/            # Android companion (Kotlin)
+│   ├── macos/              # Swift macOS app
+│   └── shared/             # Cross-platform primitives
+├── assets/
+│   └── chrome-extension/   # Manifest V3 browser relay
+├── extensions/             # 14+ channel plugins
+├── nano-core/              # TypeScript runtime/CLI
+├── nano-docs/              # Documentation
+├── nanohub/                # Agent Registry (React + Convex)
+├── site/                   # Landing site (nanosolana.com)
+├── skills/                 # Skill library
+├── ui/                     # Standalone web UI
+├── CONTRIBUTING.md
+├── LICENSE                 # MIT
+├── README.md               # This file
+└── SECURITY.md
+```
 
 ---
 
-## 🤝 Contributing
+## 25. Contributing
 
-We welcome contributions from the community. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-**Areas where we need help:**
-- 🧮 New trading strategies and indicators
-- 🧠 Memory engine improvements (vector search, LanceDB integration)
-- 📱 New channel plugins (WhatsApp, Slack, Matrix)
-- 🔐 Security audits and hardening
-- 📊 Backtesting framework
-- 🌍 Internationalization
-- 📖 Documentation and tutorials
+### Areas Where We Need Help
+
+- New trading strategies and indicators
+- Memory engine improvements (vector search, LanceDB)
+- New channel plugins (WhatsApp, Slack, Matrix)
+- Security audits and hardening
+- Backtesting framework
+- Documentation and tutorials
 
 ---
 
-## 📄 License
+## License
 
 MIT — [NanoSolana Labs](https://nanosolana.com)
 
@@ -553,10 +619,6 @@ Built for the financial agents of tomorrow. Open source forever.
 
 ---
 
-<div align="center">
+**Website:** [nanosolana.com](https://nanosolana.com) · **Hub:** [hub.nanosolana.com](https://hub.nanosolana.com) · **Docs:** [docs.nanosolana.com](https://docs.nanosolana.com) · **GitHub:** [github.com/x402agent/NanoSolana](https://github.com/x402agent/NanoSolana)
 
-**[⭐ Star this repo](https://github.com/x402agent/NanoSolana)** if you believe autonomous financial agents should be open source.
-
-<sub>Built with 🦞 by NanoSolana Labs</sub>
-
-</div>
+🦞 *Built with lobster energy by NanoSolana Labs* 🦞

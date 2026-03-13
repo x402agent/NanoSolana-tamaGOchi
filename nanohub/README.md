@@ -16,13 +16,29 @@ It's designed for fast browsing + a CLI-friendly API, with moderation hooks and 
 onlycrabs.ai is the **SOUL.md registry**: publish and share system lore the same way you publish skills.
 
 <p align="center">
-  <a href="https://clawhub.ai">ClawHub</a> ·
+  <a href="https://hub.nanosolana.com">ClawHub</a> ·
   <a href="https://onlycrabs.ai">onlycrabs.ai</a> ·
   <a href="VISION.md">Vision</a> ·
   <a href="docs/README.md">Docs</a> ·
   <a href="CONTRIBUTING.md">Contributing</a> ·
   <a href="https://discord.gg/clawd">Discord</a>
 </p>
+
+## One-shot deploy (npm token)
+
+Use an npm access token to publish the CLI package and deploy hub backend updates in one command:
+
+```bash
+cd nanohub
+export NPM_TOKEN=your_npm_access_token
+bun run deploy:oneshot
+```
+
+Optional: skip Convex deployment when you only want an npm publish:
+
+```bash
+SKIP_CONVEX_DEPLOY=1 bun run deploy:oneshot
+```
 
 ## What you can do with it
 

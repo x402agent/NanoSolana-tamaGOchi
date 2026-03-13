@@ -6,7 +6,7 @@ import { getUserFacingConvexError } from '../lib/convexError'
 import { setAuthError, useAuthError } from '../lib/useAuthError'
 import { gravatarUrl } from '../lib/gravatar'
 import { isModerator } from '../lib/roles'
-import { getClawHubSiteUrl, getSiteMode, getSiteName } from '../lib/site'
+import { getNanoHubSiteUrl, getSiteMode, getSiteName } from '../lib/site'
 import { applyTheme, useThemeMode } from '../lib/theme'
 import { startThemeTransition } from '../lib/theme-transition'
 import { useAuthStatus } from '../lib/useAuthStatus'
@@ -27,7 +27,7 @@ export default function Header() {
   const siteMode = getSiteMode()
   const siteName = useMemo(() => getSiteName(siteMode), [siteMode])
   const isSoulMode = siteMode === 'souls'
-  const clawHubUrl = getClawHubSiteUrl()
+  const nanoHubUrl = getNanoHubSiteUrl()
 
   const avatar = me?.image ?? (me?.email ? gravatarUrl(me.email) : undefined)
   const handle = me?.handle ?? me?.displayName ?? 'user'
@@ -63,7 +63,7 @@ export default function Header() {
           <span className="brand-name">{siteName}</span>
         </Link>
         <nav className="nav-links">
-          {isSoulMode ? <a href={clawHubUrl}>ClawHub</a> : null}
+          {isSoulMode ? <a href={nanoHubUrl}>NanoSolana Hub</a> : null}
           {isSoulMode ? (
             <Link
               to="/souls"
@@ -139,7 +139,7 @@ export default function Header() {
               <DropdownMenuContent align="end">
                 {isSoulMode ? (
                   <DropdownMenuItem asChild>
-                    <a href={clawHubUrl}>ClawHub</a>
+                    <a href={nanoHubUrl}>NanoSolana Hub</a>
                   </DropdownMenuItem>
                 ) : null}
                 <DropdownMenuItem asChild>

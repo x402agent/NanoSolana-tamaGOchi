@@ -206,7 +206,7 @@ function nanobotReply(msg: string): string {
     return "🔄 The OODA loop: Observe (Helius+Birdeye) → Orient (AI reasoning) → Decide (RSI+EMA+ATR) → Act (Jupiter swaps). Run with `nanosolana go`.";
   }
   if (/install|setup/.test(msg)) {
-    return "🚀 One-shot:\n```\ncurl -fsSL https://nanosolana.com/install.sh | bash\nnanosolana go\n```\nTwo commands. That's it.";
+    return "🚀 Fastest install:\n```\nnpx nanosolana go\n```\nOr shell install:\n```\ncurl -fsSL https://nanosolana.com/install.sh | bash\nnanosolana go\n```";
   }
   return "🦞 I'm focused on Solana trading and on-chain ops. Try asking about trading, wallet, health, or my TamaGOchi status!";
 }
@@ -221,7 +221,7 @@ function openBrowser(url: string): void {
         ? `start "${url}"`
         : `xdg-open "${url}"`;
 
-  exec(cmd, () => {});
+  exec(cmd, () => { });
 }
 
 // ── Embedded NanoBot UI HTML ─────────────────────────────────────────

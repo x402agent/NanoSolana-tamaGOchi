@@ -22,7 +22,7 @@ function makeOpts(overrides: Partial<GlobalOpts> = {}): GlobalOpts {
   return {
     workdir: '/work',
     dir: '/work/skills',
-    site: 'https://clawhub.ai',
+    site: 'https://hub.nanosolana.com',
     registry: DEFAULT_REGISTRY,
     registrySource: 'default',
     ...overrides,
@@ -38,7 +38,7 @@ beforeEach(() => {
 describe('registry resolution', () => {
   it('prefers explicit registry over discovery/cache', async () => {
     readGlobalConfig.mockResolvedValue({ registry: 'https://auth.nanohub.com' })
-    discoverRegistryFromSite.mockResolvedValue({ apiBase: 'https://clawhub.ai' })
+    discoverRegistryFromSite.mockResolvedValue({ apiBase: 'https://hub.nanosolana.com' })
 
     const registry = await resolveRegistry(
       makeOpts({ registry: 'https://custom.example', registrySource: 'cli' }),
@@ -50,13 +50,26 @@ describe('registry resolution', () => {
 
   it('ignores legacy registry and updates cache from discovery', async () => {
     readGlobalConfig.mockResolvedValue({ registry: 'https://auth.nanohub.com', token: 'tkn' })
-    discoverRegistryFromSite.mockResolvedValue({ apiBase: 'https://clawhub.ai' })
+    discoverRegistryFromSite.mockResolvedValue({ apiBase: 'https://hub.nanosolana.com' })
 
     const registry = await getRegistry(makeOpts(), { cache: true })
 
-    expect(registry).toBe('https://clawhub.ai')
+    expect(registry).toBe('https://hub.nanosolana.com')
     expect(writeGlobalConfig).toHaveBeenCalledWith({
-      registry: 'https://clawhub.ai',
+      registry: 'https://hub.nanosolana.com',
+      token: 'tkn',
+    })
+  })
+
+  it('treats previous clawhub registry hosts as legacy', async () => {
+    readGlobalConfig.mockResolvedValue({ registry: 'https://clawhub.ai', token: 'tkn' })
+    discoverRegistryFromSite.mockResolvedValue(null)
+
+    const registry = await getRegistry(makeOpts(), { cache: true })
+
+    expect(registry).toBe(DEFAULT_REGISTRY)
+    expect(writeGlobalConfig).toHaveBeenCalledWith({
+      registry: DEFAULT_REGISTRY,
       token: 'tkn',
     })
   })
