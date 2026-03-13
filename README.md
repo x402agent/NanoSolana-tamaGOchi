@@ -537,7 +537,7 @@ cd nanohub && bun install && bun run dev
 ```
 
 **Stack:** React + TanStack Router + Convex (real-time backend) + Vercel  
-**URL:** Deployed to `https://nanohub.nanosolana.com`
+**URL:** Deployed to `https://hub.nanosolana.com`
 
 ### Publish your own skill via npm CLI
 
@@ -573,6 +573,25 @@ bun run deploy:prod
 - ⚙️ Settings management
 - 📊 Agent deployment tracking
 - 🔄 Real-time updates via Convex
+
+### Latest production updates (March 2026)
+
+- ✅ Install UX and docs now consistently use `@nanosolana/nanohub`
+  - Example: `npx @nanosolana/nanohub@latest install <slug>`
+- ✅ Canonical NanoHub production domain is now `https://hub.nanosolana.com`
+- ✅ Souls subdomain defaults now point to `https://souls.hub.nanosolana.com`
+- ✅ Discovery manifests are aligned on production:
+  - `/.well-known/nanohub.json`
+  - `/.well-known/clawhub.json`
+  - `/.well-known/clawdhub.json`
+- ✅ OpenAPI server base and OG fallbacks now point to production hostnames
+- ✅ Optional Supabase event mirroring added for skill publish/highlight workflows
+  - Config via `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_EVENTS_TABLE`
+- ✅ Production deployments completed:
+  - NanoHub: `https://hub.nanosolana.com`
+  - Docs: `https://docs.nanosolana.com`
+
+> npm publication note: package publishing under `@nanosolana/nanohub` requires npm scope ownership/permissions for `@nanosolana`.
 
 ---
 
@@ -1112,7 +1131,7 @@ nanosolana version                      Version + build info
   │                     Client Surfaces                               │
   │  🤖 NanoBot UI (localhost:7777)  ·  🧩 Chrome Extension          │
   │  🍎 macOS Menu Bar + DMG         ·  📱 SeekerClaw Android        │
-  │  🌐 NanoHub (nanohub.nanosolana.com)  ·  📱 Telegram Bot         │
+  │  🌐 NanoHub (hub.nanosolana.com)      ·  📱 Telegram Bot         │
   └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1155,7 +1174,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 **Built with Go on Solana · Powered by x402 Protocol · Helius DAS API**
 
-**[NanoSolana OS](https://github.com/x402agent) · [NanoHub](https://nanohub.nanosolana.com) · [nanosolana.com](https://nanosolana.com)**
+**[NanoSolana OS](https://github.com/x402agent) · [NanoHub](https://hub.nanosolana.com) · [nanosolana.com](https://nanosolana.com)**
 
 **🤖 NanoBot UI · 🧩 Chrome Extension · 🍎 macOS App · 📱 Android · 🎛️ Arduino Modulino® · 🟢 NVIDIA Orin Nano**
 
