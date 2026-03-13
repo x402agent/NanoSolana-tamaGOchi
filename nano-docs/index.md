@@ -25,6 +25,29 @@ nanosolana birth     # Create Solana wallet + mint Birth Certificate NFT + block
 nanosolana run       # Start the OODA trading loop
 ```
 
+## NanoHub + npx (Convex-backed)
+
+NanoHub registration, API tokens, and skill/soul publishing are backed by Convex.
+
+```bash
+# 1) Open the hub and sign in with GitHub
+open https://hub.nanosolana.com
+
+# 2) Connect CLI to hub (opens /cli/auth in browser)
+npx clawhub@latest login
+
+# 3) Publish local agent skill folder
+npx clawhub@latest publish ./skills/my-agent \
+  --slug my-agent \
+  --name "My Agent" \
+  --version 1.0.0
+
+# 4) Or sync all local updates
+npx clawhub@latest sync --all
+```
+
+For the full flow, see [CLI: Hub + Convex (web + npx)](/cli/hub-convex).
+
 ## Fun Stuff
 
 ```bash

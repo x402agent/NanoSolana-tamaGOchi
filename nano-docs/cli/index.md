@@ -10,6 +10,7 @@ trading operations, wallet management, and mesh networking.
 
 ## Command pages
 
+- [`hub-convex`](/cli/hub-convex)
 - [`init`](/cli/init)
 - [`birth`](/cli/birth)
 - [`run`](/cli/run)
