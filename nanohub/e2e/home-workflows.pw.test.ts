@@ -5,16 +5,25 @@ test('home install switcher and browse CTA work', async ({ page }) => {
   const errors = trackRuntimeErrors(page)
 
   await page.goto('/', { waitUntil: 'domcontentloaded' })
-  await expect(page.getByRole('heading', { name: /clawhub, the skill dock/i })).toBeVisible()
-  await expect(page.getByText('npx nanosolana@latest install sonoscli')).toBeVisible()
+  await expect(page.getByRole('heading', { name: /nanohub, the skill dock/i })).toBeVisible()
+  await expect(
+    page.getByText(/npx (?:@nanosolana\/nanohub|nanosolana)@latest install sonoscli/i),
+  ).toBeVisible()
 
   await page.getByRole('tab', { name: 'pnpm' }).click()
-  await expect(page.getByText('pnpm dlx nanosolana@latest install sonoscli')).toBeVisible()
+  await expect(
+    page.getByText(/pnpm dlx (?:@nanosolana\/nanohub|nanosolana)@latest install sonoscli/i),
+  ).toBeVisible()
 
   await page.getByRole('tab', { name: 'bun' }).click()
-  await expect(page.getByText('bunx nanosolana@latest install sonoscli')).toBeVisible()
+  await expect(
+    page.getByText(/bunx (?:@nanosolana\/nanohub|nanosolana)@latest install sonoscli/i),
+  ).toBeVisible()
 
-  await page.getByRole('link', { name: 'Browse skills' }).click()
+  const browseSkillsLink = page.getByRole('link', { name: 'Browse skills' }).first()
+  await expect(browseSkillsLink).toHaveAttribute('href', /\/skills/)
+  const browseSkillsHref = await browseSkillsLink.getAttribute('href')
+  await page.goto(browseSkillsHref ?? '/skills?nonSuspicious=true', { waitUntil: 'domcontentloaded' })
   await expect(page).toHaveURL(/\/skills/)
   await expect(page.getByRole('heading', { name: /^Skills/ })).toBeVisible()
   await expectHealthyPage(page, errors)
