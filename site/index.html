@@ -706,6 +706,196 @@
       color: var(--solana-green);
       font-size: 1rem;
     }
+
+    /* ── Floating Music Player ─────────────── */
+    .music-player {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      z-index: 9999;
+      background: rgba(10, 14, 26, 0.92);
+      backdrop-filter: blur(20px) saturate(1.4);
+      border: 1px solid rgba(20, 241, 149, 0.2);
+      border-radius: 16px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 60px rgba(20, 241, 149, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      min-width: 280px;
+    }
+
+    .music-player:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 80px rgba(20, 241, 149, 0.12);
+    }
+
+    .music-player__btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--solana-green), var(--solana-purple));
+      color: var(--bg-abyss);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+
+    .music-player__btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 20px rgba(20, 241, 149, 0.4);
+    }
+
+    .music-player__btn:active {
+      transform: scale(0.95);
+    }
+
+    .music-player__info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .music-player__title {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--solana-green);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .music-player__track {
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      font-weight: 500;
+      margin-bottom: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .music-player__progress {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .music-player__progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--solana-green), var(--solana-purple));
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    .music-player__time {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .music-player__viz {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .music-player__viz-bar {
+      width: 3px;
+      background: linear-gradient(to top, var(--solana-green), var(--solana-purple));
+      border-radius: 2px;
+      transition: height 0.15s ease;
+    }
+
+    .music-player__viz.paused .music-player__viz-bar {
+      height: 4px !important;
+    }
+
+    .music-player__volume {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .music-player__volume-icon {
+      font-size: 14px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .music-player__volume-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 50px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .music-player__volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--solana-green);
+      cursor: pointer;
+    }
+
+    .music-player__autoplay-prompt {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 14, 26, 0.95);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--solana-green);
+      animation: pulsePrompt 2s ease-in-out infinite;
+    }
+
+    .music-player__autoplay-prompt.hidden {
+      display: none;
+    }
+
+    @keyframes pulsePrompt {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      .music-player {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        min-width: unset;
+      }
+    }
   </style>
 </head>
 
@@ -1051,6 +1241,157 @@
 
       observer.observe(body);
     });
+  </script>
+
+  <!-- ── Floating Music Player ─────────────── -->
+  <div class="music-player" id="music-player">
+    <button class="music-player__btn" id="music-play-btn" title="Play / Pause">▶</button>
+    <div class="music-player__info">
+      <div class="music-player__title">🦞 NanoSolana Radio</div>
+      <div class="music-player__track">nano.mp3</div>
+      <div class="music-player__progress" id="music-progress">
+        <div class="music-player__progress-fill" id="music-progress-fill"></div>
+      </div>
+      <div class="music-player__time">
+        <span id="music-time-current">0:00</span>
+        <span id="music-time-total">0:00</span>
+      </div>
+    </div>
+    <div class="music-player__viz" id="music-viz">
+      <div class="music-player__viz-bar" style="height:4px"></div>
+      <div class="music-player__viz-bar" style="height:4px"></div>
+      <div class="music-player__viz-bar" style="height:4px"></div>
+      <div class="music-player__viz-bar" style="height:4px"></div>
+      <div class="music-player__viz-bar" style="height:4px"></div>
+    </div>
+    <div class="music-player__volume">
+      <span class="music-player__volume-icon" id="music-vol-icon" title="Mute / Unmute">🔊</span>
+      <input type="range" class="music-player__volume-slider" id="music-vol" min="0" max="1" step="0.05" value="0.5" />
+    </div>
+    <!-- Autoplay fallback overlay -->
+    <div class="music-player__autoplay-prompt" id="music-autoplay-prompt">
+      🎵 Click to play NanoSolana Radio
+    </div>
+  </div>
+
+  <audio id="nano-audio" src="https://pub-7aa888a0e17a4cbb944ead64c292033f.r2.dev/nano.mp3" preload="auto" loop></audio>
+
+  <script>
+  (function() {
+    const audio = document.getElementById('nano-audio');
+    const playBtn = document.getElementById('music-play-btn');
+    const progressBar = document.getElementById('music-progress');
+    const progressFill = document.getElementById('music-progress-fill');
+    const timeCurrent = document.getElementById('music-time-current');
+    const timeTotal = document.getElementById('music-time-total');
+    const viz = document.getElementById('music-viz');
+    const vizBars = viz.querySelectorAll('.music-player__viz-bar');
+    const volSlider = document.getElementById('music-vol');
+    const volIcon = document.getElementById('music-vol-icon');
+    const autoplayPrompt = document.getElementById('music-autoplay-prompt');
+    let vizInterval = null;
+
+    audio.volume = 0.5;
+
+    function formatTime(s) {
+      if (isNaN(s)) return '0:00';
+      const m = Math.floor(s / 60);
+      const sec = Math.floor(s % 60);
+      return m + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+
+    function startViz() {
+      viz.classList.remove('paused');
+      if (vizInterval) clearInterval(vizInterval);
+      vizInterval = setInterval(() => {
+        vizBars.forEach(bar => {
+          bar.style.height = (4 + Math.random() * 20) + 'px';
+        });
+      }, 180);
+    }
+
+    function stopViz() {
+      viz.classList.add('paused');
+      if (vizInterval) { clearInterval(vizInterval); vizInterval = null; }
+      vizBars.forEach(bar => { bar.style.height = '4px'; });
+    }
+
+    function setPlaying() {
+      playBtn.textContent = '⏸';
+      startViz();
+      autoplayPrompt.classList.add('hidden');
+    }
+
+    function setPaused() {
+      playBtn.textContent = '▶';
+      stopViz();
+    }
+
+    // Play / pause toggle
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play().then(setPlaying).catch(() => {});
+      } else {
+        audio.pause();
+        setPaused();
+      }
+    });
+
+    // Autoplay prompt click
+    autoplayPrompt.addEventListener('click', () => {
+      audio.play().then(setPlaying).catch(() => {});
+    });
+
+    // Progress update
+    audio.addEventListener('timeupdate', () => {
+      if (audio.duration) {
+        progressFill.style.width = (audio.currentTime / audio.duration * 100) + '%';
+      }
+      timeCurrent.textContent = formatTime(audio.currentTime);
+    });
+
+    audio.addEventListener('loadedmetadata', () => {
+      timeTotal.textContent = formatTime(audio.duration);
+    });
+
+    // Seek
+    progressBar.addEventListener('click', (e) => {
+      if (audio.duration) {
+        const rect = progressBar.getBoundingClientRect();
+        audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+      }
+    });
+
+    // Volume
+    volSlider.addEventListener('input', () => {
+      audio.volume = parseFloat(volSlider.value);
+      audio.muted = false;
+      volIcon.textContent = audio.volume === 0 ? '🔇' : audio.volume < 0.5 ? '🔉' : '🔊';
+    });
+
+    volIcon.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      volIcon.textContent = audio.muted ? '🔇' : (audio.volume < 0.5 ? '🔉' : '🔊');
+    });
+
+    // Autoplay on page load
+    audio.play().then(() => {
+      setPlaying();
+    }).catch(() => {
+      // Autoplay blocked — show prompt, and also start on first user interaction
+      setPaused();
+      autoplayPrompt.classList.remove('hidden');
+      const startOnInteraction = () => {
+        audio.play().then(setPlaying).catch(() => {});
+        document.removeEventListener('click', startOnInteraction);
+        document.removeEventListener('keydown', startOnInteraction);
+        document.removeEventListener('scroll', startOnInteraction);
+      };
+      document.addEventListener('click', startOnInteraction, { once: false });
+      document.addEventListener('keydown', startOnInteraction, { once: true });
+      document.addEventListener('scroll', startOnInteraction, { once: true });
+    });
+  })();
   </script>
 
   <!-- ElevenLabs ConvAI Widget -->
