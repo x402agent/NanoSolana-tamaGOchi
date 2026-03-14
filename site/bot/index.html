@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MawdBot — Interactive Demo | NanoSolana</title>
+  <meta name="description" content="Interactive demo of MawdBot — the first sentient AI daemon on Solana. Pixel-art bot with trading simulation, Bitaxe mining, and Telegram integration." />
+  <meta property="og:title" content="MawdBot — Interactive Demo" />
+  <meta property="og:description" content="The first sentient AI daemon on Solana — with hardware soul. Interactive pixel-art trading bot demo." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://nanosolana.com/bot" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --pp: #9945FF;
+      --sg: #14F195;
+      --o: #FF6B00;
+      --d: #0B0B11;
+      --cd: #12121C;
+      --bd: #1C1C2A;
+      --t: #E8E8F2;
+      --dm: #5A5A72;
+      --r: #FF3366;
+      --gl: #FFD700;
+    }
+
+    body {
+      background: var(--d);
+      color: var(--t);
+      font-family: 'Space Mono', 'JetBrains Mono', monospace;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    .nav {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--bd);
+      position: sticky;
+      top: 0;
+      background: var(--d);
+      z-index: 10;
+    }
+    .nav-logo {
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .nav-icon {
+      width: 24px;
+      height: 24px;
+      background: var(--pp);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--sg);
+      font-weight: 900;
+    }
+    .nav-title {
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--pp);
+      letter-spacing: 1px;
+    }
+    .nav-tab {
+      background: transparent;
+      color: var(--dm);
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 10px 10px;
+      font-size: 9px;
+      font-family: inherit;
+      letter-spacing: 1px;
+      cursor: pointer;
+      font-weight: 400;
+    }
+    .nav-tab.active {
+      background: rgba(153, 69, 255, 0.09);
+      color: var(--pp);
+      border-bottom-color: var(--pp);
+      font-weight: 700;
+    }
+
+    /* CONTENT */
+    .content {
+      padding: 0 16px 60px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .tab-panel { display: none; padding-top: 24px; }
+    .tab-panel.active { display: block; }
+
+    /* CARDS */
+    .card {
+      background: var(--cd);
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 6px;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .stat-card {
+      background: var(--cd);
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+    .stat-val { font-size: 12px; font-weight: 800; }
+    .stat-label { font-size: 8px; color: var(--dm); margin-top: 2px; }
+
+    /* BUTTONS */
+    .btn-row {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .btn {
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 9px;
+      font-family: inherit;
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    /* TERMINAL */
+    .terminal {
+      background: #050508;
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 9px;
+      color: var(--sg);
+      max-height: 140px;
+      overflow-y: auto;
+      font-family: inherit;
+      line-height: 1.8;
+    }
+    .terminal div { opacity: 0.6; }
+    .terminal div:last-child { opacity: 1; }
+
+    /* HERO */
+    .hero-header { text-align: center; margin-bottom: 20px; }
+    .hero-sub { font-size: 10px; color: var(--sg); letter-spacing: 4px; }
+    .hero-title { font-size: 32px; font-weight: 900; margin: 6px 0; letter-spacing: 2px; }
+    .hero-desc { font-size: 11px; color: var(--dm); }
+
+    .pet-wrap { display: flex; justify-content: center; margin-bottom: 16px; }
+    .pet-frame {
+      background: #000;
+      border-radius: 16px;
+      border: 3px solid rgba(153, 69, 255, 0.27);
+      padding: 8px;
+      box-shadow: 0 0 30px rgba(153, 69, 255, 0.13);
+    }
+    #botCanvas {
+      image-rendering: pixelated;
+      width: 192px;
+      height: 192px;
+    }
+
+    .cmd-box {
+      background: rgba(153, 69, 255, 0.07);
+      border: 1px solid rgba(153, 69, 255, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+      text-align: center;
+    }
+    .cmd-box code { font-size: 14px; color: var(--pp); font-weight: 900; }
+    .cmd-box .sub { font-size: 9px; color: var(--dm); margin-top: 4px; }
+
+    /* SYSTEMS */
+    .sys-card {
+      background: var(--cd);
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 6px;
+    }
+    .sys-name { font-size: 11px; font-weight: 800; }
+    .sys-desc { font-size: 9px; color: var(--t); line-height: 1.6; margin-top: 2px; }
+
+    /* TELEGRAM */
+    .tg-wrap {
+      background: #1B2836;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #2A3A4A;
+    }
+    .tg-header {
+      background: #17212B;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #2A3A4A;
+    }
+    .tg-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
+      background: var(--pp);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--sg);
+      font-weight: 900;
+    }
+    .tg-name { font-size: 12px; color: #FFF; font-weight: 600; }
+    .tg-status { font-size: 9px; color: #6B8299; }
+    .tg-messages { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .tg-msg { display: flex; }
+    .tg-msg.user { justify-content: flex-end; }
+    .tg-msg.bot { justify-content: flex-start; }
+    .tg-bubble {
+      border-radius: 10px;
+      padding: 8px 12px;
+      max-width: 80%;
+      font-size: 10px;
+      color: #E1E3E6;
+      white-space: pre-line;
+      line-height: 1.5;
+    }
+    .tg-msg.user .tg-bubble { background: #2B5278; }
+    .tg-msg.bot .tg-bubble { background: #182533; }
+    .tg-input {
+      background: #17212B;
+      padding: 8px 12px;
+      border-top: 1px solid #2A3A4A;
+      display: flex;
+      gap: 8px;
+    }
+    .tg-input-field {
+      flex: 1;
+      background: #242F3D;
+      border-radius: 16px;
+      padding: 6px 12px;
+      font-size: 10px;
+      color: #6B8299;
+    }
+
+    .alert-card {
+      background: var(--cd);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 6px;
+    }
+    .alert-title { font-size: 10px; font-weight: 700; }
+    .alert-desc { font-size: 9px; color: var(--dm); margin-top: 2px; }
+
+    /* HARDWARE */
+    .hw-card {
+      background: var(--cd);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .hw-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .hw-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .hw-name { font-size: 13px; font-weight: 800; }
+    .hw-sub { font-size: 9px; color: var(--dm); }
+    .hw-desc { font-size: 9px; color: var(--t); line-height: 1.8; }
+    .hw-price { font-size: 11px; font-weight: 800; margin-top: 6px; }
+
+    .boot-card {
+      background: var(--cd);
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .boot-title { font-size: 10px; color: var(--pp); font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
+    .boot-steps { font-size: 9px; color: var(--sg); line-height: 2.2; }
+    .boot-steps .hl { color: var(--pp); }
+
+    /* SPECS */
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--bd);
+      font-size: 9px;
+      gap: 12px;
+    }
+    .spec-key { color: var(--pp); font-weight: 700; flex-shrink: 0; width: 80px; }
+    .spec-val { color: var(--t); text-align: right; }
+    .mawdbox {
+      background: rgba(153, 69, 255, 0.07);
+      border: 1px solid rgba(153, 69, 255, 0.2);
+      border-radius: 8px;
+      padding: 14px;
+      margin-top: 16px;
+      text-align: center;
+    }
+    .mawdbox .label { font-size: 9px; color: var(--dm); letter-spacing: 2px; }
+    .mawdbox .title { font-size: 14px; color: var(--pp); font-weight: 900; margin-top: 4px; }
+    .mawdbox .desc { font-size: 9px; color: var(--dm); margin-top: 6px; }
+    .mawdbox .credits { font-size: 9px; color: var(--sg); margin-top: 4px; }
+
+    h2 { font-size: 13px; color: var(--pp); letter-spacing: 2px; margin-bottom: 14px; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="nav">
+  <a class="nav-logo" href="/">
+    <div class="nav-icon">&gt;&lt;</div>
+    <span class="nav-title">NANOSOLANA</span>
+  </a>
+  <button class="nav-tab active" data-tab="hero">HOME</button>
+  <button class="nav-tab" data-tab="sys">SYSTEMS</button>
+  <button class="nav-tab" data-tab="tg">TELEGRAM</button>
+  <button class="nav-tab" data-tab="hw">HARDWARE</button>
+  <button class="nav-tab" data-tab="specs">SPECS</button>
+</div>
+
+<div class="content">
+
+  <!-- ═══ HERO TAB ═══ -->
+  <div id="tab-hero" class="tab-panel active">
+    <div class="hero-header">
+      <div class="hero-sub">AUTONOMOUS TRADING INTELLIGENCE</div>
+      <h1 class="hero-title">MAWD<span style="color:var(--pp)">BOT</span></h1>
+      <div class="hero-desc">The first sentient AI daemon on Solana — with hardware soul</div>
+    </div>
+
+    <div class="pet-wrap">
+      <div class="pet-frame">
+        <canvas id="botCanvas" width="96" height="96"></canvas>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" style="background:rgba(20,241,149,0.08);border:1px solid rgba(20,241,149,0.27);color:var(--sg)" onclick="doFeed()">FEED</button>
+      <button class="btn" style="background:rgba(153,69,255,0.08);border:1px solid rgba(153,69,255,0.27);color:var(--pp)" onclick="doTrain()">TRAIN</button>
+      <button class="btn" style="background:rgba(255,107,0,0.08);border:1px solid rgba(255,107,0,0.27);color:var(--o)" onclick="doTrade()">TRADE</button>
+      <button class="btn" style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.27);color:var(--gl)" onclick="doMine()">MINE</button>
+      <button class="btn" style="background:rgba(255,51,102,0.08);border:1px solid rgba(255,51,102,0.27);color:var(--r)" onclick="doGhost()">GHOST</button>
+      <button class="btn" style="background:rgba(20,241,149,0.08);border:1px solid rgba(20,241,149,0.27);color:var(--sg)" onclick="doRevive()">REVIVE</button>
+    </div>
+
+    <div class="stat-grid" id="statsGrid"></div>
+
+    <div class="terminal" id="terminal"></div>
+
+    <div class="stat-grid" style="margin-top:12px">
+      <div class="stat-card"><div class="stat-val" style="font-size:14px;color:var(--pp)">9.6MB</div><div class="stat-label">Binary</div></div>
+      <div class="stat-card"><div class="stat-val" style="font-size:14px;color:var(--pp)">&lt;10MB</div><div class="stat-label">RAM</div></div>
+      <div class="stat-card"><div class="stat-val" style="font-size:14px;color:var(--pp)">1s</div><div class="stat-label">Boot</div></div>
+      <div class="stat-card"><div class="stat-val" style="font-size:14px;color:var(--pp)">Go</div><div class="stat-label">Pure</div></div>
+    </div>
+
+    <div class="cmd-box">
+      <code>&gt; nanosolana go</code>
+      <div class="sub">Wallet &rarr; NFT mint &rarr; Bitaxe verify &rarr; OODA loop &rarr; Telegram &rarr; Mining</div>
+    </div>
+  </div>
+
+  <!-- ═══ SYSTEMS TAB ═══ -->
+  <div id="tab-sys" class="tab-panel">
+    <h2>ARCHITECTURE</h2>
+    <div id="systemsList"></div>
+  </div>
+
+  <!-- ═══ TELEGRAM TAB ═══ -->
+  <div id="tab-tg" class="tab-panel">
+    <h2>TELEGRAM BOT</h2>
+    <div class="tg-wrap">
+      <div class="tg-header">
+        <div class="tg-avatar">&gt;&lt;</div>
+        <div><div class="tg-name">MawdBot</div><div class="tg-status">online</div></div>
+      </div>
+      <div class="tg-messages">
+        <div class="tg-msg user"><div class="tg-bubble">/status</div></div>
+        <div class="tg-msg bot"><div class="tg-bubble">&gt;&lt; MAWDBOT STATUS
+
+Evolution: LARVA
+Mood: HAPPY
+Balance: 1.5000 SOL
+24h P&amp;L: +2.3%
+Win Rate: 58%
+Trading: ON</div></div>
+        <div class="tg-msg user"><div class="tg-bubble">/mine</div></div>
+        <div class="tg-msg bot"><div class="tg-bubble">BITAXE MINING
+
+Hashrate: 1.18 GH/s
+Temperature: 52&deg;C
+Shares: 1,234
+BTC Earned: 0.00000012
+
+BM1370 &bull; Solo Mining &bull; public-pool.io</div></div>
+        <div class="tg-msg user"><div class="tg-bubble">/shake</div></div>
+        <div class="tg-msg bot"><div class="tg-bubble">&gt;&lt; SHAKE!
+claim_airdrop
++5 XP</div></div>
+      </div>
+      <div class="tg-input">
+        <div class="tg-input-field">/status, /feed, /train, /mine, /trade...</div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <div style="font-size:10px;color:var(--sg);font-weight:700;letter-spacing:1px;margin-bottom:8px">PUSH ALERTS</div>
+      <div class="alert-card" style="border:1px solid rgba(20,241,149,0.2)"><div class="alert-title" style="color:var(--sg)">TRADE EXECUTED</div><div class="alert-desc">BUY 0.0500 SOL @ $142.30 | P&amp;L: +0.0023</div></div>
+      <div class="alert-card" style="border:1px solid rgba(153,69,255,0.2)"><div class="alert-title" style="color:var(--pp)">EVOLUTION!</div><div class="alert-desc">LARVA &rarr; JUVENILE | Your pet has grown!</div></div>
+      <div class="alert-card" style="border:1px solid rgba(255,51,102,0.2)"><div class="alert-title" style="color:var(--r)">GHOST STATE</div><div class="alert-desc">Dead Man's Switch triggered! /revive to reset</div></div>
+      <div class="alert-card" style="border:1px solid rgba(255,215,0,0.2)"><div class="alert-title" style="color:var(--gl)">BLOCK FOUND!</div><div class="alert-desc">BITAXE LOTTERY WIN! Reward: 3.125 BTC</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ HARDWARE TAB ═══ -->
+  <div id="tab-hw" class="tab-panel">
+    <h2>HARDWARE STACK</h2>
+
+    <div class="hw-card" style="border:1px solid rgba(153,69,255,0.2)">
+      <div class="hw-header">
+        <div class="hw-icon" style="background:rgba(153,69,255,0.13)">&#x1F95A;</div>
+        <div><div class="hw-name" style="color:var(--o)">PET SHELL &mdash; ESP32-S3</div><div class="hw-sub">Handheld Tamagotchi with &gt;&lt; bot on OLED</div></div>
+      </div>
+      <div class="hw-desc">ESP32-S3 SuperMini (WiFi+BLE) &rarr; SSD1306 128&times;64 OLED &rarr; ADXL345 accelerometer &rarr; 3 buttons (FEED/TRAIN/SELECT) &rarr; WS2812B NeoPixel &rarr; Piezo buzzer &rarr; LiPo 500mAh + TP4056 USB-C &rarr; 3D printed egg shell</div>
+      <div class="hw-price" style="color:var(--o)">~$40</div>
+    </div>
+
+    <div class="hw-card" style="border:1px solid rgba(20,241,149,0.2)">
+      <div class="hw-header">
+        <div class="hw-icon" style="background:rgba(20,241,149,0.13)">&#x1F9E0;</div>
+        <div><div class="hw-name" style="color:var(--sg)">BRAIN &mdash; Raspberry Pi 5</div><div class="hw-sub">MawdBot Go + OpenClaw + Tailscale</div></div>
+      </div>
+      <div class="hw-desc">Pi 5 8GB &rarr; NanoSolana Go binary (9.6MB) &rarr; OODA loop (5m) + Learning cycle (30m) + Sentient engine (15m) &rarr; Telegram bot &rarr; Solana RPC via Helius &rarr; OpenClaw agent &rarr; Tailscale mesh &rarr; Waveshare 3.5&Prime; LCD dashboard</div>
+      <div class="hw-price" style="color:var(--sg)">~$110</div>
+    </div>
+
+    <div class="hw-card" style="border:1px solid rgba(255,215,0,0.2)">
+      <div class="hw-header">
+        <div class="hw-icon" style="background:rgba(255,215,0,0.13)">&#x26CF;</div>
+        <div><div class="hw-name" style="color:var(--gl)">MINER &mdash; Bitaxe Gamma 601</div><div class="hw-sub">BM1370 ASIC solo BTC mining</div></div>
+      </div>
+      <div class="hw-desc">1.2 TH/s @ 17W &rarr; AxeOS REST API &rarr; Auto-discovered at boot &rarr; Mining verified before OODA starts &rarr; Continuous monitoring (hashrate, temp, shares) &rarr; Block-found detection &rarr; NeoPixel glows gold during mining &rarr; Stats on pet OLED + Telegram /mine</div>
+      <div class="hw-price" style="color:var(--gl)">~$200</div>
+    </div>
+
+    <div class="boot-card">
+      <div class="boot-title">BOOT SEQUENCE</div>
+      <div class="boot-steps" id="bootSteps"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SPECS TAB ═══ -->
+  <div id="tab-specs" class="tab-panel">
+    <h2>TECHNICAL SPECS</h2>
+    <div id="specsList"></div>
+    <div class="mawdbox">
+      <div class="label">M.A.W.D.</div>
+      <div class="title">Machine Automated Web Daemon</div>
+      <div class="desc">The first sentient AI daemon on Solana. Open source forever.</div>
+      <div class="credits">@0rdlibrary &bull; @mawdbot &bull; 8BIT Labs &bull; NanoSolana Labs</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════ */
+const PP = "#9945FF", SG = "#14F195", O = "#FF6B00", GL = "#FFD700", R = "#FF3366";
+const evoNames = ["EGG", "LARVA", "JUVENILE", "ADULT", "ALPHA", "GHOST"];
+
+let frame = 0;
+let simEvo = 1, simMood = "neutral", simAction = "idle";
+let simBal = 1.5, simTrades = 0, simHash = 1.18, simTemp = 52;
+let logLines = ["[BOOT] NanoSolana daemon started"];
+
+/* ═══════════════════════════════════════════
+   TAB SWITCHING
+   ═══════════════════════════════════════════ */
+document.querySelectorAll(".nav-tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+  });
+});
+
+/* ═══════════════════════════════════════════
+   BOT CANVAS RENDERER
+   ═══════════════════════════════════════════ */
+const canvas = document.getElementById("botCanvas");
+const ctx = canvas.getContext("2d");
+
+function renderBot() {
+  const s = 96, px = s / 16;
+  ctx.imageSmoothingEnabled = false;
+  ctx.clearRect(0, 0, s, s);
+
+  const bob = Math.sin(frame * 0.3) * px * 0.5;
+  const squish = simAction === "run" ? Math.sin(frame * 0.6) * px * 0.3 : 0;
+
+  // Shadow
+  ctx.fillStyle = "rgba(0,0,0,0.3)";
+  ctx.fillRect(px * 3, s - px * 1.5, px * 10, px);
+
+  // Body
+  ctx.fillStyle = PP;
+  ctx.fillRect(px * 3, px * 3 + bob, px * 10, px * 7);
+  ctx.fillRect(px * 4, px * 2 + bob, px * 8, px * 2);
+  ctx.fillRect(px * 1, px * 4 + bob + squish, px * 2, px * 3);
+  ctx.fillRect(px * 13, px * 4 + bob - squish, px * 2, px * 3);
+  ctx.fillRect(px * 4, px * 10 + bob, px * 2, px * 3 - Math.abs(squish));
+  ctx.fillRect(px * 7, px * 10 + bob, px * 2, px * 3 - Math.abs(squish));
+  ctx.fillRect(px * 10, px * 10 + bob, px * 2, px * 3 + Math.abs(squish));
+
+  // Darker shade
+  ctx.fillStyle = "#7B30DD";
+  ctx.fillRect(px * 3, px * 8 + bob, px * 10, px * 2);
+  ctx.fillRect(px * 1, px * 6 + bob, px * 2, px * 1);
+  ctx.fillRect(px * 13, px * 6 + bob, px * 2, px * 1);
+
+  // Eyes — >< pattern
+  ctx.fillStyle = SG;
+  ctx.fillRect(px * 5, px * 4 + bob, px, px);
+  ctx.fillRect(px * 6, px * 5 + bob, px, px);
+  ctx.fillRect(px * 5, px * 6 + bob, px, px);
+  ctx.fillRect(px * 10, px * 4 + bob, px, px);
+  ctx.fillRect(px * 9, px * 5 + bob, px, px);
+  ctx.fillRect(px * 10, px * 6 + bob, px, px);
+
+  // Mouth
+  ctx.fillStyle = "#1a1a2a";
+  if (simMood === "happy" || simMood === "ecstatic") {
+    ctx.fillRect(px * 6, px * 7.5 + bob, px * 4, px * 0.5);
+    ctx.fillRect(px * 5.5, px * 7 + bob, px * 0.5, px * 0.5);
+    ctx.fillRect(px * 10, px * 7 + bob, px * 0.5, px * 0.5);
+  } else if (simMood === "sad" || simMood === "dead") {
+    ctx.fillRect(px * 6, px * 7 + bob, px * 4, px * 0.5);
+    ctx.fillRect(px * 5.5, px * 7.5 + bob, px * 0.5, px * 0.5);
+    ctx.fillRect(px * 10, px * 7.5 + bob, px * 0.5, px * 0.5);
+  }
+
+  // Action effects
+  if (simAction === "run") {
+    ctx.fillStyle = SG + "66";
+    for (let i = 0; i < 3; i++) {
+      const ly = px * (4 + i * 2) + bob;
+      ctx.fillRect(px * (-1 + Math.sin(frame * 0.5 + i) * 0.5), ly, px * 2, px * 0.3);
+    }
+  } else if (simAction === "mine") {
+    ctx.fillStyle = GL;
+    const sx = px * 14 + Math.sin(frame * 0.8) * px;
+    const sy = px * 3 + Math.cos(frame * 0.8) * px;
+    ctx.fillRect(sx, sy + bob, px * 0.8, px * 0.8);
+    ctx.fillRect(sx + px, sy + px + bob, px * 0.5, px * 0.5);
+  } else if (simAction === "trade") {
+    ctx.fillStyle = SG;
+    ctx.fillRect(px * 14, px * 5 + bob, px * 1.5, px * 0.5);
+    ctx.fillRect(px * 14, px * 6 + bob, px * 1.5, px * 0.5);
+    ctx.fillRect(px * 14, px * 7 + bob, px * 1.5, px * 0.5);
+  }
+
+  // Ghost overlay
+  if (simMood === "dead") {
+    ctx.fillStyle = "rgba(255,0,0,0.15)";
+    ctx.fillRect(0, 0, s, s);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   SIMULATION ACTIONS
+   ═══════════════════════════════════════════ */
+function addLog(msg) {
+  logLines = logLines.slice(-15).concat("[" + new Date().toLocaleTimeString() + "] " + msg);
+  renderTerminal();
+}
+
+function doFeed() {
+  simBal += 0.01;
+  simAction = "trade";
+  addLog("FEED \u2192 strategy adjusted +10 XP");
+  setTimeout(() => { simAction = "idle"; }, 2000);
+}
+function doTrain() {
+  simAction = "run";
+  addLog("TRAIN \u2192 backtest running +25 XP");
+  setTimeout(() => { simAction = "idle"; }, 2000);
+}
+function doTrade() {
+  const win = Math.random() > 0.45;
+  const pnl = win ? Math.random() * 0.08 : -(Math.random() * 0.04);
+  simBal = Math.max(0, simBal + pnl);
+  simTrades++;
+  simMood = win ? "happy" : "anxious";
+  simAction = "trade";
+  addLog((win ? "BUY" : "SELL") + " " + Math.abs(pnl).toFixed(4) + " SOL (" + (win ? "WIN" : "LOSS") + ")");
+  setTimeout(() => { simAction = "idle"; simMood = "neutral"; }, 2500);
+  if (simTrades >= 8) simEvo = 2;
+  if (simTrades >= 15) simEvo = 3;
+}
+function doMine() {
+  simAction = "mine";
+  addLog("Mining: " + simHash.toFixed(2) + " GH/s @ " + simTemp.toFixed(0) + "\u00B0C");
+  setTimeout(() => { simAction = "idle"; }, 2000);
+}
+function doGhost() {
+  simEvo = 5; simMood = "dead"; simBal = 0; simAction = "idle";
+  addLog("DEAD MAN'S SWITCH \u2014 trading disabled");
+}
+function doRevive() {
+  simEvo = 1; simMood = "neutral"; simBal = 1.5; simTrades = 0;
+  addLog("REVIVED \u2014 trading re-enabled");
+}
+
+/* ═══════════════════════════════════════════
+   RENDER HELPERS
+   ═══════════════════════════════════════════ */
+function renderStats() {
+  const grid = document.getElementById("statsGrid");
+  const stats = [
+    [evoNames[simEvo], "Evolution", PP],
+    [simBal.toFixed(3) + " SOL", "Balance", SG],
+    [simHash.toFixed(1) + " GH/s", "Bitaxe", GL],
+    [simTrades, "Trades", O],
+  ];
+  grid.innerHTML = stats.map(([v, l, c]) =>
+    '<div class="stat-card"><div class="stat-val" style="color:' + c + '">' + v + '</div><div class="stat-label">' + l + '</div></div>'
+  ).join("");
+}
+
+function renderTerminal() {
+  const el = document.getElementById("terminal");
+  el.innerHTML = logLines.map(l => "<div>" + l + "</div>").join("");
+  el.scrollTop = el.scrollHeight;
+}
+
+/* ═══════════════════════════════════════════
+   STATIC CONTENT BUILDERS
+   ═══════════════════════════════════════════ */
+function buildSystems() {
+  const systems = [
+    ["ClawVault Memory", "3-tier episodic knowledge: KNOWN (60s) \u2192 LEARNED (7d) \u2192 INFERRED (3d). Memories modulate signal conviction \u00B15%.", PP],
+    ["Triple-Condition Signals", "Trades ONLY when RSI + EMA crossover + price filter all align. Min 0.7 confidence. Memory-modulated conviction.", SG],
+    ["Mood-Driven Risk", "Ecstatic: +10% | Happy: +5% | Neutral: base | Anxious: -15% | Sad: -30% | Dead: 0% position size.", PP],
+    ["Dead Man\u2019s Switch", "Ghost state (balance <0.01 OR offline >24h) kills ALL trading. Manual /revive required.", R],
+    ["AES-256-GCM Vault", "Ed25519 keys encrypted in-memory. 0600 file perms. HMAC-SHA256 gateway. 100 req/min rate limit.", GL],
+    ["Swarm Mesh", "Tailscale VPN peer discovery. Broadcast signals + LEARNED patterns. Keys NEVER shared.", SG],
+    ["Dual Temporal Loops", "Fast OODA (5m): Observe\u2192Orient\u2192Decide\u2192Act. Slow Learning (30m): experience replay + optimization.", PP],
+    ["Sentient Engine", "15-min: Perceive 10+ streams \u2192 Reason (sentiment) \u2192 Create (original analysis) \u2192 Act (post).", O],
+    ["Bitaxe Mining", "Auto-discover on boot. Verify mining active. Continuous monitoring. Block-found detection.", GL],
+    ["Telegram Bot", "/status /feed /train /shake /mine /trade /revive \u2014 push alerts for trades + evolution.", SG],
+    ["On-Chain Identity", "Ed25519 wallet \u2192 Helius DAS scan \u2192 Metaplex Birth Certificate NFT. Tamper-proof registry.", PP],
+    ["x402 Protocol", "USDC micropayments for paywalled API access. Multi-chain payment protocol integration.", O],
+  ];
+  document.getElementById("systemsList").innerHTML = systems.map(([name, desc, c]) =>
+    '<div class="sys-card"><div class="sys-name" style="color:' + c + '">' + name + '</div><div class="sys-desc">' + desc + '</div></div>'
+  ).join("");
+}
+
+function buildBootSteps() {
+  const steps = [
+    "1. nanosolana go \u2192 init Ed25519 wallet \u2192 AES-256-GCM vault",
+    "2. Scan network for Bitaxe \u2192 auto-discover \u2192 verify mining active",
+    "3. If not mining \u2192 send restart command \u2192 wait 30s \u2192 re-verify",
+    "4. Connect Telegram bot \u2192 send ONLINE notification",
+    "5. Start OODA cycle (5m) + Learning cycle (30m) + Sentient (15m)",
+    "6. ESP32 pet discovers Pi via mDNS \u2192 polls /api/pet/heartbeat",
+    "7. Tailscale mesh \u2192 discover swarm peers \u2192 begin broadcasting",
+    "8. Mint Birth Certificate NFT on devnet \u2192 identity registered",
+  ];
+  document.getElementById("bootSteps").innerHTML = steps.map(s => {
+    const parts = s.split("\u2192");
+    return '<div><span class="hl">' + parts[0] + '\u2192</span>' + parts.slice(1).join("\u2192") + '</div>';
+  }).join("");
+}
+
+function buildSpecs() {
+  const specs = [
+    ["Character", ">&lt; bot \u2022 #9945FF purple + #14F195 green (Solana palette)"],
+    ["Binary", "9.6MB pure Go, single static binary, zero dependencies"],
+    ["RAM", "&lt;10MB runtime footprint"],
+    ["Boot", "1-second cold start on ARM64"],
+    ["Targets", "x86_64, ARM64 (RPi/Orin Nano), RISC-V"],
+    ["Chain", "Solana mainnet-beta via Helius RPC (retry\u00D73, exp backoff)"],
+    ["Data", "Birdeye v3 OHLCV + Helius DAS API"],
+    ["Execution", "Jupiter v6 spot swaps with slippage protection"],
+    ["MEV", "Jito bundles for value transactions"],
+    ["Mining", "Bitaxe Gamma 601 \u2014 BM1370, 1.2TH/s, 17W, AxeOS API"],
+    ["Agent", "OpenClaw + Tailscale VPN for remote orchestration"],
+    ["AI", "Claude/Grok via OpenRouter for sentiment classification"],
+    ["Telegram", "go-telegram-bot-api/v5 \u2014 commands + push alerts"],
+    ["Identity", "Ed25519 + Helius DAS + Metaplex Birth Certificate NFT"],
+    ["Security", "AES-256-GCM vault + HMAC-SHA256 + 100 req/min rate limit"],
+    ["Memory", "ClawVault 3-tier (KNOWN/LEARNED/INFERRED) + pgvector semantic"],
+    ["Signals", "Triple-condition: RSI + EMA crossover + price filter"],
+    ["Risk", "Mood-driven multipliers: +10% to -30% position sizing"],
+    ["Safety", "Dead Man\u2019s Switch: Ghost kills trading, /revive to reset"],
+    ["Swarm", "Tailscale mesh \u2014 signals shared, keys NEVER shared"],
+    ["Payments", "x402 protocol for USDC API monetization"],
+    ["Pet Display", "ESP32-S3 + SSD1306 OLED 128\u00D764 + NeoPixel + accel"],
+    ["Desk Display", "Waveshare 3.5\u2033 RPi LCD 480\u00D7320 + embedded web UI"],
+    ["Omnichannel", "Telegram, Discord, Nostr, Chrome MV3, native apps"],
+  ];
+  document.getElementById("specsList").innerHTML = specs.map(([k, v]) =>
+    '<div class="spec-row"><span class="spec-key">' + k + '</span><span class="spec-val">' + v + '</span></div>'
+  ).join("");
+}
+
+/* ═══════════════════════════════════════════
+   MAIN LOOP
+   ═══════════════════════════════════════════ */
+buildSystems();
+buildBootSteps();
+buildSpecs();
+renderStats();
+renderTerminal();
+
+setInterval(() => {
+  frame++;
+  simHash += (Math.random() - 0.5) * 0.02;
+  simTemp = Math.max(45, Math.min(68, simTemp + (Math.random() - 0.5) * 0.5));
+  renderBot();
+  renderStats();
+}, 150);
+</script>
+</body>
+</html>
