@@ -1,17 +1,41 @@
 {
   "name": "nanosolana",
-  "version": "0.2.0",
-  "description": "Nano Solana — Security-first autonomous trading agent platform with real-time memory and Solana wallet integration",
+  "version": "1.0.0",
+  "description": "🦞 The open-source agentic framework for financial intelligence on Solana. Autonomous OODA trading, epistemological memory, mesh coordination, and a virtual pet soul — deploy in 30 seconds.",
   "keywords": [
     "solana",
-    "trading",
-    "agent",
-    "ai",
+    "trading-bot",
+    "ai-agent",
     "defi",
-    "nano"
+    "autonomous-agent",
+    "financial-intelligence",
+    "ooda",
+    "jupiter",
+    "helius",
+    "birdeye",
+    "web3",
+    "crypto",
+    "nft",
+    "memecoin",
+    "blockchain",
+    "wallet",
+    "solana-agent",
+    "trading-strategy",
+    "rsi",
+    "ema",
+    "market-maker",
+    "cli",
+    "sdk",
+    "tamagotchi",
+    "mesh-network",
+    "openrouter",
+    "metaplex",
+    "swap",
+    "dex",
+    "agentic-framework"
   ],
   "license": "MIT",
-  "author": "NanoSolana Labs",
+  "author": "NanoSolana Labs <team@nanosolana.com> (https://nanosolana.com)",
   "homepage": "https://nanosolana.com",
   "repository": {
     "type": "git",
@@ -21,24 +45,43 @@
   "bugs": {
     "url": "https://github.com/x402agent/NanoSolana/issues"
   },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/x402agent"
+    }
+  ],
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "type": "module",
   "bin": {
     "nanosolana": "dist/cli/entry.js"
   },
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./sdk": "./dist/sdk/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./sdk": {
+      "types": "./dist/sdk/index.d.ts",
+      "import": "./dist/sdk/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   },
   "scripts": {
     "dev": "tsx watch src/cli/entry.ts",
     "build": "tsup src/index.ts src/cli/entry.ts --format esm --dts --sourcemap --out-dir dist --clean",
     "start": "node dist/cli/entry.js",
+    "demo": "tsx src/cli/entry.ts demo",
     "install:one-shot": "bash scripts/install-cli.sh",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -46,7 +89,8 @@
     "format": "oxfmt --write",
     "gateway": "tsx src/gateway/server.ts",
     "hub:dev": "cd ../nanohub && bun run dev",
-    "nanosolana": "tsx src/cli/entry.ts"
+    "nanosolana": "tsx src/cli/entry.ts",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@metaplex-foundation/mpl-token-metadata": "^3.3.0",

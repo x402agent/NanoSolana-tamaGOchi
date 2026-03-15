@@ -11,9 +11,51 @@
     ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝
 ```
 
+<div align="center">
+
+[![npm version](https://img.shields.io/npm/v/nanosolana?color=14F195&style=for-the-badge)](https://npmjs.com/package/nanosolana)
+[![npm downloads](https://img.shields.io/npm/dm/nanosolana?color=9945FF&style=for-the-badge)](https://npmjs.com/package/nanosolana)
+[![GitHub stars](https://img.shields.io/github/stars/x402agent/NanoSolana?color=14F195&style=for-the-badge)](https://github.com/x402agent/NanoSolana/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-14F195.svg?style=for-the-badge)](LICENSE)
+
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Solana](https://img.shields.io/badge/Solana-Native-9945FF?style=flat-square&logo=solana&logoColor=white)](https://solana.com)
+[![Go](https://img.shields.io/badge/Go-TamaGObot-00ADD8?style=flat-square&logo=go&logoColor=white)](https://golang.org)
+[![Node](https://img.shields.io/badge/Node-%E2%89%A522-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
+[![CI](https://img.shields.io/github/actions/workflow/status/x402agent/NanoSolana/ci.yml?label=CI&style=flat-square)](https://github.com/x402agent/NanoSolana/actions)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-14F195?style=flat-square)](CONTRIBUTING.md)
+[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/nanosolana)
+
+</div>
+
 **NanoSolana** is a modular, security-first framework for building autonomous financial agents on Solana. Deploy AI-powered trading agents that observe markets in real-time, learn from every trade, and coordinate across a decentralized mesh network — all with one command.
 
 **Website:** [nanosolana.com](https://nanosolana.com) · **Hub:** [hub.nanosolana.com](https://hub.nanosolana.com) · **Docs:** [docs.nanosolana.com](https://docs.nanosolana.com) · **GitHub:** [github.com/x402agent/NanoSolana](https://github.com/x402agent/NanoSolana)
+
+### 🎮 Try It Now (No API Keys Needed)
+
+```bash
+npx nanosolana demo
+```
+
+### ⚡ Deploy for Real
+
+```bash
+npx nanosolana go
+```
+
+### 🎯 Why NanoSolana?
+
+| Feature | NanoSolana | Eliza | AutoGPT | LangChain |
+|---------|:---------:|:-----:|:-------:|:---------:|
+| Built for finance | ✅ | ❌ | ❌ | ❌ |
+| Epistemological memory | ✅ 3-tier | ❌ | ❌ | Partial |
+| OODA trading loop | ✅ | ❌ | ❌ | ❌ |
+| Encrypted vault | ✅ AES-256 | ❌ .env | ❌ .env | ❌ .env |
+| On-chain identity | ✅ NFT | ❌ | ❌ | ❌ |
+| Mesh networking | ✅ P2P | ❌ | ❌ | ❌ |
+| One-command deploy | ✅ | ❌ | ❌ | ❌ |
+
 
 ---
 

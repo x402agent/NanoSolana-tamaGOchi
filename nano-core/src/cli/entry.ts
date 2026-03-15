@@ -93,8 +93,8 @@ const program = new Command();
 
 program
   .name("nanosolana")
-  .description("NanoSolana TamaGObot — Autonomous Solana trading intelligence with a virtual pet soul")
-  .version("0.1.0");
+  .description("🦞 NanoSolana — Autonomous Solana trading intelligence with a virtual pet soul")
+  .version("1.0.0");
 
 // ── nano init ────────────────────────────────────────────────
 
@@ -898,6 +898,140 @@ program
       console.error(chalk.red(`\n  ✗ Failed: ${(err as Error).message}\n`));
       process.exit(1);
     }
+  });
+
+// ── nanosolana demo (simulation mode) ───────────────────────
+
+program
+  .command("demo")
+  .description("🎮 Run a full simulation — no API keys needed. See the OODA loop in action.")
+  .option("-d, --duration <seconds>", "Duration in seconds", "60")
+  .action(async (opts) => {
+    printBanner();
+    console.log(chalk.hex("#14F195").bold("  🎮 DEMO MODE — Simulated Trading Intelligence\n"));
+    console.log(chalk.gray("  No API keys required. Synthetic market data.\n"));
+
+    const duration = parseInt(opts.duration, 10) || 60;
+
+    // Simulated tokens
+    const tokens = [
+      { symbol: "SOL", price: 142.50, mint: "So11111111111111111111111111111111111111112" },
+      { symbol: "BONK", price: 0.00001823, mint: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263" },
+      { symbol: "JTO", price: 3.42, mint: "jtojtomepa8beP8AuQc6eXt5FriJwfFMkLR8wCHQfRH" },
+      { symbol: "WIF", price: 1.87, mint: "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm" },
+      { symbol: "PYTH", price: 0.38, mint: "HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3" },
+      { symbol: "RAY", price: 5.12, mint: "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R" },
+    ];
+
+    // Create pet
+    const pet = new TamaGOchi("DemoBot");
+    const petState = pet.getState();
+    console.log(chalk.green("  ✓ TamaGOchi:") + chalk.cyan(` ${STAGE_EMOJI[petState.stage]} DemoBot ${MOOD_EMOJI[petState.mood]}`));
+
+    // Create memory
+    const vault = new ClawVault();
+    vault.startAutonomous();
+    console.log(chalk.green("  ✓ ClawVault:") + chalk.gray(" 3-tier memory online"));
+
+    // Simulated wallet
+    console.log(chalk.green("  ✓ Wallet:") + chalk.cyan(" 7xKpR3...demo3nYd") + chalk.yellow(" (1.500 SOL)"));
+
+    console.log(chalk.green("  ✓ OODA loop:") + chalk.gray(" simulated (5s interval)"));
+    console.log();
+    console.log(chalk.hex("#14F195").bold("  ══════════════════════════════════════════════════"));
+    console.log(chalk.hex("#14F195").bold("  🦞 DemoBot is LIVE (simulation mode)"));
+    console.log(chalk.hex("#14F195").bold("  ══════════════════════════════════════════════════"));
+    console.log();
+
+    let cycles = 0;
+    const maxCycles = Math.ceil(duration / 5);
+
+    const loop = setInterval(() => {
+      cycles++;
+
+      // Simulate price movement
+      const token = tokens[Math.floor(Math.random() * tokens.length)];
+      const change = (Math.random() - 0.45) * 15; // Slight upward bias
+      token.price *= (1 + change / 100);
+
+      const time = new Date().toLocaleTimeString();
+      const changeStr = change > 0 ? chalk.green(`+${change.toFixed(1)}%`) : chalk.red(`${change.toFixed(1)}%`);
+      console.log(chalk.gray(`  [${time}]`) + ` 📊 ${chalk.white(token.symbol)}: $${token.price < 0.01 ? token.price.toFixed(8) : token.price.toFixed(2)} ${changeStr}`);
+
+      // Store in memory
+      vault.storeKnown({
+        content: `${token.symbol}: $${token.price.toFixed(6)} (${change > 0 ? "+" : ""}${change.toFixed(1)}%)`,
+        source: "birdeye",
+        tags: [token.symbol, "price"],
+      });
+
+      // Simulate signals on strong moves
+      if (Math.abs(change) > 5) {
+        const type = change > 0 ? "buy" : "sell";
+        const confidence = Math.min(0.95, Math.abs(change) / 20 + 0.4);
+        const icon = type === "buy" ? "🟢" : "🔴";
+
+        console.log(`  ${icon} ${chalk.bold(type.toUpperCase())} ${token.symbol} — confidence: ${chalk.cyan(`${(confidence * 100).toFixed(0)}%`)}`);
+        console.log(chalk.gray(`     ${type === "buy" ? "Momentum breakout" : "Reversal signal"}: ${change > 0 ? "+" : ""}${change.toFixed(1)}% with simulated volume spike`));
+
+        vault.storeKnown({
+          content: `Signal: ${type} ${token.symbol} (${(confidence * 100).toFixed(0)}%)`,
+          source: "birdeye",
+          tags: [type, token.symbol],
+        });
+
+        // Feed pet on buy signals
+        if (type === "buy") pet.feed(0.01);
+      }
+
+      // Periodic memory stats
+      if (cycles % 4 === 0) {
+        const stats = vault.getStats();
+        const mood = MOOD_EMOJI[pet.getState().mood];
+        console.log(chalk.magenta(`  🧠 Memory: ${stats.known}K/${stats.learned}L/${stats.inferred}I | ${mood} ${pet.getState().name}`));
+      }
+
+      // End demo
+      if (cycles >= maxCycles) {
+        clearInterval(loop);
+        vault.stopAutonomous();
+
+        const finalStats = vault.getStats();
+        console.log();
+        console.log(chalk.hex("#14F195").bold("  ══════════════════════════════════════════════════"));
+        console.log(chalk.hex("#14F195").bold("  ✅ Demo complete!"));
+        console.log(chalk.hex("#14F195").bold("  ══════════════════════════════════════════════════"));
+        console.log();
+        console.log(chalk.white("  Stats:"));
+        console.log(chalk.gray(`    OODA cycles:  ${cycles}`));
+        console.log(chalk.gray(`    Memory entries: ${finalStats.known + finalStats.learned + finalStats.inferred}`));
+        console.log(chalk.gray(`    Pet mood: ${MOOD_EMOJI[pet.getState().mood]} ${pet.getState().mood}`));
+        console.log();
+        console.log(chalk.white("  Ready to go live?"));
+        console.log(chalk.cyan("    npx nanosolana go"));
+        console.log();
+        console.log(chalk.gray("  Full docs: https://docs.nanosolana.com"));
+        console.log(chalk.gray("  GitHub: https://github.com/x402agent/NanoSolana"));
+        console.log();
+        process.exit(0);
+      }
+    }, 5000);
+
+    // Initial cycle immediately
+    const firstToken = tokens[0];
+    console.log(chalk.gray(`  [${new Date().toLocaleTimeString()}]`) + ` 📊 ${chalk.white(firstToken.symbol)}: $${firstToken.price.toFixed(2)} ${chalk.green("+0.0%")}`);
+    console.log(chalk.gray("  Watching 6 tokens across Solana...\n"));
+
+    // Graceful shutdown
+    process.on("SIGINT", () => {
+      clearInterval(loop);
+      vault.stopAutonomous();
+      console.log(chalk.yellow("\n\n  ⏹  Demo stopped."));
+      console.log(chalk.cyan("  Try the real thing: npx nanosolana go\n"));
+      process.exit(0);
+    });
+
+    await new Promise(() => {});
   });
 
 // ── nanosolana dvd (screensaver) ────────────────────────────
