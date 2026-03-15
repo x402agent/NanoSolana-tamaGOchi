@@ -1,7 +1,7 @@
 {
-  "name": "nanoclaw",
-  "version": "1.0.0",
-  "description": "Personal Claude assistant. Lightweight, secure, customizable.",
+  "name": "@nanosolana/core",
+  "version": "2.0.0",
+  "description": "NanoSolana core runtime — autonomous financial agents on Solana with OODA trading loop, ClawVault memory, and mesh networking",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
@@ -37,5 +37,24 @@
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/x402agent/NanoSolana.git",
+    "directory": "nano-core/nanoclaw-main"
+  },
+  "keywords": [
+    "nanosolana",
+    "solana",
+    "agent",
+    "trading",
+    "defi",
+    "ai",
+    "autonomous",
+    "financial",
+    "ooda",
+    "web3"
+  ],
+  "author": "NanoSolana Labs",
+  "license": "MIT"
 }

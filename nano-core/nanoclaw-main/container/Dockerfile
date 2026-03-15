@@ -3,6 +3,11 @@
 
 FROM node:22-slim
 
+LABEL org.opencontainers.image.title="NanoSolana Agent"
+LABEL org.opencontainers.image.description="Autonomous Solana agent container with Claude SDK + Chromium"
+LABEL org.opencontainers.image.source="https://github.com/x402agent/NanoSolana"
+LABEL org.opencontainers.image.vendor="NanoSolana Labs"
+
 # Install system dependencies for Chromium
 RUN apt-get update && apt-get install -y \
     chromium \

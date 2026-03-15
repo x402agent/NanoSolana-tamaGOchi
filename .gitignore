@@ -1,48 +1,95 @@
+# ─── Dependencies ────────────────────────────────────────
 node_modules/
 **/node_modules/
-dist/
-.env
-.env.local
-*.enc
-*.log
-.DS_Store
-**/.DS_Store
-coverage/
-.turbo/
-tmp/
-.nanosolana/
-.tsbuildinfo
-pnpm-lock.yaml
-bun.lock
-bun.lockb
-package-lock.json
-__pycache__/
-*.pyc
 .pnpm-store
 .npmrc
 **/.npmrc
 
-# Build artifacts
+# ─── Build ───────────────────────────────────────────────
+dist/
 *.bun-build
 bin/
+.tsbuildinfo
+.turbo/
+dist/protocol.schema.json
 
-# Local state
+# ─── SECURITY: Secrets & Environment ─────────────────────
+# CRITICAL: Never commit .env files with real credentials
+.env
+**/.env
+.env.local
+**/.env.local
+!**/.env.example
+!**/.env.local.example
+*.enc
+
+# Keys, secrets, and certificates
+**/keys/
+**/.keys/
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/*.jks
+id_rsa
+id_rsa.pub
+**/*.json.key
+**/service-account*.json
+**/mawdbot-*.json
+
+# Wallet keys — NEVER commit
+**/wallet.json
+**/keypair.json
+
+# ─── Database Files ──────────────────────────────────────
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+**/memory.db
+**/vector_store.db
+
+# ─── Lockfiles ───────────────────────────────────────────
+pnpm-lock.yaml
+bun.lock
+bun.lockb
+package-lock.json
+
+# ─── Logs ────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── OS ──────────────────────────────────────────────────
+.DS_Store
+**/.DS_Store
+
+# ─── IDE ─────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ─── Local State ─────────────────────────────────────────
 .local/
 .dev-state
 memory/
-.agent/*.json
-!.agent/workflows/
 local/
+tmp/
+.nanosolana/
+coverage/
 
-# IDE
-.idea/
-.vscode/
+# ─── Agent/AI Tool Config ───────────────────────────────
 .claude/
 .agents/
 .serena/
+.agent/*.json
+!.agent/workflows/
 
-# Vendor
+# ─── Python ──────────────────────────────────────────────
+__pycache__/
+*.pyc
+
+# ─── Vendor ──────────────────────────────────────────────
 vendor/
-
-# Generated
-dist/protocol.schema.json

@@ -44,8 +44,10 @@ npm run dev
 ## Code Style
 
 - **Language**: TypeScript (ESM, strict mode)
-- **Formatting**: We use Oxfmt — run `npm run format` before committing
-- **Linting**: Oxlint — `npm run lint`
+- **Formatting**: 
+  - `nano-core`: Prettier — `npm run format`
+  - `nanohub`: Oxfmt — `bun run format`  
+- **Linting**: Oxlint in nanohub — `bun run lint`
 - **Types**: Strict. No `any`. No `@ts-ignore`.
 - **Comments**: Brief comments for non-obvious logic
 - **File size**: Aim for < 500 LOC per file

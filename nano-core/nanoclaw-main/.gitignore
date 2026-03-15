@@ -18,15 +18,31 @@ groups/global/*
 !groups/main/CLAUDE.md
 !groups/global/CLAUDE.md
 
-# Secrets
+# ─── SECURITY: Secrets ───────────────────────────────────
+# CRITICAL: Never commit .env files with real credentials
 *.keys.json
 .env
+**/.env
+!.env.example
 
-# OS
+# Keys, wallets, service accounts
+**/keys/
+**/*.pem
+**/*.key
+**/service-account*.json
+**/mawdbot-*.json
+**/wallet.json
+**/keypair.json
+
+# Database files
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+
+# ─── OS / IDE ────────────────────────────────────────────
 .DS_Store
-
-# IDE
 .idea/
 .vscode/
 
+# Agent SDK docs (local reference)
 agents-sdk-docs
