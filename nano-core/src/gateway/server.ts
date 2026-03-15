@@ -311,10 +311,10 @@ export class NanoGateway extends EventEmitter<GatewayEvents> {
       case "memory:store": {
         const memData = msg.payload as any;
         this.memory.store({
-          type: memData.type ?? "context",
           content: memData.content,
+          source: memData.type ?? "gateway",
           tags: memData.tags,
-          importance: memData.importance,
+          confidence: memData.importance,
         });
         break;
       }

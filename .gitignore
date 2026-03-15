@@ -74,7 +74,7 @@ yarn-error.log*
 # ─── Local State ─────────────────────────────────────────
 .local/
 .dev-state
-memory/
+/memory/
 local/
 tmp/
 .nanosolana/
