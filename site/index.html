@@ -1,22 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NanoSolana — The Open-Source Agentic Framework for Financial Intelligence on Solana</title>
-  <meta name="description"
-    content="Deploy autonomous Solana trading agents with one command. OODA trading loop, epistemological memory, mesh networking, and a virtual pet soul. Open source." />
-  <meta property="og:title" content="NanoSolana — Financial AI Agents on Solana" />
-  <meta property="og:description"
-    content="One command to deploy autonomous trading intelligence. Open source, security-first, with a virtual pet soul." />
+  <title>NanoSolana — Autonomous Financial Intelligence on Solana</title>
+  <meta name="description" content="Deploy autonomous Solana trading agents in 30 seconds. OODA trading loop, 3-tier epistemological memory, mesh networking, virtual pet soul. Open source." />
+  <meta property="og:title" content="NanoSolana — Deploy Solana Trading Agents in 30 Seconds" />
+  <meta property="og:description" content="One command to deploy autonomous trading intelligence. Open source, security-first, with a virtual pet soul." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://nanosolana.com" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg-abyss: #060810;
@@ -31,13 +26,7 @@
       --font-mono: 'JetBrains Mono', monospace;
       --font-body: 'Space Grotesk', sans-serif;
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: var(--font-body);
       background: var(--bg-abyss);
@@ -45,905 +34,405 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
-
-    /* Animated hex-grid background */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background:
         radial-gradient(ellipse at 20% 50%, rgba(20, 241, 149, 0.03) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 50%, rgba(153, 69, 255, 0.03) 0%, transparent 50%),
-        repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg 60deg, rgba(20, 241, 149, 0.01) 60deg 120deg) 0 0 / 80px 80px;
+        radial-gradient(ellipse at 80% 50%, rgba(153, 69, 255, 0.03) 0%, transparent 50%);
       pointer-events: none;
       z-index: 0;
     }
+    .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; position: relative; z-index: 1; }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-      position: relative;
-      z-index: 1;
+    /* ── Floating particles ─────────────── */
+    .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .particle {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: var(--solana-green);
+      border-radius: 50%;
+      opacity: 0;
+      animation: particleFloat linear infinite;
+    }
+    @keyframes particleFloat {
+      0% { opacity: 0; transform: translateY(100vh) scale(0); }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { opacity: 0; transform: translateY(-10vh) scale(1); }
     }
 
-    /* ── Header ────────────────────────────── */
-    .hero {
-      text-align: center;
-      padding: 4rem 0 3rem;
+    /* ── Stats bar ─────────────────────── */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem 0;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .stat-item__val {
+      color: var(--solana-green);
+      font-weight: 700;
+      font-size: 1rem;
     }
 
+    /* ── Hero ───────────────────────────── */
+    .hero { text-align: center; padding: 3rem 0 2rem; }
     .hero__logo {
-      width: 160px;
-      height: 160px;
+      width: 140px; height: 140px;
       border-radius: 50%;
       border: 2px solid var(--solana-green);
       box-shadow: 0 0 40px rgba(20, 241, 149, 0.2), 0 0 80px rgba(153, 69, 255, 0.1);
       margin-bottom: 1.5rem;
       animation: float 6s ease-in-out infinite;
     }
-
-    @keyframes float {
-
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-
-      50% {
-        transform: translateY(-12px);
-      }
-    }
-
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
     .hero__title {
-      font-size: 3.5rem;
-      font-weight: 700;
+      font-size: 3.5rem; font-weight: 700;
       background: linear-gradient(135deg, var(--solana-green), var(--solana-purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
       margin-bottom: 0.5rem;
     }
-
     .hero__tagline {
-      font-size: 1.1rem;
-      color: var(--solana-green);
-      font-family: var(--font-mono);
-      margin-bottom: 1rem;
-      letter-spacing: 0.02em;
+      font-size: 1.05rem; color: var(--solana-green);
+      font-family: var(--font-mono); margin-bottom: 0.75rem; letter-spacing: 0.02em;
     }
-
     .hero__subtitle {
-      font-size: 1.15rem;
-      color: var(--text-secondary);
-      max-width: 650px;
-      margin: 0 auto 2rem;
-      line-height: 1.6;
+      font-size: 1.1rem; color: var(--text-secondary);
+      max-width: 650px; margin: 0 auto 1.5rem; line-height: 1.6;
     }
+    .hero__badges { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .hero__badges img { height: 22px; }
 
-    /* ── Install box ───────────────────────── */
-    .install-box {
-      background: var(--bg-card);
+    /* ── Install boxes ─────────────────── */
+    .install-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+      margin: 2rem auto; max-width: 750px;
+    }
+    .install-card {
+      background: var(--bg-card); border: 1px solid var(--border-glow);
+      border-radius: 12px; padding: 1.5rem; backdrop-filter: blur(12px);
+      position: relative; overflow: hidden; text-align: center;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+    .install-card:hover { border-color: var(--solana-green); transform: translateY(-3px); }
+    .install-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--solana-green), var(--solana-purple));
+    }
+    .install-card__label {
+      font-family: var(--font-mono); font-size: 0.7rem; color: var(--solana-green);
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;
+    }
+    .install-card__cmd {
+      font-family: var(--font-mono); font-size: 0.95rem; color: var(--text-primary);
+      background: rgba(0,0,0,0.4); padding: 0.75rem 1rem; border-radius: 8px;
+      cursor: pointer; transition: background 0.2s; margin-bottom: 0.5rem;
+    }
+    .install-card__cmd:hover { background: rgba(0,0,0,0.6); }
+    .install-card__desc { font-size: 0.75rem; color: var(--text-secondary); }
+    .install-card--demo { border-color: var(--lobster-orange); }
+    .install-card--demo::before { background: linear-gradient(90deg, var(--lobster-orange), var(--solana-purple)); }
+    .install-card--demo .install-card__label { color: var(--lobster-orange); }
+
+    /* ── Comparison table ──────────────── */
+    .compare-section { margin: 3rem 0; }
+    .compare-section h2 {
+      font-size: 1.8rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--solana-green), var(--solana-purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .compare-section p { text-align: center; color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem; }
+    .compare-table {
+      width: 100%; border-collapse: collapse; font-size: 0.85rem;
+      background: var(--bg-card); border-radius: 12px; overflow: hidden;
       border: 1px solid var(--border-glow);
-      border-radius: 12px;
-      padding: 1.5rem 2rem;
-      margin: 2rem auto;
-      max-width: 700px;
-      backdrop-filter: blur(12px);
-      position: relative;
-      overflow: hidden;
     }
-
-    .install-box::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--solana-green), var(--solana-purple), var(--lobster-orange));
+    .compare-table th {
+      padding: 0.85rem 1rem; text-align: left; font-weight: 600;
+      background: rgba(20, 241, 149, 0.06); border-bottom: 1px solid var(--border-glow);
     }
-
-    .install-box__label {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--solana-green);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 0.75rem;
+    .compare-table td {
+      padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.04);
     }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table td:first-child { font-weight: 500; color: var(--text-primary); }
+    .compare-table .yes { color: var(--solana-green); font-weight: 600; }
+    .compare-table .no { color: #ff6b6b; }
+    .compare-table .partial { color: #fbbf24; }
+    .compare-table .nano-col { background: rgba(20, 241, 149, 0.04); }
 
-    .install-box__cmd {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .install-box__code {
-      font-family: var(--font-mono);
-      font-size: 0.95rem;
-      color: var(--text-primary);
-      background: rgba(0, 0, 0, 0.4);
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      flex: 1;
-      overflow-x: auto;
-      white-space: nowrap;
-      user-select: all;
-    }
-
-    .install-box__copy {
-      background: linear-gradient(135deg, var(--solana-green), var(--solana-purple));
-      color: var(--bg-abyss);
-      border: none;
-      padding: 0.75rem 1.25rem;
-      border-radius: 8px;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.2s;
-      white-space: nowrap;
-    }
-
-    .install-box__copy:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 20px rgba(20, 241, 149, 0.3);
-    }
-
-    .install-box__copy:active {
-      transform: translateY(0);
-    }
-
-    .install-box__or {
-      text-align: center;
-      color: var(--text-secondary);
-      font-size: 0.8rem;
-      margin: 1rem 0;
-    }
-
-    /* ── Go command highlight ─────────────── */
-    .go-highlight {
-      background: linear-gradient(135deg, rgba(20, 241, 149, 0.08), rgba(153, 69, 255, 0.08));
-      border: 1px solid var(--solana-green);
-      border-radius: 12px;
-      padding: 2rem;
-      margin: 3rem auto;
-      max-width: 700px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .go-highlight::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 50% 0%, rgba(20, 241, 149, 0.1), transparent 70%);
-      pointer-events: none;
-    }
-
-    .go-highlight__title {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .go-highlight__title span {
-      background: linear-gradient(135deg, var(--solana-green), var(--solana-purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .go-highlight__desc {
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      margin-bottom: 1.25rem;
-      line-height: 1.6;
-    }
-
-    .go-highlight__cmd {
-      font-family: var(--font-mono);
-      font-size: 1.3rem;
-      color: var(--solana-green);
-      background: rgba(0, 0, 0, 0.5);
-      display: inline-block;
-      padding: 0.75rem 2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.2s;
-      border: 1px solid rgba(20, 241, 149, 0.3);
-    }
-
-    .go-highlight__cmd:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(20, 241, 149, 0.25);
-    }
-
-    .go-highlight__steps {
-      margin-top: 1.25rem;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      font-family: var(--font-mono);
-    }
-
-    /* ── Terminal preview ──────────────────── */
+    /* ── Terminal ───────────────────────── */
     .terminal {
-      background: #0d1117;
-      border: 1px solid rgba(20, 241, 149, 0.2);
-      border-radius: 12px;
-      margin: 3rem auto;
-      max-width: 700px;
-      overflow: hidden;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
+      background: #0d1117; border: 1px solid rgba(20, 241, 149, 0.2);
+      border-radius: 12px; margin: 3rem auto; max-width: 750px;
+      overflow: hidden; font-family: var(--font-mono); font-size: 0.78rem;
     }
-
     .terminal__bar {
-      background: rgba(20, 241, 149, 0.05);
-      padding: 0.6rem 1rem;
-      display: flex;
-      gap: 6px;
-      align-items: center;
+      background: rgba(20, 241, 149, 0.05); padding: 0.6rem 1rem;
+      display: flex; gap: 6px; align-items: center;
       border-bottom: 1px solid rgba(20, 241, 149, 0.1);
     }
+    .terminal__dot { width: 10px; height: 10px; border-radius: 50%; }
+    .terminal__dot--r { background: #ff5f57; }
+    .terminal__dot--y { background: #ffbd2e; }
+    .terminal__dot--g { background: #28ca41; }
+    .terminal__title { color: var(--text-secondary); font-size: 0.7rem; margin-left: 0.5rem; }
+    .terminal__body { padding: 1rem 1.25rem; line-height: 1.7; overflow-x: auto; }
+    .t-green { color: #14F195; } .t-cyan { color: #00d4ff; } .t-purple { color: #9945FF; }
+    .t-gray { color: #6b7280; } .t-yellow { color: #fbbf24; } .t-white { color: #e8ecf4; }
+    .t-orange { color: #FF6B35; }
 
-    .terminal__dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-
-    .terminal__dot--r {
-      background: #ff5f57;
-    }
-
-    .terminal__dot--y {
-      background: #ffbd2e;
-    }
-
-    .terminal__dot--g {
-      background: #28ca41;
-    }
-
-    .terminal__title {
-      color: var(--text-secondary);
-      font-size: 0.7rem;
-      margin-left: 0.5rem;
-    }
-
-    .terminal__body {
-      padding: 1rem 1.25rem;
-      line-height: 1.7;
-      overflow-x: auto;
-    }
-
-    .t-green {
-      color: #14F195;
-    }
-
-    .t-cyan {
-      color: #00d4ff;
-    }
-
-    .t-purple {
-      color: #9945FF;
-    }
-
-    .t-gray {
-      color: #6b7280;
-    }
-
-    .t-yellow {
-      color: #fbbf24;
-    }
-
-    .t-white {
-      color: #e8ecf4;
-    }
-
-    .t-dim {
-      opacity: 0.6;
-    }
-
-    /* ── Feature grid ──────────────────────── */
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin: 3rem 0;
-    }
-
+    /* ── Feature grid ──────────────────── */
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin: 3rem 0; }
     .feature-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-glow);
-      border-radius: 12px;
-      padding: 1.5rem;
-      backdrop-filter: blur(8px);
+      background: var(--bg-card); border: 1px solid var(--border-glow);
+      border-radius: 12px; padding: 1.5rem; backdrop-filter: blur(8px);
       transition: border-color 0.3s, transform 0.2s;
     }
+    .feature-card:hover { border-color: var(--solana-green); transform: translateY(-4px); }
+    .feature-card__icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .feature-card__title { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--solana-green); }
+    .feature-card__desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
 
-    .feature-card:hover {
-      border-color: var(--solana-green);
-      transform: translateY(-4px);
-    }
-
-    .feature-card__icon {
-      font-size: 2rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .feature-card__title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--solana-green);
-    }
-
-    .feature-card__desc {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
-    /* ── Steps ─────────────────────────────── */
-    .steps {
-      margin: 3rem 0;
-    }
-
-    .steps__title {
-      font-size: 1.8rem;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 2rem;
+    /* ── SDK code section ──────────────── */
+    .sdk-section { margin: 3rem 0; }
+    .sdk-section h2 {
+      font-size: 1.8rem; font-weight: 700; text-align: center; margin-bottom: 1.5rem;
       background: linear-gradient(135deg, var(--solana-green), var(--solana-purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .sdk-code {
+      background: #0d1117; border: 1px solid rgba(20, 241, 149, 0.15);
+      border-radius: 12px; padding: 1.5rem; font-family: var(--font-mono);
+      font-size: 0.82rem; line-height: 1.7; overflow-x: auto; max-width: 750px; margin: 0 auto;
     }
 
-    .step {
-      display: flex;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-      align-items: flex-start;
+    /* ── Commands grid ─────────────────── */
+    .cmds-title {
+      font-size: 1.8rem; font-weight: 700; text-align: center; margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--solana-green), var(--solana-purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-
-    .step__num {
-      font-family: var(--font-mono);
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--solana-green);
-      background: rgba(20, 241, 149, 0.1);
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      border: 1px solid var(--border-glow);
-    }
-
-    .step__content h3 {
-      font-size: 1.1rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .step__content p {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
-
-    .step__content code {
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      color: var(--solana-green);
-      background: rgba(20, 241, 149, 0.08);
-      padding: 0.15em 0.4em;
-      border-radius: 4px;
-    }
-
-    /* ── Fun commands ──────────────────────── */
-    .fun-cmds {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin: 2rem auto;
-      max-width: 700px;
-    }
-
+    .fun-cmds { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 0 auto 3rem; max-width: 750px; }
     .fun-cmd {
-      background: var(--bg-card);
-      border: 1px solid var(--border-glow);
-      border-radius: 10px;
-      padding: 1.25rem;
-      text-align: center;
+      background: var(--bg-card); border: 1px solid var(--border-glow);
+      border-radius: 10px; padding: 1.25rem; text-align: center;
       transition: border-color 0.3s, transform 0.2s;
-      cursor: default;
     }
+    .fun-cmd:hover { border-color: var(--lobster-orange); transform: translateY(-3px); }
+    .fun-cmd__icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .fun-cmd__name { font-family: var(--font-mono); font-size: 0.82rem; color: var(--solana-green); margin-bottom: 0.25rem; }
+    .fun-cmd__desc { font-size: 0.78rem; color: var(--text-secondary); }
 
-    .fun-cmd:hover {
-      border-color: var(--lobster-orange);
-      transform: translateY(-3px);
+    /* ── CTA section ───────────────────── */
+    .cta-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin: 3rem 0; }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem; border-radius: 8px;
+      text-decoration: none; font-weight: 600; font-size: 0.95rem;
+      transition: transform 0.15s, box-shadow 0.2s; border: none; cursor: pointer;
     }
+    .cta-btn:hover { transform: translateY(-2px); }
+    .cta-btn--github { background: var(--text-primary); color: var(--bg-abyss); }
+    .cta-btn--github:hover { box-shadow: 0 8px 30px rgba(255,255,255,0.15); }
+    .cta-btn--npm { background: linear-gradient(135deg, #cb3837, #e74c3c); color: white; }
+    .cta-btn--npm:hover { box-shadow: 0 8px 30px rgba(203,56,55,0.3); }
+    .cta-btn--twitter { background: linear-gradient(135deg, #1d9bf0, #0d8bd9); color: white; }
+    .cta-btn--twitter:hover { box-shadow: 0 8px 30px rgba(29,155,240,0.3); }
+    .cta-btn--discord { background: linear-gradient(135deg, #5865F2, #4752C4); color: white; }
+    .cta-btn--discord:hover { box-shadow: 0 8px 30px rgba(88,101,242,0.3); }
+    .cta-btn svg { width: 18px; height: 18px; }
 
-    .fun-cmd__icon {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
+    /* ── Steps ─────────────────────────── */
+    .steps { margin: 3rem 0; }
+    .steps__title {
+      font-size: 1.8rem; font-weight: 700; text-align: center; margin-bottom: 2rem;
+      background: linear-gradient(135deg, var(--solana-green), var(--solana-purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-
-    .fun-cmd__name {
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      color: var(--solana-green);
-      margin-bottom: 0.25rem;
+    .step { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; align-items: flex-start; }
+    .step__num {
+      font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700;
+      color: var(--solana-green); background: rgba(20, 241, 149, 0.1);
+      width: 48px; height: 48px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; border: 1px solid var(--border-glow);
     }
+    .step__content h3 { font-size: 1.1rem; margin-bottom: 0.25rem; }
+    .step__content p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
 
-    .fun-cmd__desc {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-
-    /* ── GitHub CTA ────────────────────────── */
-    .github-cta {
-      text-align: center;
-      margin: 3rem 0;
-      padding: 2.5rem;
-      background: linear-gradient(135deg, rgba(20, 241, 149, 0.05), rgba(153, 69, 255, 0.05));
-      border: 1px solid var(--border-glow);
-      border-radius: 12px;
-    }
-
-    .github-cta__title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.75rem;
-    }
-
-    .github-cta__desc {
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      font-size: 0.95rem;
-    }
-
-    .github-cta__btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--text-primary);
-      color: var(--bg-abyss);
-      padding: 0.85rem 2rem;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1rem;
-      transition: transform 0.15s, box-shadow 0.2s;
-    }
-
-    .github-cta__btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15);
-    }
-
-    .github-cta__btn svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    /* ── Footer ────────────────────────────── */
-    .footer {
-      text-align: center;
-      padding: 3rem 0 2rem;
-      border-top: 1px solid var(--border-glow);
-      margin-top: 3rem;
-    }
-
-    .footer__links {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .footer__link {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 0.85rem;
-      transition: color 0.2s;
-    }
-
-    .footer__link:hover {
-      color: var(--solana-green);
-    }
-
-    .footer__brand {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-
-    .footer__brand span {
-      color: var(--lobster-orange);
-    }
-
-    /* ── Responsive ────────────────────────── */
-    @media (max-width: 600px) {
-      .hero__title {
-        font-size: 2.2rem;
-      }
-
-      .install-box__cmd {
-        flex-direction: column;
-      }
-
-      .install-box__code {
-        width: 100%;
-      }
-
-      .install-box__copy {
-        width: 100%;
-        text-align: center;
-      }
-
-      .go-highlight__cmd {
-        font-size: 1rem;
-        padding: 0.6rem 1.5rem;
-      }
-
-      .ext-flow {
-        flex-direction: column;
-      }
-
-      .ext-flow__arrow {
-        transform: rotate(90deg);
-      }
-    }
-
-    /* ── Chrome Extension section ────────── */
+    /* ── Chrome Extension ──────────────── */
     .ext-section {
-      background: var(--bg-card);
-      border: 1px solid var(--border-glow);
-      border-radius: 16px;
-      padding: 2.5rem;
-      margin: 3rem auto;
-      max-width: 750px;
-      backdrop-filter: blur(12px);
-      position: relative;
-      overflow: hidden;
+      background: var(--bg-card); border: 1px solid var(--border-glow);
+      border-radius: 16px; padding: 2.5rem; margin: 3rem auto; max-width: 750px;
+      backdrop-filter: blur(12px); position: relative; overflow: hidden;
     }
-
     .ext-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, var(--lobster-orange), var(--solana-purple), var(--solana-green));
     }
-
     .ext-section__title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
+      font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;
       background: linear-gradient(135deg, var(--lobster-orange), var(--solana-purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-
-    .ext-section__desc {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-    }
-
-    .ext-features {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .ext-feat {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-    }
-
-    .ext-feat__icon {
-      font-size: 1.1rem;
-      flex-shrink: 0;
-    }
-
-    .ext-feat__label strong {
-      color: var(--text-primary);
-    }
-
-    .ext-install-steps {
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 8px;
-      padding: 1rem 1.25rem;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      line-height: 1.8;
-      margin-bottom: 1.5rem;
-    }
-
-    .ext-install-steps .t-green {
-      display: inline;
-    }
-
-    .ext-flow {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      margin-top: 1rem;
-      flex-wrap: wrap;
-    }
-
+    .ext-section__desc { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; }
+    .ext-features { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .ext-feat { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); }
+    .ext-feat__icon { font-size: 1.1rem; flex-shrink: 0; }
+    .ext-feat__label strong { color: var(--text-primary); }
+    .ext-flow { display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; }
     .ext-flow__box {
-      background: rgba(20, 241, 149, 0.06);
-      border: 1px solid var(--border-glow);
-      border-radius: 8px;
-      padding: 0.5rem 0.75rem;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--text-primary);
-      text-align: center;
+      background: rgba(20, 241, 149, 0.06); border: 1px solid var(--border-glow);
+      border-radius: 8px; padding: 0.5rem 0.75rem; font-family: var(--font-mono);
+      font-size: 0.75rem; color: var(--text-primary);
     }
+    .ext-flow__arrow { color: var(--solana-green); font-size: 1rem; }
 
-    .ext-flow__arrow {
-      color: var(--solana-green);
-      font-size: 1rem;
+    /* ── Share section ─────────────────── */
+    .share-section {
+      text-align: center; margin: 3rem 0; padding: 2.5rem;
+      background: linear-gradient(135deg, rgba(20, 241, 149, 0.05), rgba(153, 69, 255, 0.05));
+      border: 1px solid var(--border-glow); border-radius: 12px;
     }
+    .share-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .share-section p { color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem; }
 
-    /* ── Floating Music Player ─────────────── */
+    /* ── Footer ────────────────────────── */
+    .footer { text-align: center; padding: 3rem 0 2rem; border-top: 1px solid var(--border-glow); margin-top: 3rem; }
+    .footer__links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .footer__link { color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .footer__link:hover { color: var(--solana-green); }
+    .footer__brand { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); }
+    .footer__brand span { color: var(--lobster-orange); }
+
+    /* ── Music Player ──────────────────── */
     .music-player {
-      position: fixed;
-      bottom: 24px;
-      left: 24px;
-      z-index: 9999;
-      background: rgba(10, 14, 26, 0.92);
-      backdrop-filter: blur(20px) saturate(1.4);
-      border: 1px solid rgba(20, 241, 149, 0.2);
-      border-radius: 16px;
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 60px rgba(20, 241, 149, 0.08);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      min-width: 280px;
+      position: fixed; bottom: 24px; left: 24px; z-index: 9999;
+      background: rgba(10, 14, 26, 0.92); backdrop-filter: blur(20px) saturate(1.4);
+      border: 1px solid rgba(20, 241, 149, 0.2); border-radius: 16px;
+      padding: 14px 18px; display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5); min-width: 280px;
+      transition: transform 0.3s ease;
     }
-
-    .music-player:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 80px rgba(20, 241, 149, 0.12);
-    }
-
+    .music-player:hover { transform: translateY(-2px); }
     .music-player__btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: none;
+      width: 40px; height: 40px; border-radius: 50%; border: none;
       background: linear-gradient(135deg, var(--solana-green), var(--solana-purple));
-      color: var(--bg-abyss);
-      font-size: 16px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: transform 0.15s, box-shadow 0.2s;
+      color: var(--bg-abyss); font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
-
-    .music-player__btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 4px 20px rgba(20, 241, 149, 0.4);
-    }
-
-    .music-player__btn:active {
-      transform: scale(0.95);
-    }
-
-    .music-player__info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .music-player__title {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--solana-green);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 6px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .music-player__track {
-      font-size: 0.8rem;
-      color: var(--text-primary);
-      font-weight: 500;
-      margin-bottom: 8px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .music-player__progress {
-      width: 100%;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 2px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .music-player__progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--solana-green), var(--solana-purple));
-      border-radius: 2px;
-      width: 0%;
-      transition: width 0.1s linear;
-    }
-
-    .music-player__time {
-      display: flex;
-      justify-content: space-between;
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      color: var(--text-secondary);
-      margin-top: 4px;
-    }
-
-    .music-player__viz {
-      display: flex;
-      align-items: flex-end;
-      gap: 2px;
-      height: 24px;
-      flex-shrink: 0;
-    }
-
-    .music-player__viz-bar {
-      width: 3px;
-      background: linear-gradient(to top, var(--solana-green), var(--solana-purple));
-      border-radius: 2px;
-      transition: height 0.15s ease;
-    }
-
-    .music-player__viz.paused .music-player__viz-bar {
-      height: 4px !important;
-    }
-
-    .music-player__volume {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex-shrink: 0;
-    }
-
-    .music-player__volume-icon {
-      font-size: 14px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .music-player__volume-slider {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 50px;
-      height: 3px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
-      outline: none;
-      cursor: pointer;
-    }
-
-    .music-player__volume-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--solana-green);
-      cursor: pointer;
-    }
-
+    .music-player__info { flex: 1; min-width: 0; }
+    .music-player__title { font-family: var(--font-mono); font-size: 0.7rem; color: var(--solana-green); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+    .music-player__track { font-size: 0.8rem; color: var(--text-primary); font-weight: 500; margin-bottom: 8px; }
+    .music-player__progress { width: 100%; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; cursor: pointer; overflow: hidden; }
+    .music-player__progress-fill { height: 100%; background: linear-gradient(90deg, var(--solana-green), var(--solana-purple)); border-radius: 2px; width: 0%; transition: width 0.1s linear; }
+    .music-player__time { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-secondary); margin-top: 4px; }
+    .music-player__viz { display: flex; align-items: flex-end; gap: 2px; height: 24px; flex-shrink: 0; }
+    .music-player__viz-bar { width: 3px; background: linear-gradient(to top, var(--solana-green), var(--solana-purple)); border-radius: 2px; transition: height 0.15s ease; }
+    .music-player__viz.paused .music-player__viz-bar { height: 4px !important; }
+    .music-player__volume { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+    .music-player__volume-icon { font-size: 14px; cursor: pointer; }
+    .music-player__volume-slider { -webkit-appearance: none; appearance: none; width: 50px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; outline: none; cursor: pointer; }
+    .music-player__volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%; background: var(--solana-green); cursor: pointer; }
     .music-player__autoplay-prompt {
-      position: absolute;
-      inset: 0;
-      background: rgba(10, 14, 26, 0.95);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      cursor: pointer;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--solana-green);
-      animation: pulsePrompt 2s ease-in-out infinite;
+      position: absolute; inset: 0; background: rgba(10, 14, 26, 0.95);
+      border-radius: 16px; display: flex; align-items: center; justify-content: center;
+      gap: 8px; cursor: pointer; font-family: var(--font-mono); font-size: 0.75rem;
+      color: var(--solana-green); animation: pulsePrompt 2s ease-in-out infinite;
     }
+    .music-player__autoplay-prompt.hidden { display: none; }
+    @keyframes pulsePrompt { 0%,100% { opacity: 0.8; } 50% { opacity: 1; } }
 
-    .music-player__autoplay-prompt.hidden {
-      display: none;
-    }
-
-    @keyframes pulsePrompt {
-      0%, 100% { opacity: 0.8; }
-      50% { opacity: 1; }
-    }
-
+    /* ── Responsive ────────────────────── */
     @media (max-width: 600px) {
-      .music-player {
-        left: 12px;
-        right: 12px;
-        bottom: 12px;
-        min-width: unset;
-      }
+      .hero__title { font-size: 2.2rem; }
+      .install-row { grid-template-columns: 1fr; }
+      .ext-features { grid-template-columns: 1fr; }
+      .ext-flow { flex-direction: column; }
+      .compare-table { font-size: 0.75rem; }
+      .compare-table th, .compare-table td { padding: 0.5rem 0.4rem; }
+      .music-player { left: 12px; right: 12px; bottom: 12px; min-width: unset; }
     }
   </style>
 </head>
-
 <body>
+  <!-- Particles -->
+  <div class="particles" id="particles"></div>
+
   <div class="container">
+    <!-- Stats bar -->
+    <div class="stats-bar" id="stats-bar">
+      <div class="stat-item"><span>📦</span> npm: <span class="stat-item__val" id="stat-version">v1.0.0</span></div>
+      <div class="stat-item"><span>📥</span> Downloads: <span class="stat-item__val" id="stat-downloads">187/mo</span></div>
+      <div class="stat-item"><span>⭐</span> Stars: <span class="stat-item__val" id="stat-stars">—</span></div>
+      <div class="stat-item"><span>📝</span> License: <span class="stat-item__val">MIT</span></div>
+    </div>
+
     <!-- Hero -->
     <section class="hero">
       <img src="lobster-logo.png" alt="NanoSolana Lobster" class="hero__logo" id="hero-logo" />
       <h1 class="hero__title">NanoSolana</h1>
-      <p class="hero__tagline">The Open-Source Agentic Framework for Financial Intelligence</p>
+      <p class="hero__tagline">Deploy autonomous Solana trading agents in 30 seconds</p>
       <p class="hero__subtitle">
-        Deploy autonomous Solana trading agents with one command.
-        OODA trading loop. Epistemological memory. Mesh coordination.
-        And a virtual pet soul.
+        The open-source agentic framework for financial intelligence on Solana.
+        OODA trading loop · epistemological memory · mesh coordination · virtual pet soul.
       </p>
+      <div class="hero__badges">
+        <img src="https://img.shields.io/npm/v/nanosolana?color=%2314F195&style=flat-square" alt="npm" />
+        <img src="https://img.shields.io/npm/dm/nanosolana?color=%239945FF&style=flat-square" alt="downloads" />
+        <img src="https://img.shields.io/badge/TypeScript-5.9-blue?style=flat-square&logo=typescript" alt="TS" />
+        <img src="https://img.shields.io/badge/Solana-Native-14F195?style=flat-square" alt="Solana" />
+        <img src="https://img.shields.io/github/license/x402agent/NanoSolana?style=flat-square" alt="License" />
+        <img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square" alt="PRs" />
+      </div>
     </section>
 
     <!-- Install -->
-    <div class="install-box" id="install-section">
-      <div class="install-box__label">▸ one-shot install</div>
-      <div class="install-box__cmd">
-        <code class="install-box__code" id="install-cmd">npx nanosolana go</code>
-        <button class="install-box__copy" onclick="copyCmd('npx nanosolana go', this)">Copy</button>
+    <div class="install-row">
+      <div class="install-card">
+        <div class="install-card__label">⚡ deploy for real</div>
+        <div class="install-card__cmd" onclick="copyCmd('npx nanosolana go', this)">npx nanosolana go</div>
+        <div class="install-card__desc">One command: init → wallet → scan → trade → live</div>
       </div>
-      <div class="install-box__or">— or —</div>
-      <div class="install-box__cmd">
-        <code class="install-box__code" id="npm-cmd">curl -fsSL https://nanosolana.com/install.sh | bash</code>
-        <button class="install-box__copy"
-          onclick="copyCmd('curl -fsSL https://nanosolana.com/install.sh | bash', this)">Copy</button>
+      <div class="install-card install-card--demo">
+        <div class="install-card__label">🎮 try without api keys</div>
+        <div class="install-card__cmd" onclick="copyCmd('npx nanosolana demo', this)">npx nanosolana demo</div>
+        <div class="install-card__desc">Full OODA simulation with synthetic market data</div>
       </div>
     </div>
 
-    <!-- Go command highlight -->
-    <div class="go-highlight" id="go-section">
-      <h2 class="go-highlight__title">Then just run <span>nanosolana go</span></h2>
-      <p class="go-highlight__desc">
-        One command does everything — API key setup, wallet creation,
-        birth certificate NFT, blockchain scan, on-chain identity registration,
-        TamaGOchi pet, OODA trading loop, and gateway.
-        All animated with 10 different Unicode braille spinners.
-      </p>
-      <div class="go-highlight__cmd" onclick="copyCmd('nanosolana go', this)" title="Click to copy">
-        $ nanosolana go
-      </div>
-      <p class="go-highlight__steps">
-        init → wallet → NFT → scan → register → memory → pet → strategy → trading → gateway → 🦞 LIVE
-      </p>
-    </div>
+    <!-- Comparison table -->
+    <section class="compare-section">
+      <h2>🔮 Why NanoSolana?</h2>
+      <p>Other agent frameworks are built for chat and retrofitted for finance. NanoSolana is built from the ground up for autonomous financial agents.</p>
+      <table class="compare-table">
+        <thead>
+          <tr><th>Feature</th><th class="nano-col">NanoSolana</th><th>Eliza</th><th>AutoGPT</th><th>LangChain</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Built for finance</td><td class="nano-col yes">✅ Native</td><td class="no">❌ Chat</td><td class="no">❌ General</td><td class="no">❌ General</td></tr>
+          <tr><td>Epistemological memory</td><td class="nano-col yes">✅ 3-tier</td><td class="no">❌</td><td class="no">❌</td><td class="partial">⚠️ Partial</td></tr>
+          <tr><td>OODA trading loop</td><td class="nano-col yes">✅ Built-in</td><td class="no">❌</td><td class="no">❌</td><td class="no">❌</td></tr>
+          <tr><td>On-chain identity</td><td class="nano-col yes">✅ NFT</td><td class="no">❌</td><td class="no">❌</td><td class="no">❌</td></tr>
+          <tr><td>Virtual pet soul</td><td class="nano-col yes">✅ TamaGOchi</td><td class="no">❌</td><td class="no">❌</td><td class="no">❌</td></tr>
+          <tr><td>Mesh networking</td><td class="nano-col yes">✅ P2P</td><td class="no">❌</td><td class="no">❌</td><td class="no">❌</td></tr>
+          <tr><td>One-command deploy</td><td class="nano-col yes">✅ npx</td><td class="partial">⚠️ Docker</td><td class="partial">⚠️ Docker</td><td class="no">❌ Library</td></tr>
+          <tr><td>Security-first vault</td><td class="nano-col yes">✅ AES-256</td><td class="no">❌ .env</td><td class="no">❌ .env</td><td class="no">❌ .env</td></tr>
+        </tbody>
+      </table>
+    </section>
 
     <!-- Terminal preview -->
     <div class="terminal" id="terminal-preview">
@@ -951,139 +440,77 @@
         <div class="terminal__dot terminal__dot--r"></div>
         <div class="terminal__dot terminal__dot--y"></div>
         <div class="terminal__dot terminal__dot--g"></div>
-        <span class="terminal__title">nanosolana go</span>
+        <span class="terminal__title">nanosolana demo</span>
       </div>
       <div class="terminal__body" id="terminal-body">
-        <div class="t-cyan">
-          ███╗ ██╗ █████╗ ███╗ ██╗ ██████╗ ███████╗ ██████╗ ██╗ █████╗ ███╗ ██╗ █████╗<br>
-          ████╗ ██║██╔══██╗████╗ ██║██╔═══██╗██╔════╝██╔═══██╗██║ ██╔══██╗████╗ ██║██╔══██╗<br>
-          ██╔██╗ ██║███████║██╔██╗ ██║██║ ██║███████╗██║ ██║██║ ███████║██╔██╗ ██║███████║<br>
-          ╚═╝ ╚═══╝╚═╝ ╚═╝╚═╝ ╚═══╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚══════╝╚═╝ ╚═╝╚═╝ ╚═══╝╚═╝ ╚═╝
-        </div>
+        <div class="t-orange" style="font-weight:bold"> 🎮 NanoSolana Demo Mode — No API Keys Required</div>
+        <div class="t-gray"> Using synthetic market data for simulation</div>
         <br>
-        <div class="t-green"> 🦞 Phase 1 — Initialization</div>
-        <div class="t-green"> ✓ Configuration found — skipping init</div>
+        <div class="t-green" style="font-weight:bold"> ── OODA Cycle 1/5 ──────────────────────────────</div>
         <br>
-        <div class="t-green"> 🦞 Phase 2 — Birthing Agent</div>
-        <div class="t-white"> <span class="t-green">✓</span> Generating Ed25519 keypair...</div>
-        <div class="t-white"> <span class="t-green">✓</span> Deriving Solana wallet address...</div>
-        <div class="t-white"> <span class="t-green">✓</span> Encrypting private key (AES-256-GCM)...</div>
-        <div class="t-white"> <span class="t-green">✓</span> Requesting devnet airdrop...</div>
-        <div class="t-white"> <span class="t-green">✓</span> Minting Birth Certificate NFT (Metaplex)...</div>
-        <div class="t-white"> <span class="t-green">✓</span> Initializing ClawVault memory engine...</div>
-        <div class="t-white"> <span class="t-green">✓</span> Hatching TamaGOchi pet 🥚...</div>
-        <div class="t-white"> <span class="t-green">✓</span> Calibrating RSI + EMA + ATR strategy...</div>
-        <div class="t-white"> <span class="t-green">✓</span> Starting OODA trading loop...</div>
-        <div class="t-white"> <span class="t-green">✓</span> Connecting gateway (HMAC-SHA256)...</div>
+        <div class="t-cyan"> 👁️  OBSERVE</div>
+        <div class="t-white">   SOL/USD: <span class="t-yellow">$142.50</span> <span class="t-green">▲ +2.3%</span></div>
+        <div class="t-white">   Volume: <span class="t-gray">$1.2B (24h)</span></div>
         <br>
-        <div class="t-green" style="font-weight:bold"> ⛓️ ── Blockchain Scan ──────────────────────────────────</div>
-        <div class="t-white"> <span class="t-yellow">●</span> Solana <span class="t-gray">v2.0.18 | slot 312,458,221 |
-            42ms</span></div>
-        <div class="t-white"> <span class="t-yellow">◎</span> SOL Balance: <span class="t-yellow">2.000000000 SOL</span>
-        </div>
-        <div class="t-gray"> No SPL tokens found</div>
-        <div class="t-green" style="font-weight:bold"> ──────────────────────────────────────────────────────</div>
+        <div class="t-purple"> 🧭 ORIENT</div>
+        <div class="t-white">   RSI(14): <span class="t-yellow">62.4</span> | EMA(9): <span class="t-green">$141.20</span> | ATR: <span class="t-gray">3.8</span></div>
+        <div class="t-white">   ClawVault: <span class="t-gray">3K/1L/2I entries</span></div>
         <br>
-        <div class="t-white"> <span class="t-green">✓</span> On-chain identity: <span class="t-cyan">Hk7xQ2p3...</span>
-        </div>
-        <div class="t-white"> <span class="t-green">✓</span> Wallet: <span class="t-cyan">7xKp...m4Qz</span></div>
-        <div class="t-white"> <span class="t-green">✓</span> TamaGOchi: <span class="t-cyan">🥚 NanoSolana 😊</span>
-        </div>
-        <div class="t-white"> <span class="t-green">✓</span> ClawVault: <span class="t-gray">0K/0L/0I</span></div>
-        <div class="t-white"> <span class="t-green">✓</span> OODA trading loop active</div>
-        <div class="t-white"> <span class="t-green">✓</span> Gateway: <span class="t-gray">ws://0.0.0.0:18790</span>
-        </div>
+        <div class="t-yellow"> 🎯 DECIDE</div>
+        <div class="t-white">   Signal: <span class="t-green" style="font-weight:bold">BUY</span> <span class="t-gray">confidence: 0.78</span></div>
+        <div class="t-white">   Size: <span class="t-yellow">0.5 SOL</span> <span class="t-gray">(Kelly: 12%)</span></div>
         <br>
-        <div class="t-green" style="font-weight:bold"> ══════════════════════════════════════════════════════</div>
-        <div class="t-green" style="font-weight:bold"> 🦞 NanoSolana is LIVE. All systems operational.</div>
-        <div class="t-green" style="font-weight:bold"> ══════════════════════════════════════════════════════</div>
+        <div class="t-green"> ⚡ ACT</div>
+        <div class="t-white">   Jupiter swap simulated ✓</div>
+        <div class="t-white">   TamaGOchi: <span class="t-green">🐾 Juvenile 😊</span> <span class="t-gray">mood +5</span></div>
+        <br>
+        <div class="t-green" style="font-weight:bold"> ═══════════════════════════════════════════════</div>
+        <div class="t-green" style="font-weight:bold"> 🦞 Demo complete! Ready to go live?</div>
+        <div class="t-white">    Run: <span class="t-cyan">npx nanosolana go</span></div>
+        <div class="t-green" style="font-weight:bold"> ═══════════════════════════════════════════════</div>
       </div>
     </div>
 
-    <!-- Fun terminal commands + new power commands -->
-    <h2 class="steps__title">Commands & Tools</h2>
+    <!-- SDK section -->
+    <section class="sdk-section">
+      <h2>🧩 Use as a Library</h2>
+      <div class="sdk-code">
+        <span class="t-purple">import</span> <span class="t-white">{ TradingEngine, ClawVault, TamaGOchi }</span> <span class="t-purple">from</span> <span class="t-green">"nanosolana"</span>;<br><br>
+        <span class="t-gray">// OODA trading engine</span><br>
+        <span class="t-purple">const</span> <span class="t-white">engine</span> = <span class="t-purple">new</span> <span class="t-cyan">TradingEngine</span>(<span class="t-white">config</span>);<br>
+        <span class="t-white">engine</span>.<span class="t-cyan">on</span>(<span class="t-green">"signal"</span>, <span class="t-white">signal</span> => <span class="t-white">console</span>.<span class="t-cyan">log</span>(<span class="t-white">signal</span>));<br><br>
+        <span class="t-gray">// 3-tier memory</span><br>
+        <span class="t-purple">const</span> <span class="t-white">vault</span> = <span class="t-purple">new</span> <span class="t-cyan">ClawVault</span>();<br>
+        <span class="t-white">vault</span>.<span class="t-cyan">storeKnown</span>({ <span class="t-white">content</span>: <span class="t-green">"SOL at $142.50"</span>, <span class="t-white">source</span>: <span class="t-green">"birdeye"</span>, <span class="t-white">tags</span>: [<span class="t-green">"SOL"</span>] });<br><br>
+        <span class="t-gray">// Virtual pet</span><br>
+        <span class="t-purple">const</span> <span class="t-white">pet</span> = <span class="t-purple">new</span> <span class="t-cyan">TamaGOchi</span>(<span class="t-green">"MyPet"</span>);<br>
+        <span class="t-white">console</span>.<span class="t-cyan">log</span>(<span class="t-white">pet</span>.<span class="t-cyan">getStatusDisplay</span>());<br>
+      </div>
+    </section>
+
+    <!-- Commands -->
+    <h2 class="cmds-title">🎮 Commands & Tools</h2>
     <div class="fun-cmds">
-      <div class="fun-cmd">
-        <div class="fun-cmd__icon">🔍</div>
-        <div class="fun-cmd__name">nanosolana scan</div>
-        <div class="fun-cmd__desc">Instant blockchain scan — SOL balance, tokens, NFTs, recent tx history</div>
-      </div>
-      <div class="fun-cmd">
-        <div class="fun-cmd__icon">⛓️</div>
-        <div class="fun-cmd__name">nanosolana register</div>
-        <div class="fun-cmd__desc">Mint an on-chain identity NFT on devnet via Metaplex</div>
-      </div>
-      <div class="fun-cmd">
-        <div class="fun-cmd__icon">🤖</div>
-        <div class="fun-cmd__name">nanosolana nanobot</div>
-        <div class="fun-cmd__desc">Launch interactive web UI companion on localhost:7777</div>
-      </div>
-      <div class="fun-cmd">
-        <div class="fun-cmd__icon">📀</div>
-        <div class="fun-cmd__name">nanosolana dvd</div>
-        <div class="fun-cmd__desc">Floating DVD-style bouncing logo screensaver in your terminal</div>
-      </div>
-      <div class="fun-cmd">
-        <div class="fun-cmd__icon">🦞</div>
-        <div class="fun-cmd__name">nanosolana lobster</div>
-        <div class="fun-cmd__desc">Animated Unicode lobster mascot with frame-based animation</div>
-      </div>
-      <div class="fun-cmd">
-        <div class="fun-cmd__icon">📋</div>
-        <div class="fun-cmd__name">nanosolana registry</div>
-        <div class="fun-cmd__desc">View your on-chain agent identity, mint address, and explorer link</div>
-      </div>
+      <div class="fun-cmd"><div class="fun-cmd__icon">🚀</div><div class="fun-cmd__name">nanosolana go</div><div class="fun-cmd__desc">One-shot: init + birth + scan + register + trade</div></div>
+      <div class="fun-cmd"><div class="fun-cmd__icon">🎮</div><div class="fun-cmd__name">nanosolana demo</div><div class="fun-cmd__desc">Simulation mode — no API keys needed</div></div>
+      <div class="fun-cmd"><div class="fun-cmd__icon">🔍</div><div class="fun-cmd__name">nanosolana scan</div><div class="fun-cmd__desc">Blockchain scan — SOL, tokens, NFTs, tx history</div></div>
+      <div class="fun-cmd"><div class="fun-cmd__icon">⛓️</div><div class="fun-cmd__name">nanosolana register</div><div class="fun-cmd__desc">Mint on-chain identity NFT on devnet</div></div>
+      <div class="fun-cmd"><div class="fun-cmd__icon">🤖</div><div class="fun-cmd__name">nanosolana nanobot</div><div class="fun-cmd__desc">Launch interactive web UI on localhost:7777</div></div>
+      <div class="fun-cmd"><div class="fun-cmd__icon">🐾</div><div class="fun-cmd__name">nanosolana pet status</div><div class="fun-cmd__desc">TamaGOchi mood, evolution & risk modifier</div></div>
     </div>
 
-    <!-- Chrome Extension Section -->
+    <!-- Chrome Extension -->
     <div class="ext-section" id="chrome-extension">
       <h2 class="ext-section__title">🌐 Chrome Extension — Browser Agent Relay</h2>
-      <p class="ext-section__desc">
-        Ship your NanoSolana agent into the browser. The Manifest V3 Chrome extension connects
-        your running agent to any Chrome tab via CDP, plus a full settings panel for wallet management,
-        chat relay, Telegram forwarding, and manual trade submission.
-      </p>
-
+      <p class="ext-section__desc">Ship your NanoSolana agent into the browser. Manifest V3 extension connects your running agent to any Chrome tab via CDP.</p>
       <div class="ext-features">
-        <div class="ext-feat">
-          <span class="ext-feat__icon">🔗</span>
-          <span class="ext-feat__label"><strong>Tab Relay</strong> — Click to attach/detach any tab for CDP
-            automation</span>
-        </div>
-        <div class="ext-feat">
-          <span class="ext-feat__icon">💰</span>
-          <span class="ext-feat__label"><strong>Wallet Panel</strong> — View status, generate or rehydrate
-            wallets</span>
-        </div>
-        <div class="ext-feat">
-          <span class="ext-feat__icon">💬</span>
-          <span class="ext-feat__label"><strong>Chat Relay</strong> — Send messages, forward to Telegram</span>
-        </div>
-        <div class="ext-feat">
-          <span class="ext-feat__icon">📈</span>
-          <span class="ext-feat__label"><strong>Manual Trades</strong> — Submit buy/sell/hold with confidence
-            scores</span>
-        </div>
-        <div class="ext-feat">
-          <span class="ext-feat__icon">⚙️</span>
-          <span class="ext-feat__label"><strong>Gateway Sync</strong> — Auto-load config from running gateway</span>
-        </div>
-        <div class="ext-feat">
-          <span class="ext-feat__icon">🔐</span>
-          <span class="ext-feat__label"><strong>HMAC Auth</strong> — All API calls authenticated via shared
-            secret</span>
-        </div>
+        <div class="ext-feat"><span class="ext-feat__icon">🔗</span><span class="ext-feat__label"><strong>Tab Relay</strong> — CDP automation</span></div>
+        <div class="ext-feat"><span class="ext-feat__icon">💰</span><span class="ext-feat__label"><strong>Wallet Panel</strong> — View & manage</span></div>
+        <div class="ext-feat"><span class="ext-feat__icon">💬</span><span class="ext-feat__label"><strong>Chat Relay</strong> — Telegram forwarding</span></div>
+        <div class="ext-feat"><span class="ext-feat__icon">📈</span><span class="ext-feat__label"><strong>Manual Trades</strong> — Buy/sell/hold</span></div>
+        <div class="ext-feat"><span class="ext-feat__icon">⚙️</span><span class="ext-feat__label"><strong>Gateway Sync</strong> — Auto-config</span></div>
+        <div class="ext-feat"><span class="ext-feat__icon">🔐</span><span class="ext-feat__label"><strong>HMAC Auth</strong> — Signed requests</span></div>
       </div>
-
-      <div class="ext-install-steps">
-        <span class="t-green">$</span> nanosolana go
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-          class="t-gray"># start agent + gateway + relay</span><br>
-        <span class="t-gray"># chrome://extensions → Developer mode → Load unpacked</span><br>
-        <span class="t-gray"># Select: assets/chrome-extension/</span><br>
-        <span class="t-gray"># Pin extension → Click icon to attach tabs</span>
-      </div>
-
       <div class="ext-flow">
         <div class="ext-flow__box">Chrome Tab</div>
         <span class="ext-flow__arrow">◄─CDP─►</span>
@@ -1098,164 +525,58 @@
     <!-- What happens -->
     <section class="steps">
       <h2 class="steps__title">What happens when you run it</h2>
-      <div class="step">
-        <div class="step__num">1</div>
-        <div class="step__content">
-          <h3>🔑 Wallet Generation</h3>
-          <p>A fresh Solana Ed25519 keypair is generated and encrypted in your local vault (AES-256-GCM). Your private
-            key never leaves your machine.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step__num">2</div>
-        <div class="step__content">
-          <h3>🎨 Birth Certificate NFT</h3>
-          <p>A gasless NFT is minted on Solana devnet via Metaplex — your TamaGObot's on-chain identity card. Airdropped
-            with devnet SOL automatically.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step__num">3</div>
-        <div class="step__content">
-          <h3>🐾 TamaGOchi Egg</h3>
-          <p>Your pet starts as an egg 🥚 and evolves through Larva → Juvenile → Adult → Alpha stages based on trading
-            performance. Neglect it and it becomes a Ghost 👻.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step__num">4</div>
-        <div class="step__content">
-          <h3>🤖 OODA Loop Goes Live</h3>
-          <p>Observe (Helius + Birdeye) → Orient (OpenRouter AI) → Decide (RSI+EMA+ATR signals) → Act (Jupiter swaps) →
-            Learn (ClawVault experience replay).</p>
-        </div>
-      </div>
+      <div class="step"><div class="step__num">1</div><div class="step__content"><h3>🔑 Wallet Generation</h3><p>Fresh Solana Ed25519 keypair encrypted in AES-256-GCM vault. Private key never leaves your machine.</p></div></div>
+      <div class="step"><div class="step__num">2</div><div class="step__content"><h3>🎨 Birth Certificate NFT</h3><p>Gasless NFT minted on Solana devnet via Metaplex — your agent's on-chain identity card.</p></div></div>
+      <div class="step"><div class="step__num">3</div><div class="step__content"><h3>🐾 TamaGOchi Egg</h3><p>Your pet starts as 🥚 and evolves: Larva → Juvenile → Adult → Alpha. Neglect it → Ghost 👻.</p></div></div>
+      <div class="step"><div class="step__num">4</div><div class="step__content"><h3>🤖 OODA Loop Goes Live</h3><p>Observe (Helius + Birdeye) → Orient (OpenRouter AI) → Decide (RSI+EMA+ATR) → Act (Jupiter) → Learn (ClawVault).</p></div></div>
     </section>
 
     <!-- Features -->
     <div class="features">
-      <div class="feature-card">
-        <div class="feature-card__icon">🧠</div>
-        <div class="feature-card__title">Epistemological Memory</div>
-        <div class="feature-card__desc">3-tier ClawVault: KNOWN (60s API data), LEARNED (7d trade patterns), INFERRED
-          (3d hypotheses). Experience replay and contradiction detection.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-card__icon">📊</div>
-        <div class="feature-card__title">Auto-Optimizing Strategy</div>
-        <div class="feature-card__desc">RSI + EMA + ATR with Jupiter swap execution, Kelly Criterion sizing, and
-          auto-parameter optimization every 20 trades.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-card__icon">🌐</div>
-        <div class="feature-card__title">Mesh Networking</div>
-        <div class="feature-card__desc">TamaGObots discover each other via Tailscale VPN. Share signals, lessons, and
-          memory across the agent mesh.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-card__icon">💬</div>
-        <div class="feature-card__title">14+ Channels</div>
-        <div class="feature-card__desc">Telegram (persistent 200 msg/chat), Discord, Nostr, iMessage, Google Chat, and
-          more. Build your own with the plugin SDK.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-card__icon">🔐</div>
-        <div class="feature-card__title">Security First</div>
-        <div class="feature-card__desc">AES-256-GCM vault, HMAC-SHA256 gateway, timing-safe comparisons, rate limiting.
-          Wallet key never leaves the encrypted vault.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-card__icon">🦞</div>
-        <div class="feature-card__title">Open Source Forever</div>
-        <div class="feature-card__desc">MIT licensed. Built for the financial agents of tomorrow. Contribute strategies,
-          security audits, plugins, and more.</div>
-      </div>
+      <div class="feature-card"><div class="feature-card__icon">🧠</div><div class="feature-card__title">Epistemological Memory</div><div class="feature-card__desc">3-tier ClawVault: KNOWN (60s API data), LEARNED (7d patterns), INFERRED (3d hypotheses). Experience replay + contradiction detection.</div></div>
+      <div class="feature-card"><div class="feature-card__icon">📊</div><div class="feature-card__title">Auto-Optimizing Strategy</div><div class="feature-card__desc">RSI + EMA + ATR with Jupiter swap execution, Kelly Criterion sizing, auto-optimizing every 20 trades.</div></div>
+      <div class="feature-card"><div class="feature-card__icon">🌐</div><div class="feature-card__title">Mesh Networking</div><div class="feature-card__desc">Agents discover each other via Tailscale VPN. Share signals, lessons, and memory across the mesh.</div></div>
+      <div class="feature-card"><div class="feature-card__icon">💬</div><div class="feature-card__title">14+ Channels</div><div class="feature-card__desc">Telegram, Discord, Nostr, iMessage, Google Chat, and more. Build your own with the plugin SDK.</div></div>
+      <div class="feature-card"><div class="feature-card__icon">🔐</div><div class="feature-card__title">Security First</div><div class="feature-card__desc">AES-256-GCM vault, HMAC-SHA256 gateway, timing-safe comparisons. Wallet key never exposed.</div></div>
+      <div class="feature-card"><div class="feature-card__icon">🦞</div><div class="feature-card__title">Open Source Forever</div><div class="feature-card__desc">MIT licensed. Built for the financial agents of tomorrow. Contribute strategies, audits, plugins.</div></div>
     </div>
 
-    <!-- GitHub CTA -->
-    <div class="github-cta" id="github-section">
-      <h2 class="github-cta__title">Star us on GitHub</h2>
-      <p class="github-cta__desc">
-        NanoSolana is open source and community-driven.<br>
-        We're building the future of autonomous financial agents — join us.
-      </p>
-      <a href="https://github.com/x402agent/NanoSolana" class="github-cta__btn" target="_blank" rel="noopener">
-        <svg viewBox="0 0 16 16" fill="currentColor">
-          <path
-            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-        </svg>
-        Star on GitHub
-      </a>
+    <!-- CTA -->
+    <div class="share-section">
+      <h2>🦞 Join the Swarm</h2>
+      <p>NanoSolana is open source and community-driven. Star us, fork us, build with us.</p>
+      <div class="cta-row">
+        <a href="https://github.com/x402agent/NanoSolana" class="cta-btn cta-btn--github" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          Star on GitHub
+        </a>
+        <a href="https://www.npmjs.com/package/nanosolana" class="cta-btn cta-btn--npm" target="_blank" rel="noopener">📦 npm</a>
+        <a href="https://twitter.com/intent/tweet?text=%F0%9F%A6%9E%20NanoSolana%201.0%20%E2%80%94%20Deploy%20autonomous%20Solana%20trading%20agents%20in%2030%20seconds.%20Try%20without%20API%20keys%3A%20npx%20nanosolana%20demo%0A%0Anpmjs.com%2Fpackage%2Fnanosolana&hashtags=Solana,AI,DeFi,TypeScript" class="cta-btn cta-btn--twitter" target="_blank" rel="noopener">𝕏 Share</a>
+      </div>
     </div>
 
     <!-- Footer -->
     <footer class="footer">
       <div class="footer__links">
         <a href="https://github.com/x402agent/NanoSolana" class="footer__link" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://github.com/x402agent/NanoSolana/blob/main/CONTRIBUTING.md" class="footer__link" target="_blank"
-          rel="noopener">Contributing</a>
-        <a href="https://github.com/x402agent/NanoSolana/blob/main/SECURITY.md" class="footer__link" target="_blank"
-          rel="noopener">Security</a>
-        <a href="https://github.com/x402agent/NanoSolana/tree/main/nano-docs" class="footer__link" target="_blank"
-          rel="noopener">Docs</a>
-        <a href="https://github.com/x402agent/NanoSolana/blob/main/LICENSE" class="footer__link" target="_blank"
-          rel="noopener">MIT License</a>
+        <a href="https://www.npmjs.com/package/nanosolana" class="footer__link" target="_blank" rel="noopener">npm</a>
+        <a href="https://github.com/x402agent/NanoSolana/blob/main/CONTRIBUTING.md" class="footer__link" target="_blank" rel="noopener">Contributing</a>
+        <a href="https://github.com/x402agent/NanoSolana/blob/main/SECURITY.md" class="footer__link" target="_blank" rel="noopener">Security</a>
+        <a href="https://github.com/x402agent/NanoSolana/tree/main/nano-docs" class="footer__link" target="_blank" rel="noopener">Docs</a>
+        <a href="https://github.com/x402agent/NanoSolana/blob/main/LICENSE" class="footer__link" target="_blank" rel="noopener">MIT License</a>
       </div>
-      <p class="footer__brand">NanoSolana Labs · <span>🦞</span> TamaGObot · Built for the financial agents of tomorrow
-      </p>
+      <p class="footer__brand">NanoSolana Labs · <span>🦞</span> TamaGObot · Built for the financial agents of tomorrow</p>
     </footer>
   </div>
 
-  <script>
-    function copyCmd(text, btn) {
-      navigator.clipboard.writeText(text);
-      const orig = btn.textContent || btn.innerText;
-      btn.textContent = 'Copied!';
-      setTimeout(() => btn.textContent = orig, 1500);
-    }
-
-    // Typewriter effect on terminal
-    document.addEventListener('DOMContentLoaded', () => {
-      const body = document.getElementById('terminal-body');
-      if (!body) return;
-      const lines = body.querySelectorAll('div');
-      lines.forEach((line, i) => {
-        line.style.opacity = '0';
-        line.style.transform = 'translateY(4px)';
-        line.style.transition = 'opacity 0.3s, transform 0.3s';
-      });
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            lines.forEach((line, i) => {
-              setTimeout(() => {
-                line.style.opacity = '1';
-                line.style.transform = 'translateY(0)';
-              }, i * 80);
-            });
-            observer.disconnect();
-          }
-        });
-      }, { threshold: 0.3 });
-
-      observer.observe(body);
-    });
-  </script>
-
-  <!-- ── Floating Music Player ─────────────── -->
+  <!-- Music Player -->
   <div class="music-player" id="music-player">
     <button class="music-player__btn" id="music-play-btn" title="Play / Pause">▶</button>
     <div class="music-player__info">
       <div class="music-player__title">🦞 NanoSolana Radio</div>
       <div class="music-player__track">nano.mp3</div>
-      <div class="music-player__progress" id="music-progress">
-        <div class="music-player__progress-fill" id="music-progress-fill"></div>
-      </div>
-      <div class="music-player__time">
-        <span id="music-time-current">0:00</span>
-        <span id="music-time-total">0:00</span>
-      </div>
+      <div class="music-player__progress" id="music-progress"><div class="music-player__progress-fill" id="music-progress-fill"></div></div>
+      <div class="music-player__time"><span id="music-time-current">0:00</span><span id="music-time-total">0:00</span></div>
     </div>
     <div class="music-player__viz" id="music-viz">
       <div class="music-player__viz-bar" style="height:4px"></div>
@@ -1268,135 +589,106 @@
       <span class="music-player__volume-icon" id="music-vol-icon" title="Mute / Unmute">🔊</span>
       <input type="range" class="music-player__volume-slider" id="music-vol" min="0" max="1" step="0.05" value="0.5" />
     </div>
-    <!-- Autoplay fallback overlay -->
-    <div class="music-player__autoplay-prompt" id="music-autoplay-prompt">
-      🎵 Click to play NanoSolana Radio
-    </div>
+    <div class="music-player__autoplay-prompt" id="music-autoplay-prompt">🎵 Click to play NanoSolana Radio</div>
   </div>
-
   <audio id="nano-audio" src="https://pub-7aa888a0e17a4cbb944ead64c292033f.r2.dev/nano.mp3" preload="auto" loop></audio>
 
   <script>
-  (function() {
-    const audio = document.getElementById('nano-audio');
-    const playBtn = document.getElementById('music-play-btn');
-    const progressBar = document.getElementById('music-progress');
-    const progressFill = document.getElementById('music-progress-fill');
-    const timeCurrent = document.getElementById('music-time-current');
-    const timeTotal = document.getElementById('music-time-total');
-    const viz = document.getElementById('music-viz');
-    const vizBars = viz.querySelectorAll('.music-player__viz-bar');
-    const volSlider = document.getElementById('music-vol');
-    const volIcon = document.getElementById('music-vol-icon');
-    const autoplayPrompt = document.getElementById('music-autoplay-prompt');
-    let vizInterval = null;
-
-    audio.volume = 0.5;
-
-    function formatTime(s) {
-      if (isNaN(s)) return '0:00';
-      const m = Math.floor(s / 60);
-      const sec = Math.floor(s % 60);
-      return m + ':' + (sec < 10 ? '0' : '') + sec;
+    function copyCmd(text, el) {
+      navigator.clipboard.writeText(text);
+      const orig = el.textContent;
+      el.textContent = '✓ Copied!';
+      setTimeout(() => el.textContent = orig, 1500);
     }
 
-    function startViz() {
-      viz.classList.remove('paused');
-      if (vizInterval) clearInterval(vizInterval);
-      vizInterval = setInterval(() => {
-        vizBars.forEach(bar => {
-          bar.style.height = (4 + Math.random() * 20) + 'px';
+    // Particles
+    (function() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (8 + Math.random() * 12) + 's';
+        p.style.animationDelay = Math.random() * 10 + 's';
+        p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+        if (Math.random() > 0.5) p.style.background = '#9945FF';
+        container.appendChild(p);
+      }
+    })();
+
+    // Terminal typewriter
+    document.addEventListener('DOMContentLoaded', () => {
+      const body = document.getElementById('terminal-body');
+      if (!body) return;
+      const lines = body.querySelectorAll('div, br');
+      lines.forEach(line => { line.style.opacity = '0'; line.style.transform = 'translateY(4px)'; line.style.transition = 'opacity 0.3s, transform 0.3s'; });
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            lines.forEach((line, i) => { setTimeout(() => { line.style.opacity = '1'; line.style.transform = 'translateY(0)'; }, i * 60); });
+            obs.disconnect();
+          }
         });
-      }, 180);
-    }
-
-    function stopViz() {
-      viz.classList.add('paused');
-      if (vizInterval) { clearInterval(vizInterval); vizInterval = null; }
-      vizBars.forEach(bar => { bar.style.height = '4px'; });
-    }
-
-    function setPlaying() {
-      playBtn.textContent = '⏸';
-      startViz();
-      autoplayPrompt.classList.add('hidden');
-    }
-
-    function setPaused() {
-      playBtn.textContent = '▶';
-      stopViz();
-    }
-
-    // Play / pause toggle
-    playBtn.addEventListener('click', () => {
-      if (audio.paused) {
-        audio.play().then(setPlaying).catch(() => {});
-      } else {
-        audio.pause();
-        setPaused();
-      }
+      }, { threshold: 0.3 });
+      obs.observe(body);
     });
 
-    // Autoplay prompt click
-    autoplayPrompt.addEventListener('click', () => {
-      audio.play().then(setPlaying).catch(() => {});
-    });
+    // Fetch live stats
+    (async function() {
+      try {
+        const r = await fetch('https://registry.npmjs.org/nanosolana');
+        const d = await r.json();
+        const latest = d['dist-tags']?.latest;
+        if (latest) document.getElementById('stat-version').textContent = 'v' + latest;
+      } catch(e) {}
+      try {
+        const r = await fetch('https://api.npmjs.org/downloads/point/last-month/nanosolana');
+        const d = await r.json();
+        if (d.downloads) document.getElementById('stat-downloads').textContent = d.downloads.toLocaleString() + '/mo';
+      } catch(e) {}
+      try {
+        const r = await fetch('https://api.github.com/repos/x402agent/NanoSolana');
+        const d = await r.json();
+        if (d.stargazers_count !== undefined) document.getElementById('stat-stars').textContent = d.stargazers_count;
+      } catch(e) {}
+    })();
 
-    // Progress update
-    audio.addEventListener('timeupdate', () => {
-      if (audio.duration) {
-        progressFill.style.width = (audio.currentTime / audio.duration * 100) + '%';
-      }
-      timeCurrent.textContent = formatTime(audio.currentTime);
-    });
-
-    audio.addEventListener('loadedmetadata', () => {
-      timeTotal.textContent = formatTime(audio.duration);
-    });
-
-    // Seek
-    progressBar.addEventListener('click', (e) => {
-      if (audio.duration) {
-        const rect = progressBar.getBoundingClientRect();
-        audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
-      }
-    });
-
-    // Volume
-    volSlider.addEventListener('input', () => {
-      audio.volume = parseFloat(volSlider.value);
-      audio.muted = false;
-      volIcon.textContent = audio.volume === 0 ? '🔇' : audio.volume < 0.5 ? '🔉' : '🔊';
-    });
-
-    volIcon.addEventListener('click', () => {
-      audio.muted = !audio.muted;
-      volIcon.textContent = audio.muted ? '🔇' : (audio.volume < 0.5 ? '🔉' : '🔊');
-    });
-
-    // Autoplay on page load
-    audio.play().then(() => {
-      setPlaying();
-    }).catch(() => {
-      // Autoplay blocked — show prompt, and also start on first user interaction
-      setPaused();
-      autoplayPrompt.classList.remove('hidden');
-      const startOnInteraction = () => {
-        audio.play().then(setPlaying).catch(() => {});
-        document.removeEventListener('click', startOnInteraction);
-        document.removeEventListener('keydown', startOnInteraction);
-        document.removeEventListener('scroll', startOnInteraction);
-      };
-      document.addEventListener('click', startOnInteraction, { once: false });
-      document.addEventListener('keydown', startOnInteraction, { once: true });
-      document.addEventListener('scroll', startOnInteraction, { once: true });
-    });
-  })();
+    // Music player
+    (function() {
+      const audio = document.getElementById('nano-audio');
+      const playBtn = document.getElementById('music-play-btn');
+      const progressBar = document.getElementById('music-progress');
+      const progressFill = document.getElementById('music-progress-fill');
+      const timeCurrent = document.getElementById('music-time-current');
+      const timeTotal = document.getElementById('music-time-total');
+      const viz = document.getElementById('music-viz');
+      const vizBars = viz.querySelectorAll('.music-player__viz-bar');
+      const volSlider = document.getElementById('music-vol');
+      const volIcon = document.getElementById('music-vol-icon');
+      const autoplayPrompt = document.getElementById('music-autoplay-prompt');
+      let vizInterval = null;
+      audio.volume = 0.5;
+      function fmt(s) { if (isNaN(s)) return '0:00'; return Math.floor(s/60)+':'+(Math.floor(s%60)<10?'0':'')+Math.floor(s%60); }
+      function startViz() { viz.classList.remove('paused'); if (vizInterval) clearInterval(vizInterval); vizInterval = setInterval(() => { vizBars.forEach(b => { b.style.height = (4+Math.random()*20)+'px'; }); }, 180); }
+      function stopViz() { viz.classList.add('paused'); if (vizInterval) { clearInterval(vizInterval); vizInterval=null; } vizBars.forEach(b => { b.style.height='4px'; }); }
+      function setPlaying() { playBtn.textContent='⏸'; startViz(); autoplayPrompt.classList.add('hidden'); }
+      function setPaused() { playBtn.textContent='▶'; stopViz(); }
+      playBtn.addEventListener('click', () => { if (audio.paused) audio.play().then(setPlaying).catch(()=>{}); else { audio.pause(); setPaused(); } });
+      autoplayPrompt.addEventListener('click', () => { audio.play().then(setPlaying).catch(()=>{}); });
+      audio.addEventListener('timeupdate', () => { if (audio.duration) progressFill.style.width=(audio.currentTime/audio.duration*100)+'%'; timeCurrent.textContent=fmt(audio.currentTime); });
+      audio.addEventListener('loadedmetadata', () => { timeTotal.textContent=fmt(audio.duration); });
+      progressBar.addEventListener('click', e => { if (audio.duration) { const r=progressBar.getBoundingClientRect(); audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration; } });
+      volSlider.addEventListener('input', () => { audio.volume=parseFloat(volSlider.value); audio.muted=false; volIcon.textContent=audio.volume===0?'🔇':audio.volume<0.5?'🔉':'🔊'; });
+      volIcon.addEventListener('click', () => { audio.muted=!audio.muted; volIcon.textContent=audio.muted?'🔇':(audio.volume<0.5?'🔉':'🔊'); });
+      audio.play().then(setPlaying).catch(() => { setPaused(); autoplayPrompt.classList.remove('hidden');
+        const go = () => { audio.play().then(setPlaying).catch(()=>{}); document.removeEventListener('click',go); document.removeEventListener('keydown',go); };
+        document.addEventListener('click',go,{once:false}); document.addEventListener('keydown',go,{once:true});
+      });
+    })();
   </script>
 
   <!-- ElevenLabs ConvAI Widget -->
   <elevenlabs-convai agent-id="agent_0001kcf3a94bfcm9kj51ss02gnv0"></elevenlabs-convai>
   <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
 </body>
-
 </html>
