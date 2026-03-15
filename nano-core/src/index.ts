@@ -70,3 +70,26 @@ export type {
 // Telegram Persistence
 export { TelegramConversationStore } from "./telegram/persistence.js";
 export type { ConversationMessage, ConversationContext, ConversationSearchResult } from "./telegram/persistence.js";
+
+// Pump.fun Integration (bonding curves, PDAs, token ops)
+export { PumpClient, calculateBuyTokens, calculateSellSol, calculateTokenPrice, calculateMarketCap, calculateGraduationProgress, calculateBuyPriceImpact, bondingCurvePda, creatorVaultPda, globalPda, PUMP_PROGRAM_ID, PUMP_AMM_PROGRAM_ID, PUMP_FEES_PROGRAM_ID } from "./pump/client.js";
+export type { BondingCurveState, TokenInfo, BuyQuote, SellQuote } from "./pump/client.js";
+
+// Swarm Orchestrator
+export { SwarmOrchestrator } from "./swarm/orchestrator.js";
+export type { AgentRole, AgentStatus, AgentConfig, AgentState, SwarmEventType, SwarmEvent, SwarmHealth, SwarmAgent, SwarmContext } from "./swarm/orchestrator.js";
+
+// Swarm Agents
+export { BaseAgent } from "./agents/base-agent.js";
+export { SniperAgent } from "./agents/sniper-agent.js";
+export { WhaleWatcherAgent } from "./agents/whale-watcher-agent.js";
+export { GraduationHunterAgent } from "./agents/graduation-hunter-agent.js";
+export { FeeHarvesterAgent } from "./agents/fee-harvester-agent.js";
+export { LiquidityScoutAgent } from "./agents/liquidity-scout-agent.js";
+export { MomentumRiderAgent } from "./agents/momentum-rider-agent.js";
+
+// Lobster Library (agent definitions & builder)
+export { LobsterAgentBuilder } from "./lobster/builder.js";
+export { lobsterAgentSchema, getLobsterAgentJsonSchema, LOBSTER_CATEGORIES } from "./lobster/schema.js";
+export type { LobsterAgent, LobsterCategory } from "./lobster/schema.js";
+export { generateLobsterAgents, searchLobsterAgents, getLobsterAgentsByCategory } from "./lobster/generator.js";

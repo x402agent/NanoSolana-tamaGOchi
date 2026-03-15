@@ -1,6 +1,6 @@
 {
   "name": "nanosolana",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Nano Solana — Security-first autonomous trading agent platform with real-time memory and Solana wallet integration",
   "keywords": [
     "solana",
@@ -65,6 +65,7 @@
     "nanoid": "^5.0.0",
     "pino": "^9.0.0",
     "pino-pretty": "^11.0.0",
+    "bn.js": "^5.2.1",
     "tweetnacl": "^1.0.3",
     "undici": "^7.22.0",
     "unicode-animations": "^1.0.3",
@@ -73,6 +74,7 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.0",
+    "@types/bn.js": "^5.1.0",
     "@types/node": "^22.0.0",
     "@types/ws": "^8.18.1",
     "oxfmt": "0.38.0",

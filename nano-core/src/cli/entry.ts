@@ -1073,6 +1073,227 @@ program
     await new Promise(() => {});
   });
 
+// ── nanosolana swarm ──────────────────────────────────────────
+
+program
+  .command("swarm")
+  .description("Launch the NanoSolana agent swarm (pump.fun sniping, whale watching, momentum riding)")
+  .option("--agents <agents>", "Comma-separated agent roles to enable (sniper,whale-watcher,graduation-hunter,fee-harvester,liquidity-scout,momentum-rider)", "sniper,whale-watcher,graduation-hunter,liquidity-scout,momentum-rider")
+  .option("--rpc <url>", "Solana RPC URL", "https://api.mainnet-beta.solana.com")
+  .option("--dry-run", "Run without executing trades (signals only)", false)
+  .action(async (opts) => {
+    printBanner();
+    console.log(chalk.hex("#14F195")("\n  🦞 NanoSolana Swarm — Lobster Colony Activated\n"));
+
+    const { SwarmOrchestrator } = await import("../swarm/orchestrator.js");
+    const { PumpClient } = await import("../pump/client.js");
+    const { Connection } = await import("@solana/web3.js");
+
+    // Load wallet
+    const home = ensureNanoHome();
+    const secrets = loadSecrets();
+    if (!secrets?.SOLANA_PRIVATE_KEY) {
+      console.log(chalk.red("  No wallet found. Run: nanosolana birth\n"));
+      return;
+    }
+
+    const wallet = new NanoWallet();
+    await wallet.init(secrets.SOLANA_PRIVATE_KEY);
+    const vault = new ClawVault();
+
+    const connection = new Connection(opts.rpc, "confirmed");
+    const pump = new PumpClient(connection);
+
+    const swarm = new SwarmOrchestrator(pump, wallet, vault);
+
+    // Parse requested agents
+    const requestedAgents = (opts.agents as string).split(",").map((s: string) => s.trim());
+
+    const agentMap: Record<string, () => Promise<{ default?: unknown; [key: string]: unknown }>> = {
+      "sniper": () => import("../agents/sniper-agent.js"),
+      "whale-watcher": () => import("../agents/whale-watcher-agent.js"),
+      "graduation-hunter": () => import("../agents/graduation-hunter-agent.js"),
+      "fee-harvester": () => import("../agents/fee-harvester-agent.js"),
+      "liquidity-scout": () => import("../agents/liquidity-scout-agent.js"),
+      "momentum-rider": () => import("../agents/momentum-rider-agent.js"),
+    };
+
+    const classMap: Record<string, string> = {
+      "sniper": "SniperAgent",
+      "whale-watcher": "WhaleWatcherAgent",
+      "graduation-hunter": "GraduationHunterAgent",
+      "fee-harvester": "FeeHarvesterAgent",
+      "liquidity-scout": "LiquidityScoutAgent",
+      "momentum-rider": "MomentumRiderAgent",
+    };
+
+    for (const role of requestedAgents) {
+      const loader = agentMap[role];
+      if (!loader) {
+        console.log(chalk.yellow(`  Unknown agent role: ${role}`));
+        continue;
+      }
+
+      const mod = await loader();
+      const className = classMap[role]!;
+      const AgentClass = (mod as Record<string, unknown>)[className] as new () => import("../swarm/orchestrator.js").SwarmAgent;
+      const agent = new AgentClass();
+      swarm.register(agent);
+      console.log(chalk.green(`  + ${role}`));
+    }
+
+    // Wire swarm events to console
+    swarm.on("event", (event) => {
+      if (event.type === "trade:signal") {
+        const data = event.data as { type: string; mint: string; confidence: number; reasoning: string };
+        const icon = data.type === "buy" ? "🟢" : "🔴";
+        console.log(chalk.hex("#14F195")(`\n  ${icon} SIGNAL: ${data.type.toUpperCase()} ${data.mint.slice(0, 8)}...`));
+        console.log(chalk.gray(`     Confidence: ${(data.confidence * 100).toFixed(0)}%`));
+        console.log(chalk.gray(`     ${data.reasoning}\n`));
+      }
+      if (event.type === "alert:risk") {
+        const data = event.data as { message: string };
+        console.log(chalk.red(`  ⚠️  RISK: ${data.message}`));
+      }
+    });
+
+    console.log(chalk.hex("#14F195")(`\n  🦞 Swarm started with ${swarm.getAgentCount()} agents`));
+    console.log(chalk.gray(`  RPC: ${opts.rpc}`));
+    if (opts.dryRun) console.log(chalk.yellow("  DRY RUN — no trades will execute"));
+    console.log(chalk.gray("  Press Ctrl+C to stop\n"));
+
+    await swarm.start();
+
+    // Graceful shutdown
+    const shutdown = async () => {
+      console.log(chalk.yellow("\n  Stopping swarm..."));
+      await swarm.stop();
+      const health = swarm.getHealth();
+      console.log(chalk.gray(`  Events processed: ${health.totalEventsProcessed}`));
+      console.log(chalk.gray(`  Uptime: ${(health.uptime / 1000 / 60).toFixed(1)} minutes\n`));
+      process.exit(0);
+    };
+
+    process.on("SIGINT", shutdown);
+    process.on("SIGTERM", shutdown);
+
+    // Keep alive
+    await new Promise(() => {});
+  });
+
+// ── nanosolana swarm:status ──────────────────────────────────
+
+program
+  .command("swarm:status")
+  .description("Show the status of the running swarm agents")
+  .action(async () => {
+    // This reads the swarm state from the saved state file
+    const home = ensureNanoHome();
+    const statePath = join(home, "swarm-state.json");
+
+    if (!existsSync(statePath)) {
+      console.log(chalk.yellow("\n  No swarm state found. Start the swarm first: nanosolana swarm\n"));
+      return;
+    }
+
+    const state = JSON.parse(readFileSync(statePath, "utf-8"));
+    console.log(chalk.hex("#14F195")("\n  🦞 Swarm Status\n"));
+    console.log(chalk.white(JSON.stringify(state, null, 2)));
+    console.log();
+  });
+
+// ── nanosolana pump ──────────────────────────────────────────
+
+program
+  .command("pump")
+  .description("Query pump.fun bonding curve data for a token")
+  .argument("<mint>", "Token mint address")
+  .option("--rpc <url>", "Solana RPC URL", "https://api.mainnet-beta.solana.com")
+  .action(async (mint: string, opts) => {
+    const { PumpClient } = await import("../pump/client.js");
+    const { Connection } = await import("@solana/web3.js");
+
+    const connection = new Connection(opts.rpc, "confirmed");
+    const pump = new PumpClient(connection);
+
+    console.log(chalk.hex("#14F195")(`\n  🐸 Pump.fun Token Info: ${mint.slice(0, 12)}...\n`));
+
+    const info = await pump.getTokenInfo(mint);
+    if (!info) {
+      console.log(chalk.red("  Token not found or bonding curve not initialized.\n"));
+      return;
+    }
+
+    console.log(chalk.white("  Price:          ") + chalk.cyan(`${info.buyPricePerToken.toFixed(12)} SOL`));
+    console.log(chalk.white("  Market Cap:     ") + chalk.cyan(`${info.marketCapSol.toFixed(4)} SOL`));
+    console.log(chalk.white("  Progress:       ") + chalk.cyan(`${(info.progressBps / 100).toFixed(2)}%`));
+    console.log(chalk.white("  Graduated:      ") + chalk.cyan(info.isGraduated ? "YES" : "No"));
+    console.log(chalk.white("  Real SOL:       ") + chalk.gray(`${(Number(info.realSolReserves) / 1e9).toFixed(4)} SOL`));
+    console.log(chalk.white("  Virtual SOL:    ") + chalk.gray(`${(Number(info.virtualSolReserves) / 1e9).toFixed(4)} SOL`));
+    console.log(chalk.white("  Token Supply:   ") + chalk.gray(`${(Number(info.virtualTokenReserves) / 1e6).toFixed(0)} tokens`));
+
+    // Buy quote for 0.01 SOL
+    const quote = pump.getBuyQuote(info, 10_000_000); // 0.01 SOL in lamports
+    console.log(chalk.white("\n  Buy 0.01 SOL:   ") + chalk.green(`${(Number(quote.tokensOut) / 1e6).toFixed(2)} tokens`));
+    console.log(chalk.white("  Price Impact:   ") + chalk.gray(`${quote.priceImpactBps / 100}%`));
+    console.log();
+  });
+
+// ── nanosolana lobster ──────────────────────────────────────
+
+program
+  .command("lobster")
+  .description("Build the Lobster Library — generate all specialized Solana agent definitions")
+  .option("-o, --output <dir>", "Output directory", "./lobster-agents")
+  .action(async (opts) => {
+    const { LobsterAgentBuilder } = await import("../lobster/builder.js");
+
+    const builder = new LobsterAgentBuilder(opts.output);
+    const summary = await builder.run();
+
+    console.log(chalk.hex("#14F195")("\n  📊 Build Summary"));
+    console.log(chalk.white(`  Total:       ${summary.totalAgents} agents`));
+    console.log(chalk.white(`  Successful:  ${summary.successful}`));
+    if (summary.failed > 0) console.log(chalk.red(`  Failed:      ${summary.failed}`));
+    console.log(chalk.white(`  Tokens:      ~${summary.totalTokenUsage.toLocaleString()} estimated`));
+    console.log(chalk.white(`  Duration:    ${summary.durationMs}ms`));
+    console.log();
+  });
+
+// ── nanosolana lobster:search ──────────────────────────────
+
+program
+  .command("lobster:search")
+  .description("Search the Lobster Library for agents by keyword or category")
+  .argument("<query>", "Search query")
+  .option("-c, --category <cat>", "Filter by category")
+  .action(async (query: string, opts) => {
+    const { searchLobsterAgents, getLobsterAgentsByCategory } = await import("../lobster/generator.js");
+
+    let results;
+    if (opts.category) {
+      results = getLobsterAgentsByCategory(opts.category);
+      results = results.filter((a) =>
+        a.meta.title.toLowerCase().includes(query.toLowerCase()) ||
+        a.meta.description.toLowerCase().includes(query.toLowerCase())
+      );
+    } else {
+      results = searchLobsterAgents(query);
+    }
+
+    console.log(chalk.hex("#14F195")(`\n  🦞 Lobster Library — "${query}" (${results.length} results)\n`));
+
+    for (const agent of results.slice(0, 20)) {
+      console.log(chalk.cyan(`  ${agent.meta.avatar} ${agent.meta.title}`));
+      console.log(chalk.gray(`     ${agent.meta.description}`));
+      console.log(chalk.gray(`     Category: ${agent.meta.category} | Tags: ${agent.meta.tags.join(", ")}\n`));
+    }
+
+    if (results.length === 0) {
+      console.log(chalk.yellow("  No agents found matching your query.\n"));
+    }
+  });
+
 // ── Parse & Run ────────────────────────────────────────────────
 
 program.parse();
